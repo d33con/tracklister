@@ -1,11 +1,12 @@
-import { authModalState } from "@/atoms/authModalAtom";
 import React, { useState } from "react";
+import { Button, Form, Grid, Header, Message } from "semantic-ui-react";
 import { useSetRecoilState } from "recoil";
-import { Button, Form, Grid, Header } from "semantic-ui-react";
+import { authModalState } from "@/atoms/authModalAtom";
+import { auth } from "@/firebase/clientApp";
+import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { FIREBASE_ERRORS } from "@/firebase/errors";
 
-type SignUpProps = {};
-
-const SignUp: React.FC<SignUpProps> = () => {
+const SignUp: React.FC = () => {
   const setAuthModalState = useSetRecoilState(authModalState);
 
   const [signUpForm, setSignUpForm] = useState({
@@ -13,8 +14,12 @@ const SignUp: React.FC<SignUpProps> = () => {
     password: "",
     passwordConfirmation: "",
   });
+  const [error, setError] = useState("");
 
   const { email, password, passwordConfirmation } = signUpForm;
+
+  const [createUserWithEmailAndPassword, user, loading, userCreationError] =
+    useCreateUserWithEmailAndPassword(auth);
 
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     setSignUpForm((prevState) => ({
@@ -30,15 +35,25 @@ const SignUp: React.FC<SignUpProps> = () => {
     }));
   };
 
-  function handleSubmit() {
-    return null;
+  function handleSubmit(evt: React.FormEvent<HTMLFormElement>) {
+    evt.preventDefault();
+    if (error) setError("");
+    if (password.length < 6) {
+      setError("Password must be longer than 6 characters");
+      return;
+    }
+    if (password !== passwordConfirmation) {
+      setError("Passwords do not match");
+      return;
+    }
+    createUserWithEmailAndPassword(email, password);
   }
 
   return (
     <Grid divided centered padded columns="equal">
       <Grid.Row>
         <Grid.Column className="flex justify-content-center">
-          <Form onSubmit={handleSubmit}>
+          <Form onSubmit={handleSubmit} loading={loading} error>
             <Form.Group>
               <Form.Input
                 label="Email"
@@ -73,8 +88,20 @@ const SignUp: React.FC<SignUpProps> = () => {
               />
             </Form.Group>
             <Form.Group>
-              <Form.Button secondary content="Sign Up" />
+              <Form.Button secondary content="Sign Up" loading={loading} />
             </Form.Group>
+            {(error || userCreationError) && (
+              <Message
+                error
+                header="Sign Up Error"
+                content={
+                  error ||
+                  FIREBASE_ERRORS[
+                    userCreationError?.message as keyof typeof FIREBASE_ERRORS
+                  ]
+                }
+              />
+            )}
           </Form>
         </Grid.Column>
         <Grid.Column verticalAlign="middle">

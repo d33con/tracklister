@@ -3,3 +3,11 @@
   padding: 0;
   margin: 0;
 }
+
+.flex {
+  display: flex !important;
+}
+
+.justify-content-center {
+  justify-content: center;
+}

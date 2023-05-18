@@ -3,20 +3,21 @@ import React, { useState } from "react";
 import { useSetRecoilState } from "recoil";
 import { Button, Form, Grid, Header } from "semantic-ui-react";
 
-type LoginProps = {};
+type SignUpProps = {};
 
-const Login: React.FC<LoginProps> = () => {
+const SignUp: React.FC<SignUpProps> = () => {
   const setAuthModalState = useSetRecoilState(authModalState);
 
-  const [loginForm, setLoginForm] = useState({
+  const [signUpForm, setSignUpForm] = useState({
     email: "",
     password: "",
+    passwordConfirmation: "",
   });
 
-  const { email, password } = loginForm;
+  const { email, password, passwordConfirmation } = signUpForm;
 
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    setLoginForm((prevState) => ({
+    setSignUpForm((prevState) => ({
       ...prevState,
       [evt.target.name]: evt.target.value,
     }));
@@ -25,7 +26,7 @@ const Login: React.FC<LoginProps> = () => {
   const handleFormSwitch = () => {
     setAuthModalState((prevState) => ({
       ...prevState,
-      view: "signup",
+      view: "login",
     }));
   };
 
@@ -61,14 +62,25 @@ const Login: React.FC<LoginProps> = () => {
               />
             </Form.Group>
             <Form.Group>
-              <Form.Button primary content="Log In" />
+              <Form.Input
+                label="Confirm Password"
+                placeholder="Confirm Password"
+                name="passwordConfirmation"
+                value={passwordConfirmation}
+                type="password"
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Button secondary content="Sign Up" />
             </Form.Group>
           </Form>
         </Grid.Column>
         <Grid.Column verticalAlign="middle">
-          <Header>No account?</Header>
-          <Button secondary onClick={handleFormSwitch}>
-            Sign Up
+          <Header>Already have an account?</Header>
+          <Button primary onClick={handleFormSwitch}>
+            Log In
           </Button>
         </Grid.Column>
       </Grid.Row>
@@ -76,4 +88,4 @@ const Login: React.FC<LoginProps> = () => {
   );
 };
 
-export default Login;
+export default SignUp;

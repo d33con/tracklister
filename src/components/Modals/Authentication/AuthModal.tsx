@@ -3,6 +3,7 @@ import { Header, Modal } from "semantic-ui-react";
 import { useRecoilState } from "recoil";
 import { authModalState } from "@/atoms/authModalAtom";
 import AuthInputs from "./AuthInputs";
+import OAuthButtons from "./OAuthButtons";
 
 const AuthModal = () => {
   const [modalState, setModalState] = useRecoilState(authModalState);
@@ -20,17 +21,17 @@ const AuthModal = () => {
         closeIcon
         onClose={handleModalClose}
         open={modalState.open}
-        size="tiny"
+        size="small"
       >
-        <Header>
+        <Header textAlign="center">
           {modalState.view === "login" && "Log In"}
           {modalState.view === "signup" && "Sign Up"}
           {modalState.view === "resetPassword" && "Reset Password"}
         </Header>
         <Modal.Content>
+          <OAuthButtons />
           <AuthInputs />
-          {/* <OAuthButtons />
-          <ResetPassword /> */}
+          {/* <ResetPassword /> */}
         </Modal.Content>
       </Modal>
     </>

@@ -2,6 +2,7 @@ import React from "react";
 import { authModalState } from "@/atoms/authModalAtom";
 import { useRecoilValue } from "recoil";
 import Login from "./Login";
+import SignUp from "./SignUp";
 
 type AuthInputsProps = {};
 

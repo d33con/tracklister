@@ -1,3 +1,8 @@
+:root {
+  --link-color: #4183c4;
+  --link-color-hover: #1e70bf;
+}
+
 * {
   box-sizing: border-box;
   padding: 0;
@@ -8,6 +13,19 @@
   display: flex !important;
 }
 
+.flex {
+  flex-direction: column;
+}
+
 .justify-content-center {
   justify-content: center;
+}
+
+.text-link {
+  color: var(--link-color);
+  cursor: pointer;
+}
+
+.text-link:hover {
+  color: var(--link-color-hover);
 }

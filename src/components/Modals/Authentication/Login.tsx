@@ -33,6 +33,13 @@ const Login: React.FC = () => {
     }));
   };
 
+  const showPasswordResetForm = () => {
+    setAuthModalState((prevState) => ({
+      ...prevState,
+      view: "resetPassword",
+    }));
+  };
+
   function handleSubmit(evt: React.FormEvent<HTMLFormElement>) {
     evt.preventDefault();
     signInWithEmailAndPassword(email, password);
@@ -41,7 +48,7 @@ const Login: React.FC = () => {
   return (
     <Grid divided centered padded columns="equal">
       <Grid.Row>
-        <Grid.Column className="flex justify-content-center">
+        <Grid.Column className="flex flex-column justify-content-center">
           <Form onSubmit={handleSubmit} loading={loading} error>
             <Form.Group>
               <Form.Input
@@ -80,6 +87,9 @@ const Login: React.FC = () => {
               />
             )}
           </Form>
+          <div className="text-link" onClick={showPasswordResetForm}>
+            Forgot your password?
+          </div>
         </Grid.Column>
         <Grid.Column verticalAlign="middle">
           <Header>No account?</Header>

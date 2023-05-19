@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Menu, Container } from "semantic-ui-react";
 import SearchInput from "./SearchInput";
 import Authentication from "./Authentication";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "@/firebase/clientApp";
 
 const Navbar: React.FC = () => {
+  const [user, loading, error] = useAuthState(auth);
+
   return (
     <Container>
       <Menu secondary>
@@ -15,7 +19,7 @@ const Navbar: React.FC = () => {
             <SearchInput />
           </Menu.Item>
           <Menu.Item>
-            <Authentication />
+            <Authentication user={user} />
           </Menu.Item>
         </Menu.Menu>
       </Menu>

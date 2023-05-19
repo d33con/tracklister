@@ -1,11 +1,12 @@
-import { authModalState } from "@/atoms/authModalAtom";
 import React, { useState } from "react";
+import { Button, Form, Grid, Header, Message } from "semantic-ui-react";
+import { authModalState } from "@/atoms/authModalAtom";
 import { useSetRecoilState } from "recoil";
-import { Button, Form, Grid, Header } from "semantic-ui-react";
+import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { auth } from "@/firebase/clientApp";
+import { FIREBASE_ERRORS } from "@/firebase/errors";
 
-type LoginProps = {};
-
-const Login: React.FC<LoginProps> = () => {
+const Login: React.FC = () => {
   const setAuthModalState = useSetRecoilState(authModalState);
 
   const [loginForm, setLoginForm] = useState({
@@ -14,6 +15,9 @@ const Login: React.FC<LoginProps> = () => {
   });
 
   const { email, password } = loginForm;
+
+  const [signInWithEmailAndPassword, user, loading, error] =
+    useSignInWithEmailAndPassword(auth);
 
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     setLoginForm((prevState) => ({
@@ -29,15 +33,16 @@ const Login: React.FC<LoginProps> = () => {
     }));
   };
 
-  function handleSubmit() {
-    return null;
+  function handleSubmit(evt: React.FormEvent<HTMLFormElement>) {
+    evt.preventDefault();
+    signInWithEmailAndPassword(email, password);
   }
 
   return (
     <Grid divided centered padded columns="equal">
       <Grid.Row>
         <Grid.Column className="flex justify-content-center">
-          <Form onSubmit={handleSubmit}>
+          <Form onSubmit={handleSubmit} loading={loading} error>
             <Form.Group>
               <Form.Input
                 label="Email"
@@ -61,8 +66,19 @@ const Login: React.FC<LoginProps> = () => {
               />
             </Form.Group>
             <Form.Group>
-              <Form.Button primary content="Log In" />
+              <Form.Button primary content="Log In" loading={loading} />
             </Form.Group>
+            {error && (
+              <Message
+                error
+                header="Log In Error"
+                content={
+                  FIREBASE_ERRORS[
+                    error?.message as keyof typeof FIREBASE_ERRORS
+                  ]
+                }
+              />
+            )}
           </Form>
         </Grid.Column>
         <Grid.Column verticalAlign="middle">

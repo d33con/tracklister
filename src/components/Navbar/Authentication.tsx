@@ -1,11 +1,16 @@
 import React from "react";
 import AuthModal from "../Modals/Authentication/AuthModal";
 import AuthButtons from "./AuthButtons";
+import LogOut from "./LogOut";
 
-const Authentication = () => {
+type AuthenticationProps = {
+  user: any;
+};
+
+const Authentication: React.FC<AuthenticationProps> = ({ user }) => {
   return (
     <>
-      <AuthButtons />
+      {user ? <LogOut /> : <AuthButtons />}
       <AuthModal />
     </>
   );

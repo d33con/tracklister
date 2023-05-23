@@ -10,14 +10,14 @@ const Navbar: React.FC = () => {
 
   return (
     <Container>
-      <Menu secondary>
-        <Menu.Item name="home" active onClick={() => null} />
-        <Menu.Item name="messages" onClick={() => null} />
-        <Menu.Item name="friends" onClick={() => null} />
+      <Menu text>
+        <Menu.Item name="Tracklister" header onClick={() => null} />
+        <Menu.Item>
+          <SearchInput />
+        </Menu.Item>
         <Menu.Menu position="right">
-          <Menu.Item>
-            <SearchInput />
-          </Menu.Item>
+          <Menu.Item name="Categories" onClick={() => null} />
+          <Menu.Item name="Upload" onClick={() => null} />
           <Menu.Item>
             <Authentication user={user} />
           </Menu.Item>

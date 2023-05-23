@@ -1,6 +1,9 @@
 :root {
   --link-color: #4183c4;
   --link-color-hover: #1e70bf;
+  --homepage-royal-blue: #5000ff;
+  --main-text-color: #1e2337;
+  --card-background-color: #f4f4f5;
 }
 
 * {
@@ -13,7 +16,7 @@
   display: flex !important;
 }
 
-.flex {
+.flex-column {
   flex-direction: column;
 }
 

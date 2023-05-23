@@ -54,7 +54,7 @@ const SignUp: React.FC = () => {
       <Grid.Row>
         <Grid.Column className="flex justify-content-center">
           <Form onSubmit={handleSubmit} loading={loading} error>
-            <Form.Group>
+            <Form.Group className="justify-content-center">
               <Form.Input
                 label="Email"
                 placeholder="Email"
@@ -65,7 +65,7 @@ const SignUp: React.FC = () => {
                 required
               />
             </Form.Group>
-            <Form.Group>
+            <Form.Group className="justify-content-center">
               <Form.Input
                 label="Password"
                 placeholder="Password"
@@ -76,7 +76,7 @@ const SignUp: React.FC = () => {
                 required
               />
             </Form.Group>
-            <Form.Group>
+            <Form.Group className="justify-content-center">
               <Form.Input
                 label="Confirm Password"
                 placeholder="Confirm Password"
@@ -87,8 +87,17 @@ const SignUp: React.FC = () => {
                 required
               />
             </Form.Group>
-            <Form.Group>
-              <Form.Button secondary content="Sign Up" loading={loading} />
+            <Form.Group className="justify-content-center">
+              <Form.Button
+                secondary
+                content="Sign Up"
+                loading={loading}
+                disabled={
+                  email.length === 0 ||
+                  password.length === 0 ||
+                  passwordConfirmation.length === 0
+                }
+              />
             </Form.Group>
             {(error || userCreationError) && (
               <Message

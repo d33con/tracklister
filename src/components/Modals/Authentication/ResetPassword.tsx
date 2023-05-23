@@ -25,8 +25,10 @@ const ResetPassword: React.FC = () => {
         </Message>
       ) : (
         <Form onSubmit={handleSubmit} loading={sending} error>
-          <Header>Enter the email you signed up with below</Header>
-          <Form.Group>
+          <Header textAlign="center">
+            Enter the email you signed up with below
+          </Header>
+          <Form.Group className="justify-content-center">
             <Form.Input
               placeholder="Email"
               name="email"
@@ -36,8 +38,13 @@ const ResetPassword: React.FC = () => {
               required
             />
           </Form.Group>
-          <Form.Group>
-            <Form.Button primary content="Reset password" loading={sending} />
+          <Form.Group className="justify-content-center">
+            <Form.Button
+              primary
+              content="Reset password"
+              loading={sending}
+              disabled={email.length === 0}
+            />
           </Form.Group>
         </Form>
       )}

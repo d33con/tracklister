@@ -29,3 +29,7 @@
 .text-link:hover {
   color: var(--link-color-hover);
 }
+
+.text-center {
+  text-align: center;
+}

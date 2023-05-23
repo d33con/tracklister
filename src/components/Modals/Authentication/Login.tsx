@@ -48,9 +48,9 @@ const Login: React.FC = () => {
   return (
     <Grid divided centered padded columns="equal">
       <Grid.Row>
-        <Grid.Column className="flex flex-column justify-content-center">
+        <Grid.Column className="flex flex-column">
           <Form onSubmit={handleSubmit} loading={loading} error>
-            <Form.Group>
+            <Form.Group className="justify-content-center">
               <Form.Input
                 label="Email"
                 placeholder="Email"
@@ -61,7 +61,7 @@ const Login: React.FC = () => {
                 required
               />
             </Form.Group>
-            <Form.Group>
+            <Form.Group className="justify-content-center">
               <Form.Input
                 label="Password"
                 placeholder="Password"
@@ -72,8 +72,13 @@ const Login: React.FC = () => {
                 required
               />
             </Form.Group>
-            <Form.Group>
-              <Form.Button primary content="Log In" loading={loading} />
+            <Form.Group className="justify-content-center">
+              <Form.Button
+                primary
+                content="Log In"
+                loading={loading}
+                disabled={email.length === 0 || password.length === 0}
+              />
             </Form.Group>
             {error && (
               <Message
@@ -87,7 +92,10 @@ const Login: React.FC = () => {
               />
             )}
           </Form>
-          <div className="text-link" onClick={showPasswordResetForm}>
+          <div
+            className="text-link text-center"
+            onClick={showPasswordResetForm}
+          >
             Forgot your password?
           </div>
         </Grid.Column>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Form, Header, Message } from "semantic-ui-react";
 import { auth } from "@/firebase/clientApp";
 import { useSendPasswordResetEmail } from "react-firebase-hooks/auth";
+import { Button, FormControl, Input, Text } from "@chakra-ui/react";
 
 const ResetPassword: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -18,18 +18,18 @@ const ResetPassword: React.FC = () => {
 
   return (
     <>
-      {error && <Message error header="Email not found" />}
+      {error && <Text>Email not found</Text>}
       {!error && success ? (
-        <Message info>
+        <Text>
           <p>Reset password email sent - please check your email</p>
-        </Message>
+        </Text>
       ) : (
-        <Form onSubmit={handleSubmit} loading={sending} error>
-          <Header textAlign="center">
+        <form onSubmit={handleSubmit}>
+          <Text textAlign="center">
             Enter the email you signed up with below
-          </Header>
-          <Form.Group className="justify-content-center">
-            <Form.Input
+          </Text>
+          <FormControl className="justify-content-center">
+            <Input
               placeholder="Email"
               name="email"
               value={email}
@@ -37,16 +37,13 @@ const ResetPassword: React.FC = () => {
               onChange={(evt) => setEmail(evt.target.value)}
               required
             />
-          </Form.Group>
-          <Form.Group className="justify-content-center">
-            <Form.Button
-              primary
-              content="Reset password"
-              loading={sending}
-              disabled={email.length === 0}
-            />
-          </Form.Group>
-        </Form>
+          </FormControl>
+          <FormControl className="justify-content-center">
+            <Button isLoading={sending} disabled={email.length === 0}>
+              Reset password
+            </Button>
+          </FormControl>
+        </form>
       )}
     </>
   );

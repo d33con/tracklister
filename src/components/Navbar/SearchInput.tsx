@@ -1,13 +1,17 @@
+import { PhoneIcon } from "@chakra-ui/icons";
+import { InputGroup, InputLeftElement, Input } from "@chakra-ui/react";
 import React from "react";
-import { Input } from "semantic-ui-react";
 
 type SearchInputProps = {};
 
 const SearchInput: React.FC<SearchInputProps> = () => {
   return (
-    <>
-      <Input icon="search" placeholder="Search..." />
-    </>
+    <InputGroup>
+      <InputLeftElement pointerEvents="none">
+        <PhoneIcon color="gray.300" />
+      </InputLeftElement>
+      <Input type="tel" placeholder="Phone number" />
+    </InputGroup>
   );
 };
 

@@ -1,7 +1,7 @@
 import React from "react";
-import { Button } from "semantic-ui-react";
 import { auth } from "@/firebase/clientApp";
 import { useSignOut } from "react-firebase-hooks/auth";
+import { Button } from "@chakra-ui/react";
 
 const LogOut: React.FC = () => {
   const [signOut, loading, error] = useSignOut(auth);
@@ -12,7 +12,7 @@ const LogOut: React.FC = () => {
 
   return (
     <>
-      <Button primary onClick={handleSignOut} loading={loading}>
+      <Button onClick={handleSignOut} isLoading={loading}>
         Log Out
       </Button>
     </>

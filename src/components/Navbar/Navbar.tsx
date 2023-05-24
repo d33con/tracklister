@@ -1,29 +1,33 @@
-import React, { useEffect } from "react";
-import { Menu, Container } from "semantic-ui-react";
+import React from "react";
 import SearchInput from "./SearchInput";
 import Authentication from "./Authentication";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase/clientApp";
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  Flex,
+  Heading,
+  Spacer,
+} from "@chakra-ui/react";
 
 const Navbar: React.FC = () => {
   const [user, loading, error] = useAuthState(auth);
 
   return (
-    <Container>
-      <Menu text>
-        <Menu.Item name="Tracklister" header onClick={() => null} />
-        <Menu.Item>
-          <SearchInput />
-        </Menu.Item>
-        <Menu.Menu position="right">
-          <Menu.Item name="Categories" onClick={() => null} />
-          <Menu.Item name="Upload" onClick={() => null} />
-          <Menu.Item>
-            <Authentication user={user} />
-          </Menu.Item>
-        </Menu.Menu>
-      </Menu>
-    </Container>
+    <Flex>
+      <Box p="2">
+        <Heading size="md">Tracklister</Heading>
+      </Box>
+      <SearchInput />
+      <Spacer />
+      <ButtonGroup gap="2">
+        <Button colorScheme="teal">Categories</Button>
+        <Button colorScheme="teal">Upload</Button>
+        <Authentication user={user} />
+      </ButtonGroup>
+    </Flex>
   );
 };
 

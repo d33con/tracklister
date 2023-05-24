@@ -1,87 +1,38 @@
 import React from "react";
-import { Button, Card, Container, Image, Label } from "semantic-ui-react";
-import styles from "@/styles/LoggedOutHomepage.module.css";
+import {
+  Container,
+  Card,
+  Button,
+  Image,
+  CardBody,
+  CardHeader,
+  Badge,
+} from "@chakra-ui/react";
 
 const LoggedOutHomepage: React.FC = () => {
   return (
     <section>
-      <Container fluid className={styles.creatorCarousel}>
-        <Card.Group className="flex justify-content-center">
-          <Card className={styles.creatorCard}>
-            <Card.Content>
-              <Card.Header textAlign="center">
-                <Image
-                  src="https://react.semantic-ui.com/images/avatar/large/matthew.png"
-                  alt="username"
-                  size="tiny"
-                  circular
-                />
-              </Card.Header>
-              <Card.Header textAlign="center">Matthew</Card.Header>
-              <Card.Meta textAlign="center">2,015 followers</Card.Meta>
-              <Card.Description textAlign="center">
-                <Label basic>DnB</Label>
-                <Label basic>Oldskool</Label>
-                <Label basic>Techno</Label>
-              </Card.Description>
-              <Card.Description textAlign="center">
-                <Button primary as="a">
-                  View Creator
-                </Button>
-              </Card.Description>
-            </Card.Content>
-          </Card>
-          <Card className={styles.creatorCard}>
-            <Card.Content>
-              <Card.Header textAlign="center">
-                <Image
-                  src="https://react.semantic-ui.com/images/avatar/large/matthew.png"
-                  alt="username"
-                  size="tiny"
-                  circular
-                />
-              </Card.Header>
-              <Card.Header textAlign="center">Matthew</Card.Header>
-              <Card.Meta textAlign="center">2,015 followers</Card.Meta>
-              <Card.Description textAlign="center">
-                <Label basic>DnB</Label>
-                <Label basic>Oldskool</Label>
-                <Label basic>Techno</Label>
-              </Card.Description>
-              <Card.Description textAlign="center">
-                <Button primary as="a">
-                  View Creator
-                </Button>
-              </Card.Description>
-            </Card.Content>
-          </Card>
-          <Card className={styles.creatorCard}>
-            <Card.Content>
-              <Card.Header textAlign="center">
-                <Image
-                  src="https://react.semantic-ui.com/images/avatar/large/matthew.png"
-                  alt="username"
-                  size="tiny"
-                  circular
-                />
-              </Card.Header>
-              <Card.Header as="h2" textAlign="center">
-                Matthew
-              </Card.Header>
-              <Card.Meta textAlign="center">2,015 followers</Card.Meta>
-              <Card.Description textAlign="center">
-                <Label basic>DnB</Label>
-                <Label basic>Oldskool</Label>
-                <Label basic>Techno</Label>
-              </Card.Description>
-              <Card.Description textAlign="center">
-                <Button primary as="a">
-                  View Creator
-                </Button>
-              </Card.Description>
-            </Card.Content>
-          </Card>
-        </Card.Group>
+      <Container>
+        <Card>
+          <CardHeader textAlign="center">
+            <Image
+              src="https://react.semantic-ui.com/images/avatar/large/matthew.png"
+              alt="username"
+              boxSize="50px"
+              borderRadius="full"
+            />
+          </CardHeader>
+          <CardHeader textAlign="center">Matthew</CardHeader>
+          <CardHeader textAlign="center">2,015 followers</CardHeader>
+          <CardBody textAlign="center">
+            <Badge variant="outline">DnB</Badge>
+            <Badge variant="outline">Oldskool</Badge>
+            <Badge variant="outline">Techno</Badge>
+          </CardBody>
+          <CardBody textAlign="center">
+            <Button as="a">View Creator</Button>
+          </CardBody>
+        </Card>
       </Container>
     </section>
   );

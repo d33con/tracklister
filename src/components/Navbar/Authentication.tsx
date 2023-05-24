@@ -1,8 +1,8 @@
+import { User } from "firebase/auth";
 import React from "react";
 import AuthModal from "../Modals/Authentication/AuthModal";
 import AuthButtons from "./AuthButtons";
 import LogOut from "./LogOut";
-import { User } from "firebase/auth";
 
 type AuthenticationProps = {
   user?: User | null;

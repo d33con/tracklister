@@ -46,7 +46,7 @@ const Navbar: React.FC = () => {
       )}
       <Spacer />
       <Box display={searchFocused ? "none" : "flex"} alignItems="center">
-        <Box mr={{ base: 0, md: 10 }} alignItems="center">
+        <Box mr={{ base: 0, md: 10 }}>
           <Link as={NextLink} color="whiteAlpha.900" href="#" mr={6}>
             Categories
           </Link>

@@ -1,10 +1,20 @@
-import React, { useState } from "react";
 import { authModalState } from "@/atoms/authModalAtom";
-import { useSetRecoilState } from "recoil";
-import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase/clientApp";
 import { FIREBASE_ERRORS } from "@/firebase/errors";
-import { Flex, Button, Text, FormControl, Input } from "@chakra-ui/react";
+import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
+  Box,
+  Button,
+  FormControl,
+  Input,
+  Stack,
+} from "@chakra-ui/react";
+import React, { useState } from "react";
+import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { useSetRecoilState } from "recoil";
 
 const Login: React.FC = () => {
   const setAuthModalState = useSetRecoilState(authModalState);
@@ -46,11 +56,11 @@ const Login: React.FC = () => {
   }
 
   return (
-    <Flex>
+    <Stack>
       <form onSubmit={handleSubmit}>
-        <FormControl className="justify-content-center">
+        <FormControl mb={4}>
           <Input
-            label="Email"
+            size="lg"
             placeholder="Email"
             name="email"
             value={email}
@@ -59,9 +69,9 @@ const Login: React.FC = () => {
             required
           />
         </FormControl>
-        <FormControl className="justify-content-center">
+        <FormControl mb={4}>
           <Input
-            label="Password"
+            size="lg"
             placeholder="Password"
             name="password"
             value={password}
@@ -70,29 +80,53 @@ const Login: React.FC = () => {
             required
           />
         </FormControl>
-        <FormControl className="justify-content-center">
+        <Box textAlign="center">
           <Button
-            content="Log In"
-            loading={loading}
-            disabled={email.length === 0 || password.length === 0}
-          />
-        </FormControl>
+            width="100%"
+            backgroundColor="blackAlpha.800"
+            color="whiteAlpha.900"
+            _hover={{ bg: "blackAlpha.900" }}
+            textTransform="uppercase"
+            isLoading={loading}
+            isDisabled={email.length === 0 || password.length === 0}
+            type="submit"
+          >
+            Log In
+          </Button>
+        </Box>
         {error && (
-          <Text
-            error
-            header="Log In Error"
-            content={
-              FIREBASE_ERRORS[error?.message as keyof typeof FIREBASE_ERRORS]
-            }
-          />
+          <Alert status="error" textAlign="center" mt={2}>
+            <AlertIcon />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>
+              {FIREBASE_ERRORS[error?.message as keyof typeof FIREBASE_ERRORS]}
+            </AlertDescription>
+          </Alert>
         )}
       </form>
-      <div className="text-link text-center" onClick={showPasswordResetForm}>
-        Forgot your password?
-      </div>
-      <Text>No account?</Text>
-      <Button onClick={handleFormSwitch}>Sign Up</Button>
-    </Flex>
+      <Box textAlign="center" fontSize="14px" pt={8}>
+        New to Tracklister? You can{" "}
+        <Button
+          variant="link"
+          color="blackAlpha.800"
+          fontSize="14px"
+          onClick={handleFormSwitch}
+        >
+          sign up here.
+        </Button>
+      </Box>
+      <Box textAlign="center" fontSize="14px">
+        Forgot your password?{" "}
+        <Button
+          variant="link"
+          color="blackAlpha.800"
+          fontSize="14px"
+          onClick={showPasswordResetForm}
+        >
+          Reset it here.
+        </Button>
+      </Box>
+    </Stack>
   );
 };
 

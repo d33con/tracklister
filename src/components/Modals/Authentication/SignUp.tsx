@@ -1,17 +1,20 @@
-import React, { useState } from "react";
-import { useSetRecoilState } from "recoil";
 import { authModalState } from "@/atoms/authModalAtom";
 import { auth } from "@/firebase/clientApp";
-import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { FIREBASE_ERRORS } from "@/firebase/errors";
 import {
-  Grid,
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
+  Box,
+  Button,
   FormControl,
   Input,
-  Button,
-  Heading,
-  GridItem,
+  Stack,
 } from "@chakra-ui/react";
+import React, { useState } from "react";
+import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { useSetRecoilState } from "recoil";
 
 const SignUp: React.FC = () => {
   const setAuthModalState = useSetRecoilState(authModalState);
@@ -42,6 +45,13 @@ const SignUp: React.FC = () => {
     }));
   };
 
+  const showPasswordResetForm = () => {
+    setAuthModalState((prevState) => ({
+      ...prevState,
+      view: "resetPassword",
+    }));
+  };
+
   function handleSubmit(evt: React.FormEvent<HTMLFormElement>) {
     evt.preventDefault();
     if (error) setError("");
@@ -57,74 +67,92 @@ const SignUp: React.FC = () => {
   }
 
   return (
-    <Grid divided centered padded columns="equal">
-      <GridItem className="flex justify-content-center">
-        <form onSubmit={handleSubmit}>
-          <FormControl className="justify-content-center">
-            <Input
-              label="Email"
-              placeholder="Email"
-              name="email"
-              value={email}
-              type="email"
-              onChange={handleChange}
-              required
-            />
-          </FormControl>
-          <FormControl className="justify-content-center">
-            <Input
-              label="Password"
-              placeholder="Password"
-              name="password"
-              value={password}
-              type="password"
-              onChange={handleChange}
-              required
-            />
-          </FormControl>
-          <FormControl className="justify-content-center">
-            <Input
-              label="Confirm Password"
-              placeholder="Confirm Password"
-              name="passwordConfirmation"
-              value={passwordConfirmation}
-              type="password"
-              onChange={handleChange}
-              required
-            />
-          </FormControl>
-          <FormControl className="justify-content-center">
-            <Button
-              isLoading={loading}
-              disabled={
-                email.length === 0 ||
-                password.length === 0 ||
-                passwordConfirmation.length === 0
-              }
-            >
-              Sign Up
-            </Button>
-          </FormControl>
-          {(error || userCreationError) && (
-            <Heading
-              header=""
-              content={
-                error ||
+    <Stack>
+      <form onSubmit={handleSubmit}>
+        <FormControl mb={4}>
+          <Input
+            size="lg"
+            placeholder="Email"
+            name="email"
+            value={email}
+            type="email"
+            onChange={handleChange}
+            required
+          />
+        </FormControl>
+        <FormControl mb={4}>
+          <Input
+            size="lg"
+            placeholder="Password"
+            name="password"
+            value={password}
+            type="password"
+            onChange={handleChange}
+            required
+          />
+        </FormControl>
+        <FormControl mb={4}>
+          <Input
+            size="lg"
+            placeholder="Password confirmation"
+            name="passwordConfirmation"
+            value={passwordConfirmation}
+            type="password"
+            onChange={handleChange}
+            required
+          />
+        </FormControl>
+        <Box textAlign="center">
+          <Button
+            width="100%"
+            backgroundColor="blackAlpha.800"
+            color="whiteAlpha.900"
+            _hover={{ bg: "blackAlpha.900" }}
+            textTransform="uppercase"
+            isLoading={loading}
+            isDisabled={email.length === 0 || password.length === 0}
+            type="submit"
+          >
+            Sign Up
+          </Button>
+        </Box>
+        {userCreationError && (
+          <Alert status="error" textAlign="center" mt={2}>
+            <AlertIcon />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>
+              {
                 FIREBASE_ERRORS[
                   userCreationError?.message as keyof typeof FIREBASE_ERRORS
                 ]
               }
-            >
-              Sign Up Error
-            </Heading>
-          )}
-        </form>
-      </GridItem>
-      <GridItem verticalAlign="middle">
-        <Heading>Already have an account?</Heading>
-        <Button onClick={handleFormSwitch}>Log In</Button>
-      </GridItem>
-    </Grid>
+            </AlertDescription>
+          </Alert>
+        )}
+      </form>
+      <Box textAlign="center" fontSize="14px" pt={8}>
+        Already using Tracklister{" "}
+        <Button
+          variant="link"
+          color="blackAlpha.800"
+          fontSize="14px"
+          onClick={handleFormSwitch}
+        >
+          Log in here.
+        </Button>
+      </Box>
+      <Box textAlign="center" fontSize="14px">
+        Forgot your password?{" "}
+        <Button
+          variant="link"
+          color="blackAlpha.800"
+          fontSize="14px"
+          onClick={showPasswordResetForm}
+        >
+          Reset it here.
+        </Button>
+      </Box>
+    </Stack>
   );
 };
 

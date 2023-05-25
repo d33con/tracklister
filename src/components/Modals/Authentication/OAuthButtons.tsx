@@ -1,18 +1,39 @@
-import React from "react";
 import { auth } from "@/firebase/clientApp";
+import { FIREBASE_ERRORS } from "@/firebase/errors";
+import { LockIcon } from "@chakra-ui/icons";
+import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
+  Button,
+  Flex,
+} from "@chakra-ui/react";
+import React from "react";
 import { useSignInWithGoogle } from "react-firebase-hooks/auth";
-import { Icon } from "@chakra-ui/icons";
-import { Flex, Button, Text } from "@chakra-ui/react";
 
 const OAuthButtons: React.FC = () => {
   const [signInWithGoogle, user, loading, error] = useSignInWithGoogle(auth);
+
   return (
-    <Flex className="flex justify-content-center">
-      <Button isLoading={loading} onClick={() => signInWithGoogle()}>
-        <Icon name="google" />
-        Continue with Google
+    <Flex justify="center" flexDir="column">
+      <Button
+        isLoading={loading}
+        textTransform="uppercase"
+        onClick={() => signInWithGoogle()}
+      >
+        <LockIcon mr={2} />
+        Login with Google
       </Button>
-      {error && <Text>{error.message}</Text>}
+      {error && (
+        <Alert status="error" textAlign="center" mt={2}>
+          <AlertIcon />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>
+            {FIREBASE_ERRORS[error?.message as keyof typeof FIREBASE_ERRORS]}
+          </AlertDescription>
+        </Alert>
+      )}
     </Flex>
   );
 };

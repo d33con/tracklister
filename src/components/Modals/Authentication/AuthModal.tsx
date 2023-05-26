@@ -9,7 +9,7 @@ import {
   ModalOverlay,
   Text,
 } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useRecoilState } from "recoil";
 import AuthInputs from "./AuthInputs";
@@ -20,17 +20,16 @@ const AuthModal: React.FC = () => {
   const [modalState, setModalState] = useRecoilState(authModalState);
   const [user, loading, error] = useAuthState(auth);
 
-  const handleModalClose = () => {
+  const handleModalClose = useCallback(() => {
     setModalState((prevState) => ({
       ...prevState,
       open: false,
     }));
-  };
+  }, [setModalState]);
 
   useEffect(() => {
     if (user) handleModalClose();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [handleModalClose, user]);
 
   return (
     <Modal onClose={handleModalClose} isOpen={modalState.open} size="sm">

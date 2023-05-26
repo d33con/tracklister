@@ -1,5 +1,5 @@
 import { authModalState } from "@/atoms/authModalAtom";
-import { auth } from "@/firebase/clientApp";
+import { auth, firestore } from "@/firebase/clientApp";
 import { FIREBASE_ERRORS } from "@/firebase/errors";
 import {
   Alert,
@@ -12,13 +12,14 @@ import {
   Input,
   Stack,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import { User } from "firebase/auth";
+import { addDoc, collection } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { useSetRecoilState } from "recoil";
 
 const SignUp: React.FC = () => {
   const setAuthModalState = useSetRecoilState(authModalState);
-
   const [signUpForm, setSignUpForm] = useState({
     email: "",
     password: "",
@@ -28,8 +29,12 @@ const SignUp: React.FC = () => {
 
   const { email, password, passwordConfirmation } = signUpForm;
 
-  const [createUserWithEmailAndPassword, user, loading, userCreationError] =
-    useCreateUserWithEmailAndPassword(auth);
+  const [
+    createUserWithEmailAndPassword,
+    userCredentials,
+    loading,
+    userCreationError,
+  ] = useCreateUserWithEmailAndPassword(auth);
 
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     setSignUpForm((prevState) => ({
@@ -52,7 +57,7 @@ const SignUp: React.FC = () => {
     }));
   };
 
-  function handleSubmit(evt: React.FormEvent<HTMLFormElement>) {
+  const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     if (error) setError("");
     if (password.length < 6) {
@@ -64,7 +69,20 @@ const SignUp: React.FC = () => {
       return;
     }
     createUserWithEmailAndPassword(email, password);
-  }
+  };
+
+  const createUserDocument = async (user: User) => {
+    await addDoc(
+      collection(firestore, "users"),
+      JSON.parse(JSON.stringify(user))
+    );
+  };
+
+  useEffect(() => {
+    if (userCredentials) {
+      createUserDocument(userCredentials.user);
+    }
+  }, [userCredentials]);
 
   return (
     <Stack>

@@ -3,6 +3,7 @@ import React from "react";
 import AuthModal from "../Modals/Authentication/AuthModal";
 import AuthButtons from "./AuthButtons";
 import LogOut from "./LogOut";
+import UserMenu from "./UserMenu";
 
 type AuthenticationProps = {
   user?: User | null;
@@ -11,7 +12,7 @@ type AuthenticationProps = {
 const Authentication: React.FC<AuthenticationProps> = ({ user }) => {
   return (
     <>
-      {user ? <LogOut /> : <AuthButtons />}
+      {user ? <UserMenu /> : <AuthButtons />}
       <AuthModal />
     </>
   );

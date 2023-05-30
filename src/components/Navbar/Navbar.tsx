@@ -15,7 +15,6 @@ import SearchInput from "./SearchInput";
 
 const Navbar: React.FC = () => {
   const [searchFocused, setSearchFocused] = useState(false);
-
   const [user, loading, error] = useAuthState(auth);
 
   return (
@@ -50,7 +49,7 @@ const Navbar: React.FC = () => {
           <Link as={NextLink} color="whiteAlpha.900" href="#" mr={6}>
             Categories
           </Link>
-          <Link as={NextLink} color="whiteAlpha.900" href="#">
+          <Link as={NextLink} color="whiteAlpha.900" href="/upload">
             Upload
           </Link>
         </Box>

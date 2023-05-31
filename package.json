@@ -27,5 +27,8 @@
     "recoil": "^0.7.7",
     "typescript": "5.0.4",
     "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/uuid": "^9.0.1"
   }
 }

@@ -18,16 +18,25 @@ type NamedAudioFileProps = {
   selectedFilename?: string;
   selectedFilesize?: string;
   onSelectFileUpload: (evt: React.ChangeEvent<HTMLInputElement>) => void;
+  onHandleNameChange: (value: string) => void;
+  handleCreateUploadedFile: (evt: React.FormEvent<HTMLFormElement>) => void;
 };
 
 const NameAudioFileCard: React.FC<NamedAudioFileProps> = ({
   selectedFilename,
   selectedFilesize,
   onSelectFileUpload,
+  onHandleNameChange,
+  handleCreateUploadedFile,
 }) => {
   const [uploadedFileName, setUploadedFileName] = useState<string>("");
 
   const uploadFileRef = useRef<HTMLInputElement>(null);
+
+  const onHandleFileNameChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    setUploadedFileName(evt.target.value);
+    onHandleNameChange(evt.target.value);
+  };
 
   return (
     <Card size="lg" variant="outline" p={6}>
@@ -35,36 +44,38 @@ const NameAudioFileCard: React.FC<NamedAudioFileProps> = ({
         <Heading size="lg">Name your upload</Heading>
       </CardHeader>
       <CardBody>
-        <FormControl>
-          <Flex flexDir="row">
-            <Input
-              placeholder="Choose a title for your upload"
-              size="lg"
-              htmlSize={50}
-              width="auto"
-              name="uploadedFileName"
-              value={uploadedFileName}
-              type="text"
-              onChange={(evt) => setUploadedFileName(evt.target.value)}
-              required
-            />
-            <Box textAlign="center">
-              <Button
-                width="100%"
+        <form onSubmit={handleCreateUploadedFile}>
+          <FormControl>
+            <Flex flexDir="row">
+              <Input
+                placeholder="Choose a title for your upload"
                 size="lg"
-                ml={4}
-                backgroundColor="blue.500"
-                color="whiteAlpha.900"
-                _hover={{ bg: "blue.600" }}
-                textTransform="uppercase"
-                isDisabled={uploadedFileName.length === 0}
-                type="submit"
-              >
-                Confirm name
-              </Button>
-            </Box>
-          </Flex>
-        </FormControl>
+                htmlSize={50}
+                width="auto"
+                name="uploadedFileName"
+                value={uploadedFileName}
+                type="text"
+                onChange={onHandleFileNameChange}
+                required
+              />
+              <Box>
+                <Button
+                  width="100%"
+                  size="lg"
+                  ml={4}
+                  backgroundColor="blue.500"
+                  color="whiteAlpha.900"
+                  _hover={{ bg: "blue.600" }}
+                  textTransform="uppercase"
+                  isDisabled={uploadedFileName.length === 0}
+                  type="submit"
+                >
+                  Confirm name
+                </Button>
+              </Box>
+            </Flex>
+          </FormControl>
+        </form>
       </CardBody>
       <CardFooter>
         <Text align="left" mr={2}>

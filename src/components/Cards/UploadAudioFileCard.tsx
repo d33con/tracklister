@@ -7,11 +7,13 @@ import {
   Heading,
   Text,
 } from "@chakra-ui/react";
+import { User } from "firebase/auth";
 import React, { useRef } from "react";
 
 type UploadFileProps = {
   onSelectFileUpload: (evt: React.ChangeEvent<HTMLInputElement>) => void;
   fileLoading?: boolean;
+  user: User;
 };
 
 const UploadAudioFileCard: React.FC<UploadFileProps> = ({

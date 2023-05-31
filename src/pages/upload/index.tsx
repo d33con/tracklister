@@ -2,6 +2,7 @@ import { Mix } from "@/atoms/mixesAtoms";
 import NameFileToUploadCard from "@/components/Cards/NameFileToUploadCard";
 import SelectFileToUploadCard from "@/components/Cards/SelectFileToUploadCard";
 import LoggedOutUploadPage from "@/components/LoggedOut/LoggedOutUploadPage";
+import UploadSecondPage from "@/components/Upload/UploadSecondPage";
 import { auth, firestore, storage } from "@/firebase/clientApp";
 import { Flex, Heading } from "@chakra-ui/react";
 import {
@@ -16,52 +17,25 @@ import React, { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { v4 as uuidv4 } from "uuid";
 
-type UploadIndexState = {
-  selectedFile: File | null;
-  selectedFilename?: string;
-  selectedFilesize?: string;
-  selectedFileLoading?: boolean;
-};
-
 const UploadIndex: React.FC = () => {
-  const [
-    { selectedFile, selectedFilename, selectedFilesize, selectedFileLoading },
-    setSelectedFile,
-  ] = useState<UploadIndexState>({
-    selectedFile: null,
-    selectedFilename: "",
-    selectedFilesize: "",
-    selectedFileLoading: false,
-  });
+  const [selectedFile, setSelectedFile] = useState<File | undefined>();
+  const [selectedFileLoading, setSelectedFileLoading] = useState(false);
   const [mixTitle, setMixTitle] = useState("");
   const [uploadProgress, setUploadProgress] = useState(0);
   const [user] = useAuthState(auth);
-
-  const bytesToMB = (bytes: number) => {
-    const mb = bytes / (1024 * 1024);
-    return `${mb.toFixed(2)}MB`;
-  };
 
   const onSelectFileToUpload = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const fileReader = new FileReader();
 
     if (evt.target.files?.[0]) {
       fileReader.readAsDataURL(evt.target.files[0]);
-      fileReader.onloadstart = () =>
-        setSelectedFile((prevState) => ({
-          ...prevState,
-          selectedFileLoading: true,
-        }));
+      fileReader.onloadstart = () => setSelectedFileLoading(true);
     }
 
-    fileReader.onload = (readerEvt) => {
-      if (readerEvt.target?.result && evt.target.files?.[0]) {
-        setSelectedFile({
-          selectedFile: evt.target.files?.[0],
-          selectedFilename: evt.target.files[0].name,
-          selectedFilesize: bytesToMB(evt.target.files[0].size),
-          selectedFileLoading: false,
-        });
+    fileReader.onload = (readerEvent) => {
+      if (readerEvent.target?.result) {
+        setSelectedFile(evt.target?.files?.[0]);
+        setSelectedFileLoading(false);
       }
     };
   };
@@ -83,10 +57,7 @@ const UploadIndex: React.FC = () => {
 
     if (selectedFile) {
       // store in storage and get download url for audio file
-      const audioRef = ref(
-        storage,
-        `mixes/${mixDocRef.id}/${selectedFilename}`
-      );
+      const audioRef = ref(storage, `mixes/${user?.uid}/${selectedFile.name}`);
       const uploadTask = uploadBytesResumable(audioRef, selectedFile);
 
       uploadTask.on(
@@ -123,19 +94,25 @@ const UploadIndex: React.FC = () => {
         <Heading size="xl">Upload</Heading>
       </Flex>
       <Flex justifyContent="center" marginTop="-80px" pb={4}>
-        {!selectedFile ? (
+        {!selectedFile && !uploadProgress && (
           <SelectFileToUploadCard
             onSelectFileToUpload={onSelectFileToUpload}
             selectedFileLoading={selectedFileLoading}
           />
-        ) : (
+        )}
+        {selectedFile && !uploadProgress && (
           <NameFileToUploadCard
-            selectedFilename={selectedFilename}
-            selectedFilesize={selectedFilesize}
-            onSelectFileToUpload={onSelectFileToUpload}
-            setMixTitle={setMixTitle}
+            selectedFile={selectedFile}
+            setSelectedFile={setSelectedFile}
             mixTitle={mixTitle}
+            setMixTitle={setMixTitle}
             handleCreateUploadedFile={handleCreateUploadedFile}
+          />
+        )}
+        {uploadProgress && (
+          <UploadSecondPage
+            uploadProgress={uploadProgress}
+            selectedFile={selectedFile}
           />
         )}
       </Flex>

@@ -15,20 +15,23 @@ import {
 import React, { useRef } from "react";
 
 type NamedAudioFileProps = {
-  selectedFilename?: string;
-  selectedFilesize?: string;
-  onSelectFileToUpload: (evt: React.ChangeEvent<HTMLInputElement>) => void;
-  setMixTitle: (value: string) => void;
+  selectedFile: File;
+  setSelectedFile: (file: File | undefined) => void;
   mixTitle: string;
+  setMixTitle: (value: string) => void;
   handleCreateUploadedFile: (evt: React.FormEvent<HTMLFormElement>) => void;
 };
 
+const bytesToMB = (bytes: number) => {
+  const mb = bytes / (1024 * 1024);
+  return `${mb.toFixed(2)}MB`;
+};
+
 const NameAudioFileCard: React.FC<NamedAudioFileProps> = ({
-  selectedFilename,
-  selectedFilesize,
-  onSelectFileToUpload,
-  setMixTitle,
+  selectedFile,
+  setSelectedFile,
   mixTitle,
+  setMixTitle,
   handleCreateUploadedFile,
 }) => {
   const uploadFileRef = useRef<HTMLInputElement>(null);
@@ -74,7 +77,7 @@ const NameAudioFileCard: React.FC<NamedAudioFileProps> = ({
       </CardBody>
       <CardFooter>
         <Text align="left" mr={2}>
-          {selectedFilename} ({selectedFilesize})
+          {selectedFile.name} ({bytesToMB(selectedFile.size)})
         </Text>
         <Link
           color="blackAlpha.900"
@@ -87,7 +90,7 @@ const NameAudioFileCard: React.FC<NamedAudioFileProps> = ({
             hidden
             accept="audio/*"
             ref={uploadFileRef}
-            onChange={onSelectFileToUpload}
+            onChange={(evt) => setSelectedFile(evt.target.files?.[0])}
           />
         </Link>
       </CardFooter>

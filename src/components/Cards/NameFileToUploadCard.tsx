@@ -12,31 +12,26 @@ import {
   Link,
   Text,
 } from "@chakra-ui/react";
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 
 type NamedAudioFileProps = {
   selectedFilename?: string;
   selectedFilesize?: string;
-  onSelectFileUpload: (evt: React.ChangeEvent<HTMLInputElement>) => void;
-  onHandleNameChange: (value: string) => void;
+  onSelectFileToUpload: (evt: React.ChangeEvent<HTMLInputElement>) => void;
+  setMixTitle: (value: string) => void;
+  mixTitle: string;
   handleCreateUploadedFile: (evt: React.FormEvent<HTMLFormElement>) => void;
 };
 
 const NameAudioFileCard: React.FC<NamedAudioFileProps> = ({
   selectedFilename,
   selectedFilesize,
-  onSelectFileUpload,
-  onHandleNameChange,
+  onSelectFileToUpload,
+  setMixTitle,
+  mixTitle,
   handleCreateUploadedFile,
 }) => {
-  const [uploadedFileName, setUploadedFileName] = useState<string>("");
-
   const uploadFileRef = useRef<HTMLInputElement>(null);
-
-  const onHandleFileNameChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    setUploadedFileName(evt.target.value);
-    onHandleNameChange(evt.target.value);
-  };
 
   return (
     <Card size="lg" variant="outline" p={6}>
@@ -53,9 +48,9 @@ const NameAudioFileCard: React.FC<NamedAudioFileProps> = ({
                 htmlSize={50}
                 width="auto"
                 name="uploadedFileName"
-                value={uploadedFileName}
+                value={mixTitle}
                 type="text"
-                onChange={onHandleFileNameChange}
+                onChange={(evt) => setMixTitle(evt.target.value)}
                 required
               />
               <Box>
@@ -67,7 +62,7 @@ const NameAudioFileCard: React.FC<NamedAudioFileProps> = ({
                   color="whiteAlpha.900"
                   _hover={{ bg: "blue.600" }}
                   textTransform="uppercase"
-                  isDisabled={uploadedFileName.length === 0}
+                  isDisabled={mixTitle.length === 0}
                   type="submit"
                 >
                   Confirm name
@@ -92,7 +87,7 @@ const NameAudioFileCard: React.FC<NamedAudioFileProps> = ({
             hidden
             accept="audio/*"
             ref={uploadFileRef}
-            onChange={onSelectFileUpload}
+            onChange={onSelectFileToUpload}
           />
         </Link>
       </CardFooter>

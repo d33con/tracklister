@@ -7,18 +7,16 @@ import {
   Heading,
   Text,
 } from "@chakra-ui/react";
-import { User } from "firebase/auth";
 import React, { useRef } from "react";
 
-type UploadFileProps = {
-  onSelectFileUpload: (evt: React.ChangeEvent<HTMLInputElement>) => void;
-  fileLoading?: boolean;
-  user: User;
+type SelectFileToUploadCardProps = {
+  onSelectFileToUpload: (evt: React.ChangeEvent<HTMLInputElement>) => void;
+  selectedFileLoading?: boolean;
 };
 
-const UploadAudioFileCard: React.FC<UploadFileProps> = ({
-  onSelectFileUpload,
-  fileLoading,
+const SelectFileToUploadCard: React.FC<SelectFileToUploadCardProps> = ({
+  onSelectFileToUpload,
+  selectedFileLoading,
 }) => {
   const uploadFileRef = useRef<HTMLInputElement>(null);
 
@@ -42,7 +40,7 @@ const UploadAudioFileCard: React.FC<UploadFileProps> = ({
           size="lg"
           width="100%"
           onClick={() => uploadFileRef.current?.click()}
-          isLoading={fileLoading}
+          isLoading={selectedFileLoading}
         >
           Upload
         </Button>
@@ -51,11 +49,11 @@ const UploadAudioFileCard: React.FC<UploadFileProps> = ({
           hidden
           accept="audio/*"
           ref={uploadFileRef}
-          onChange={onSelectFileUpload}
+          onChange={onSelectFileToUpload}
         />
       </CardFooter>
     </Card>
   );
 };
 
-export default UploadAudioFileCard;
+export default SelectFileToUploadCard;

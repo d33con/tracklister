@@ -1,6 +1,6 @@
 import { Mix } from "@/atoms/mixesAtoms";
-import NameAudioFileCard from "@/components/Cards/NameAudioFileCard";
-import UploadAudioFileCard from "@/components/Cards/UploadAudioFileCard";
+import NameFileToUploadCard from "@/components/Cards/NameFileToUploadCard";
+import SelectFileToUploadCard from "@/components/Cards/SelectFileToUploadCard";
 import LoggedOutUploadPage from "@/components/LoggedOut/LoggedOutUploadPage";
 import { auth, firestore, storage } from "@/firebase/clientApp";
 import { Flex, Heading } from "@chakra-ui/react";
@@ -11,30 +11,30 @@ import {
   serverTimestamp,
   updateDoc,
 } from "firebase/firestore";
-import { getDownloadURL, ref, uploadString } from "firebase/storage";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import React, { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { v4 as uuidv4 } from "uuid";
 
 type UploadIndexState = {
-  selectedFile: string | ArrayBuffer;
+  selectedFile: File | null;
   selectedFilename?: string;
   selectedFilesize?: string;
-  fileLoading?: boolean;
-  title: string;
+  selectedFileLoading?: boolean;
 };
 
 const UploadIndex: React.FC = () => {
   const [
-    { selectedFile, selectedFilename, selectedFilesize, fileLoading, title },
+    { selectedFile, selectedFilename, selectedFilesize, selectedFileLoading },
     setSelectedFile,
   ] = useState<UploadIndexState>({
-    selectedFile: "",
+    selectedFile: null,
     selectedFilename: "",
     selectedFilesize: "",
-    fileLoading: false,
-    title: "",
+    selectedFileLoading: false,
   });
+  const [mixTitle, setMixTitle] = useState("");
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [user] = useAuthState(auth);
 
   const bytesToMB = (bytes: number) => {
@@ -42,35 +42,29 @@ const UploadIndex: React.FC = () => {
     return `${mb.toFixed(2)}MB`;
   };
 
-  const onSelectFileUpload = (evt: React.ChangeEvent<HTMLInputElement>) => {
+  const onSelectFileToUpload = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const fileReader = new FileReader();
 
     if (evt.target.files?.[0]) {
       fileReader.readAsDataURL(evt.target.files[0]);
-      setSelectedFile((prevState) => ({
-        ...prevState,
-        fileLoading: true,
-      }));
+      fileReader.onloadstart = () =>
+        setSelectedFile((prevState) => ({
+          ...prevState,
+          selectedFileLoading: true,
+        }));
     }
 
     fileReader.onload = (readerEvt) => {
       if (readerEvt.target?.result && evt.target.files?.[0]) {
         setSelectedFile({
-          selectedFile: readerEvt.target.result,
+          selectedFile: evt.target.files?.[0],
           selectedFilename: evt.target.files[0].name,
           selectedFilesize: bytesToMB(evt.target.files[0].size),
-          fileLoading: false,
-          title,
+          selectedFileLoading: false,
         });
       }
     };
   };
-
-  const onHandleNameChange = (value: string) =>
-    setSelectedFile((prevState) => ({
-      ...prevState,
-      title: value,
-    }));
 
   const handleCreateUploadedFile = async (
     evt: React.FormEvent<HTMLFormElement>
@@ -80,28 +74,40 @@ const UploadIndex: React.FC = () => {
     const newMix: Mix = {
       id: uuidv4(),
       creatorId: user?.uid,
-      title,
+      title: mixTitle,
       createdAt: serverTimestamp() as Timestamp,
     };
 
     // store mix in the db
-    try {
-      const mixDocRef = await addDoc(collection(firestore, "mixes"), newMix);
+    const mixDocRef = await addDoc(collection(firestore, "mixes"), newMix);
 
-      if (selectedFile) {
-        // store in storage and get download url for audio file
-        const audioRef = ref(storage, `mixes/${mixDocRef.id}/audio`);
-        await uploadString(audioRef, selectedFile as string, "data_url");
+    if (selectedFile) {
+      // store in storage and get download url for audio file
+      const audioRef = ref(
+        storage,
+        `mixes/${mixDocRef.id}/${selectedFilename}`
+      );
+      const uploadTask = uploadBytesResumable(audioRef, selectedFile);
 
-        const downloadURL = await getDownloadURL(audioRef);
-
-        // update mix doc by adding download url
-        await updateDoc(mixDocRef, {
-          audioURL: downloadURL,
-        });
-      }
-    } catch (error: any) {
-      console.log("mix upload error", error);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+          setUploadProgress(progress);
+        },
+        (error) => {
+          alert(error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            updateDoc(mixDocRef, {
+              audioURL: downloadURL,
+            });
+          });
+        }
+      );
     }
   };
 
@@ -118,17 +124,17 @@ const UploadIndex: React.FC = () => {
       </Flex>
       <Flex justifyContent="center" marginTop="-80px" pb={4}>
         {!selectedFile ? (
-          <UploadAudioFileCard
-            onSelectFileUpload={onSelectFileUpload}
-            fileLoading={fileLoading}
-            user={user}
+          <SelectFileToUploadCard
+            onSelectFileToUpload={onSelectFileToUpload}
+            selectedFileLoading={selectedFileLoading}
           />
         ) : (
-          <NameAudioFileCard
+          <NameFileToUploadCard
             selectedFilename={selectedFilename}
             selectedFilesize={selectedFilesize}
-            onSelectFileUpload={onSelectFileUpload}
-            onHandleNameChange={onHandleNameChange}
+            onSelectFileToUpload={onSelectFileToUpload}
+            setMixTitle={setMixTitle}
+            mixTitle={mixTitle}
             handleCreateUploadedFile={handleCreateUploadedFile}
           />
         )}

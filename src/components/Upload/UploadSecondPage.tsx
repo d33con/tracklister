@@ -10,34 +10,61 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React from "react";
+import MixUploadimage from "./MixUploadimage";
+import MixTagsAndDescription from "./MixTagsAndDescription";
 
 type UploadSecondPageProps = {
-  uploadProgress: number;
+  uploadPercent: number;
+  totalBytes: string;
+  bytesTransferred: string;
   selectedFile: File | undefined;
   handleUploadCancel: () => void;
 };
 
 const UploadSecondPage: React.FC<UploadSecondPageProps> = ({
-  uploadProgress,
+  uploadPercent,
+  totalBytes,
+  bytesTransferred,
   selectedFile,
   handleUploadCancel,
 }) => {
   return (
-    <Flex w="100%" flexDirection="column" bgColor="whiteAlpha.900" p={6}>
-      <HStack mb={4}>
+    <Flex w="100%" flexDirection="column" p={12}>
+      <HStack mb={6}>
         <Heading textAlign="left">Upload</Heading>
         <Spacer />
-        <Button onClick={handleUploadCancel}>Cancel</Button>
-        <Button isDisabled={true}>Publish</Button>
+        <Button
+          onClick={handleUploadCancel}
+          variant="ghost"
+          textTransform="uppercase"
+        >
+          Cancel
+        </Button>
+        <Button
+          isDisabled={true}
+          size="lg"
+          backgroundColor="blue.500"
+          color="whiteAlpha.900"
+          _hover={{ bg: "blue.600" }}
+        >
+          Publish
+        </Button>
       </HStack>
-      <Stack w="100%" mb={4}>
-        <Box width="100%">
-          <Progress value={50} size="lg" colorScheme="blue.500" />
+      <Stack w="100%" mb={6}>
+        <Box width="100%" pt={4} pb={4}>
+          <Progress value={uploadPercent} size="lg" colorScheme="blue" />
         </Box>
       </Stack>
       <HStack>
         <Text>{selectedFile?.name}</Text>
-        <Text>{uploadProgress}%</Text>
+        <Spacer />
+        <Text>
+          {bytesTransferred} of {totalBytes} ({uploadPercent}% done)
+        </Text>
+      </HStack>
+      <HStack spacing={8} pt={8} pb={8}>
+        <MixUploadimage />
+        <MixTagsAndDescription />
       </HStack>
     </Flex>
   );

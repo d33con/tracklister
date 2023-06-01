@@ -4,7 +4,8 @@ import SelectFileToUploadCard from "@/components/Cards/SelectFileToUploadCard";
 import LoggedOutUploadPage from "@/components/LoggedOut/LoggedOutUploadPage";
 import UploadSecondPage from "@/components/Upload/UploadSecondPage";
 import { auth, firestore, storage } from "@/firebase/clientApp";
-import { Flex, Heading } from "@chakra-ui/react";
+import bytesToMB from "@/helpers/bytesToMB";
+import { Flex, Heading, useToast } from "@chakra-ui/react";
 import {
   Timestamp,
   addDoc,
@@ -26,7 +27,8 @@ const UploadIndex: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | undefined>();
   const [selectedFileLoading, setSelectedFileLoading] = useState(false);
   const [mixTitle, setMixTitle] = useState("");
-  const [uploadProgress, setUploadProgress] = useState(0);
+  const [{ uploadPercent, totalBytes, bytesTransferred }, setUploadProgress] =
+    useState({ uploadPercent: 0, totalBytes: "", bytesTransferred: "" });
   const [user] = useAuthState(auth);
   const uploadTaskRef = useRef<UploadTask | null>(null);
 
@@ -46,12 +48,31 @@ const UploadIndex: React.FC = () => {
     };
   };
 
-  const handleUploadCancel = () => uploadTaskRef.current?.cancel();
+  const toast = useToast();
+  const handleUploadCancel = () => {
+    toast({
+      title: "Upload cancelled.",
+      description: "Please upload another audio file to begin.",
+      status: "error",
+      position: "top",
+      duration: 3000,
+      isClosable: true,
+    });
+    uploadTaskRef.current?.cancel();
+  };
 
   const handleCreateUploadedFile = async (
     evt: React.FormEvent<HTMLFormElement>
   ) => {
     evt.preventDefault();
+    toast({
+      title: "Upload starting.",
+      description: "You will be redirected shortly",
+      status: "info",
+      position: "top",
+      duration: 3000,
+      isClosable: true,
+    });
     // create a new 'mix' object with the audio and name
     const newMix: Mix = {
       id: uuidv4(),
@@ -75,14 +96,22 @@ const UploadIndex: React.FC = () => {
           const progress = Math.round(
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100
           );
-          setUploadProgress(progress);
+          setUploadProgress({
+            totalBytes: bytesToMB(snapshot.totalBytes),
+            bytesTransferred: bytesToMB(snapshot.bytesTransferred),
+            uploadPercent: progress,
+          });
           switch (snapshot.state) {
             case "running":
             // do something here
           }
         },
         (error) => {
-          setUploadProgress(0);
+          setUploadProgress({
+            totalBytes: "",
+            bytesTransferred: "",
+            uploadPercent: 0,
+          });
           setSelectedFile(undefined);
           // alert(error);
         },
@@ -99,39 +128,56 @@ const UploadIndex: React.FC = () => {
 
   return user ? (
     <>
-      <Flex
-        bg="blue.900"
-        color="whiteAlpha.900"
-        justifyContent="center"
-        pt={20}
-        pb={40}
-      >
-        <Heading size="xl">Upload</Heading>
-      </Flex>
-      <Flex justifyContent="center" marginTop="-80px" pb={4}>
-        {!selectedFile && !uploadProgress && (
-          <SelectFileToUploadCard
-            onSelectFileToUpload={onSelectFileToUpload}
-            selectedFileLoading={selectedFileLoading}
-          />
-        )}
-        {selectedFile && !uploadProgress && (
-          <NameFileToUploadCard
-            selectedFile={selectedFile}
-            setSelectedFile={setSelectedFile}
-            mixTitle={mixTitle}
-            setMixTitle={setMixTitle}
-            handleCreateUploadedFile={handleCreateUploadedFile}
-          />
-        )}
-        {uploadProgress && (
-          <UploadSecondPage
-            uploadProgress={uploadProgress}
-            selectedFile={selectedFile}
-            handleUploadCancel={handleUploadCancel}
-          />
-        )}
-      </Flex>
+      {!selectedFile && !uploadPercent && (
+        <>
+          <Flex
+            bg="blue.900"
+            color="whiteAlpha.900"
+            justifyContent="center"
+            pt={20}
+            pb={40}
+          >
+            <Heading size="xl">Upload</Heading>
+          </Flex>
+          <Flex justifyContent="center" marginTop="-80px" pb={4}>
+            <SelectFileToUploadCard
+              onSelectFileToUpload={onSelectFileToUpload}
+              selectedFileLoading={selectedFileLoading}
+            />
+          </Flex>
+        </>
+      )}
+      {selectedFile && !uploadPercent && (
+        <>
+          <Flex
+            bg="blue.900"
+            color="whiteAlpha.900"
+            justifyContent="center"
+            pt={20}
+            pb={40}
+          >
+            <Heading size="xl">Upload</Heading>
+          </Flex>
+          <Flex justifyContent="center" marginTop="-80px" pb={4}>
+            <NameFileToUploadCard
+              selectedFile={selectedFile}
+              setSelectedFile={setSelectedFile}
+              mixTitle={mixTitle}
+              setMixTitle={setMixTitle}
+              handleCreateUploadedFile={handleCreateUploadedFile}
+            />
+          </Flex>
+        </>
+      )}
+      {uploadPercent && (
+        <UploadSecondPage
+          uploadPercent={uploadPercent}
+          totalBytes={totalBytes}
+          bytesTransferred={bytesTransferred}
+          selectedFile={selectedFile}
+          handleUploadCancel={handleUploadCancel}
+        />
+      )}
     </>
   ) : (
     <LoggedOutUploadPage />

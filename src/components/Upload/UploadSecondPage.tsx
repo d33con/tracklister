@@ -10,7 +10,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React from "react";
-import MixUploadimage from "./MixUploadimage";
+import MixUploadImage from "./MixUploadImage";
 import MixTagsAndDescription from "./MixTagsAndDescription";
 
 type UploadSecondPageProps = {
@@ -63,7 +63,7 @@ const UploadSecondPage: React.FC<UploadSecondPageProps> = ({
         </Text>
       </HStack>
       <HStack spacing={8} pt={8} pb={8}>
-        <MixUploadimage />
+        <MixUploadImage />
         <MixTagsAndDescription />
       </HStack>
     </Flex>

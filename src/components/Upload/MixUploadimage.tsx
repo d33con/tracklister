@@ -1,9 +1,9 @@
 import { Box, Button } from "@chakra-ui/react";
 import React from "react";
 
-type MixUploadimageProps = {};
+type MixUploadImageProps = {};
 
-const MixUploadimage: React.FC<MixUploadimageProps> = () => {
+const MixUploadImage: React.FC<MixUploadImageProps> = () => {
   return (
     <Box width="25%" p={6}>
       <Button>Change image</Button>
@@ -11,4 +11,4 @@ const MixUploadimage: React.FC<MixUploadimageProps> = () => {
     </Box>
   );
 };
-export default MixUploadimage;
+export default MixUploadImage;

@@ -1,3 +1,4 @@
+import bytesToMB from "@/helpers/bytesToMB";
 import {
   Box,
   Button,
@@ -20,11 +21,6 @@ type NamedAudioFileProps = {
   mixTitle: string;
   setMixTitle: (value: string) => void;
   handleCreateUploadedFile: (evt: React.FormEvent<HTMLFormElement>) => void;
-};
-
-const bytesToMB = (bytes: number) => {
-  const mb = bytes / (1024 * 1024);
-  return `${mb.toFixed(2)}MB`;
 };
 
 const NameAudioFileCard: React.FC<NamedAudioFileProps> = ({

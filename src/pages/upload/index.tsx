@@ -1,11 +1,12 @@
 import { Mix } from "@/atoms/mixesAtoms";
 import NameFileToUploadCard from "@/components/Cards/NameFileToUploadCard";
 import SelectFileToUploadCard from "@/components/Cards/SelectFileToUploadCard";
+import UploadLayout from "@/components/Layout/UploadLayout";
 import LoggedOutUploadPage from "@/components/LoggedOut/LoggedOutUploadPage";
 import UploadSecondPage from "@/components/Upload/UploadSecondPage";
 import { auth, firestore, storage } from "@/firebase/clientApp";
 import bytesToMB from "@/helpers/bytesToMB";
-import { Flex, Heading, useToast } from "@chakra-ui/react";
+import { useToast } from "@chakra-ui/react";
 import {
   Timestamp,
   addDoc,
@@ -150,47 +151,23 @@ const UploadIndex: React.FC = () => {
 
   return user ? (
     <>
-      {!selectedFile && !uploadPercent && (
-        <>
-          <Flex
-            bg="blue.900"
-            color="whiteAlpha.900"
-            justifyContent="center"
-            pt={20}
-            pb={40}
-          >
-            <Heading size="xl">Upload</Heading>
-          </Flex>
-          <Flex justifyContent="center" marginTop="-80px" pb={4}>
-            <SelectFileToUploadCard
-              onSelectFileToUpload={onSelectFileToUpload}
-              selectedFileLoading={selectedFileLoading}
-            />
-          </Flex>
-        </>
-      )}
-      {selectedFile && !uploadPercent && (
-        <>
-          <Flex
-            bg="blue.900"
-            color="whiteAlpha.900"
-            justifyContent="center"
-            pt={20}
-            pb={40}
-          >
-            <Heading size="xl">Upload</Heading>
-          </Flex>
-          <Flex justifyContent="center" marginTop="-80px" pb={4}>
-            <NameFileToUploadCard
-              selectedFile={selectedFile}
-              setSelectedFile={setSelectedFile}
-              mixTitle={mixTitle}
-              setMixTitle={setMixTitle}
-              handleCreateUploadedFile={handleCreateUploadedFile}
-            />
-          </Flex>
-        </>
-      )}
+      <UploadLayout>
+        {!selectedFile && !uploadPercent && (
+          <SelectFileToUploadCard
+            onSelectFileToUpload={onSelectFileToUpload}
+            selectedFileLoading={selectedFileLoading}
+          />
+        )}
+        {selectedFile && !uploadPercent && (
+          <NameFileToUploadCard
+            selectedFile={selectedFile}
+            setSelectedFile={setSelectedFile}
+            mixTitle={mixTitle}
+            setMixTitle={setMixTitle}
+            handleCreateUploadedFile={handleCreateUploadedFile}
+          />
+        )}
+      </UploadLayout>
       {uploadPercent && (
         <UploadSecondPage
           uploadPercent={uploadPercent}

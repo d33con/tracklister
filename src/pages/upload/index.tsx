@@ -12,8 +12,13 @@ import {
   serverTimestamp,
   updateDoc,
 } from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import React, { useState } from "react";
+import {
+  UploadTask,
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import React, { useRef, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { v4 as uuidv4 } from "uuid";
 
@@ -23,6 +28,7 @@ const UploadIndex: React.FC = () => {
   const [mixTitle, setMixTitle] = useState("");
   const [uploadProgress, setUploadProgress] = useState(0);
   const [user] = useAuthState(auth);
+  const uploadTaskRef = useRef<UploadTask | null>(null);
 
   const onSelectFileToUpload = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const fileReader = new FileReader();
@@ -39,6 +45,8 @@ const UploadIndex: React.FC = () => {
       }
     };
   };
+
+  const handleUploadCancel = () => uploadTaskRef.current?.cancel();
 
   const handleCreateUploadedFile = async (
     evt: React.FormEvent<HTMLFormElement>
@@ -59,6 +67,7 @@ const UploadIndex: React.FC = () => {
       // store in storage and get download url for audio file
       const audioRef = ref(storage, `mixes/${user?.uid}/${selectedFile.name}`);
       const uploadTask = uploadBytesResumable(audioRef, selectedFile);
+      uploadTaskRef.current = uploadTask;
 
       uploadTask.on(
         "state_changed",
@@ -67,9 +76,15 @@ const UploadIndex: React.FC = () => {
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100
           );
           setUploadProgress(progress);
+          switch (snapshot.state) {
+            case "running":
+            // do something here
+          }
         },
         (error) => {
-          alert(error);
+          setUploadProgress(0);
+          setSelectedFile(undefined);
+          // alert(error);
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
@@ -113,6 +128,7 @@ const UploadIndex: React.FC = () => {
           <UploadSecondPage
             uploadProgress={uploadProgress}
             selectedFile={selectedFile}
+            handleUploadCancel={handleUploadCancel}
           />
         )}
       </Flex>

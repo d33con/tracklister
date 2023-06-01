@@ -1,7 +1,9 @@
 import { Flex, Heading } from "@chakra-ui/react";
 import React from "react";
 
-const UploadLayout = ({ children }: { children: React.ReactNode }) => {
+const UploadLayout: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   return (
     <>
       <Flex

@@ -9,7 +9,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import MixUploadImage from "./MixUploadImage";
 import MixTagsAndDescription from "./MixTagsAndDescription";
 
@@ -19,6 +19,7 @@ type UploadSecondPageProps = {
   bytesTransferred: string;
   selectedFile: File | undefined;
   handleUploadCancel: () => void;
+  onSelectImageToUpload: (evt: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 const UploadSecondPage: React.FC<UploadSecondPageProps> = ({
@@ -27,7 +28,9 @@ const UploadSecondPage: React.FC<UploadSecondPageProps> = ({
   bytesTransferred,
   selectedFile,
   handleUploadCancel,
+  onSelectImageToUpload,
 }) => {
+  const [description, setDescription] = useState("");
   return (
     <Flex w="100%" flexDirection="column" p={12}>
       <HStack mb={6}>
@@ -41,7 +44,7 @@ const UploadSecondPage: React.FC<UploadSecondPageProps> = ({
           Cancel
         </Button>
         <Button
-          isDisabled={true}
+          isDisabled={uploadPercent < 100}
           size="lg"
           backgroundColor="blue.500"
           color="whiteAlpha.900"
@@ -62,9 +65,12 @@ const UploadSecondPage: React.FC<UploadSecondPageProps> = ({
           {bytesTransferred} of {totalBytes} ({uploadPercent}% done)
         </Text>
       </HStack>
-      <HStack spacing={8} pt={8} pb={8}>
-        <MixUploadImage />
-        <MixTagsAndDescription />
+      <HStack spacing={8} pt={8} pb={8} minH="400px">
+        <MixUploadImage onSelectImageToUpload={onSelectImageToUpload} />
+        <MixTagsAndDescription
+          description={description}
+          setDescription={setDescription}
+        />
       </HStack>
     </Flex>
   );

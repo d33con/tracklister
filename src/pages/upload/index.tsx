@@ -50,15 +50,18 @@ const UploadIndex: React.FC = () => {
 
   const toast = useToast();
   const handleUploadCancel = () => {
-    toast({
-      title: "Upload cancelled.",
-      description: "Please upload another audio file to begin.",
-      status: "error",
-      position: "top",
-      duration: 3000,
-      isClosable: true,
-    });
-    uploadTaskRef.current?.cancel();
+    if (uploadPercent < 100) {
+      toast({
+        title: "Upload cancelled.",
+        description: "Please upload another audio file to begin.",
+        status: "error",
+        position: "top",
+        duration: 3000,
+        isClosable: true,
+      });
+      uploadTaskRef.current?.cancel();
+    }
+    // delete file and go back to upload page?
   };
 
   const handleCreateUploadedFile = async (
@@ -126,6 +129,25 @@ const UploadIndex: React.FC = () => {
     }
   };
 
+  const onSelectImageToUpload = async (
+    evt: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const fileReader = new FileReader();
+
+    if (evt.target.files?.[0]) {
+      fileReader.readAsDataURL(evt.target.files[0]);
+      // fileReader.onloadstart = () => setSelectedFileLoading(true);
+    }
+
+    fileReader.onload = (readerEvent) => {
+      if (readerEvent.target?.result) {
+        // setSelectedFile(evt.target?.files?.[0]);
+        // setSelectedFileLoading(false);
+        console.log("image:", readerEvent.target.result);
+      }
+    };
+  };
+
   return user ? (
     <>
       {!selectedFile && !uploadPercent && (
@@ -176,6 +198,7 @@ const UploadIndex: React.FC = () => {
           bytesTransferred={bytesTransferred}
           selectedFile={selectedFile}
           handleUploadCancel={handleUploadCancel}
+          onSelectImageToUpload={onSelectImageToUpload}
         />
       )}
     </>

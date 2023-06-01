@@ -1,14 +1,34 @@
-import { Box, Button } from "@chakra-ui/react";
-import React from "react";
+import { Box, Button, Flex } from "@chakra-ui/react";
+import React, { useRef } from "react";
 
-type MixUploadImageProps = {};
+type MixUploadImageProps = {
+  onSelectImageToUpload: (evt: React.ChangeEvent<HTMLInputElement>) => void;
+};
 
-const MixUploadImage: React.FC<MixUploadImageProps> = () => {
+const MixUploadImage: React.FC<MixUploadImageProps> = ({
+  onSelectImageToUpload,
+}) => {
+  const uploadImageRef = useRef<HTMLInputElement>(null);
   return (
-    <Box width="25%" p={6}>
-      <Button>Change image</Button>
-      <input type="file" hidden />
-    </Box>
+    <Flex
+      width="25%"
+      justifyContent="center"
+      bg="blue.900"
+      alignItems="stretch"
+    >
+      <Flex alignItems="center" justifyContent="center">
+        <Button size="lg" onClick={() => uploadImageRef.current?.click()}>
+          Upload image
+        </Button>
+        <input
+          type="file"
+          ref={uploadImageRef}
+          accept="image/*"
+          onChange={onSelectImageToUpload}
+          hidden
+        />
+      </Flex>
+    </Flex>
   );
 };
 export default MixUploadImage;

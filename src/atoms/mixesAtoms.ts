@@ -3,10 +3,14 @@ import { atom } from "recoil";
 
 export type Mix = {
   id: string;
-  creatorId?: string;
-  title: string;
-  audioURL?: string;
   createdAt: Timestamp;
+  creatorId?: string;
+  audioURL?: string;
+  title: string;
+  imageURL?: string;
+  description?: string;
+  genres?: Array<string>;
+  tracklist?: Array<Object>;
 };
 
 interface MixesState {

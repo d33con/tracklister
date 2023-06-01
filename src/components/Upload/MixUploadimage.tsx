@@ -10,24 +10,17 @@ const MixUploadImage: React.FC<MixUploadImageProps> = ({
 }) => {
   const uploadImageRef = useRef<HTMLInputElement>(null);
   return (
-    <Flex
-      width="25%"
-      justifyContent="center"
-      bg="blue.900"
-      alignItems="stretch"
-    >
-      <Flex alignItems="center" justifyContent="center">
-        <Button size="lg" onClick={() => uploadImageRef.current?.click()}>
-          Upload image
-        </Button>
-        <input
-          type="file"
-          ref={uploadImageRef}
-          accept="image/*"
-          onChange={onSelectImageToUpload}
-          hidden
-        />
-      </Flex>
+    <Flex width="25%" justifyContent="center" bg="blue.900" alignItems="center">
+      <Button size="lg" onClick={() => uploadImageRef.current?.click()}>
+        Upload image
+      </Button>
+      <input
+        type="file"
+        ref={uploadImageRef}
+        accept="image/*"
+        onChange={onSelectImageToUpload}
+        hidden
+      />
     </Flex>
   );
 };

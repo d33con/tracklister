@@ -11,7 +11,14 @@ const MixTagsAndDescription: React.FC<MixTagsAndDescriptionProps> = ({
   setDescription,
 }) => {
   return (
-    <Flex width="100%" flexDirection="column" alignItems="start" pt={4} pb={4}>
+    <Flex
+      width="100%"
+      flexDirection="column"
+      alignItems="start"
+      pt={4}
+      pb={4}
+      pl={12}
+    >
       <Input placeholder="Genres / tags" size="lg" mb={6} />{" "}
       <Textarea
         value={description}

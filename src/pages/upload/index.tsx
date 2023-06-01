@@ -151,14 +151,16 @@ const UploadIndex: React.FC = () => {
 
   return user ? (
     <>
-      <UploadLayout>
-        {!selectedFile && !uploadPercent && (
+      {!selectedFile && !uploadPercent && (
+        <UploadLayout>
           <SelectFileToUploadCard
             onSelectFileToUpload={onSelectFileToUpload}
             selectedFileLoading={selectedFileLoading}
           />
-        )}
-        {selectedFile && !uploadPercent && (
+        </UploadLayout>
+      )}
+      {selectedFile && !uploadPercent && (
+        <UploadLayout>
           <NameFileToUploadCard
             selectedFile={selectedFile}
             setSelectedFile={setSelectedFile}
@@ -166,8 +168,8 @@ const UploadIndex: React.FC = () => {
             setMixTitle={setMixTitle}
             handleCreateUploadedFile={handleCreateUploadedFile}
           />
-        )}
-      </UploadLayout>
+        </UploadLayout>
+      )}
       {uploadPercent && (
         <UploadSecondPage
           uploadPercent={uploadPercent}

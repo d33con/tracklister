@@ -10,8 +10,8 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import MixUploadImage from "./MixUploadImage";
 import MixTagsAndDescription from "./MixTagsAndDescription";
+import MixUploadImage from "./MixUploadImage";
 
 type UploadSecondPageProps = {
   uploadPercent: number;
@@ -65,13 +65,13 @@ const UploadSecondPage: React.FC<UploadSecondPageProps> = ({
           {bytesTransferred} of {totalBytes} ({uploadPercent}% done)
         </Text>
       </HStack>
-      <HStack spacing={8} pt={8} pb={8} minH="400px">
+      <Flex pt={8} pb={8}>
         <MixUploadImage onSelectImageToUpload={onSelectImageToUpload} />
         <MixTagsAndDescription
           description={description}
           setDescription={setDescription}
         />
-      </HStack>
+      </Flex>
     </Flex>
   );
 };

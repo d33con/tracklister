@@ -21,15 +21,20 @@ const UserMenu: React.FC<UserMenuProps> = () => {
     signOut();
   };
 
+  const avatarSize = "36px";
+
   return (
     <Menu>
       <MenuButton
         as={Avatar}
         aria-label="User menu"
         cursor="pointer"
+        width={avatarSize}
+        height={avatarSize}
         icon={
           <Avatar
-            size="md"
+            width={avatarSize}
+            height={avatarSize}
             src="https://react.semantic-ui.com/images/avatar/large/matthew.png"
           />
         }

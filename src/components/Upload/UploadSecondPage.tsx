@@ -18,7 +18,7 @@ type UploadSecondPageProps = {
   uploadPercent: number;
   totalBytes: string;
   bytesTransferred: string;
-  selectedFile: File | undefined;
+  selectedFile: File | null;
   handleUploadCancel: () => void;
   onSelectImageToUpload: (evt: React.ChangeEvent<HTMLInputElement>) => void;
 };

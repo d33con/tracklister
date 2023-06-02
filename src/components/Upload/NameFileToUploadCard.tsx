@@ -16,8 +16,8 @@ import {
 import React, { useRef } from "react";
 
 type NamedAudioFileProps = {
-  selectedFile: File | undefined;
-  setSelectedFile: (file: File | undefined) => void;
+  selectedFile: File | null;
+  setSelectedFile: (file: File | null) => void;
   mixTitle: string;
   setMixTitle: (value: string) => void;
   handleCreateUploadedFile: (evt: React.FormEvent<HTMLFormElement>) => void;
@@ -46,7 +46,7 @@ const NameAudioFileCard: React.FC<NamedAudioFileProps> = ({
                 size="lg"
                 htmlSize={50}
                 width="auto"
-                name="uploadedFileName"
+                name="title"
                 value={mixTitle}
                 type="text"
                 onChange={(evt) => setMixTitle(evt.target.value)}
@@ -73,7 +73,7 @@ const NameAudioFileCard: React.FC<NamedAudioFileProps> = ({
       </CardBody>
       <CardFooter>
         <Text align="left" mr={2}>
-          {selectedFile.name} ({bytesToMB(selectedFile.size)})
+          {selectedFile?.name} ({bytesToMB(selectedFile?.size as number)})
         </Text>
         <Link
           color="blackAlpha.900"
@@ -86,7 +86,7 @@ const NameAudioFileCard: React.FC<NamedAudioFileProps> = ({
             hidden
             accept="audio/*"
             ref={uploadFileRef}
-            onChange={(evt) => setSelectedFile(evt.target.files?.[0])}
+            onChange={(evt) => setSelectedFile(evt.target?.files?.[0] as File)}
           />
         </Link>
       </CardFooter>

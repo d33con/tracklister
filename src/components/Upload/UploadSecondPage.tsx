@@ -6,6 +6,7 @@ import {
   Heading,
   Progress,
   Spacer,
+  Spinner,
   Stack,
   Text,
 } from "@chakra-ui/react";
@@ -63,7 +64,12 @@ const UploadSecondPage: React.FC<UploadSecondPageProps> = ({
         <Text>{selectedFile?.name}</Text>
         <Spacer />
         <Text>
-          {bytesTransferred} of {totalBytes} ({uploadPercent}% done)
+          {bytesTransferred ? (
+            `${bytesTransferred} of ${totalBytes}`
+          ) : (
+            <Spinner />
+          )}{" "}
+          ({uploadPercent}% done)
         </Text>
       </HStack>
       <Flex pt={8} pb={8}>

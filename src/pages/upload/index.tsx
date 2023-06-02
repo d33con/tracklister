@@ -1,4 +1,4 @@
-import { Mix } from "@/atoms/mixesAtoms";
+import { Mix } from "@/atoms/mixesAtom";
 import UploadLayout from "@/components/Layout/UploadLayout";
 import LoggedOutUploadPage from "@/components/LoggedOut/LoggedOutUploadPage";
 import NameFileToUploadCard from "@/components/Upload/NameFileToUploadCard";

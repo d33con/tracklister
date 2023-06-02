@@ -16,6 +16,7 @@ import {
 } from "firebase/firestore";
 import {
   UploadTask,
+  deleteObject,
   getDownloadURL,
   ref,
   uploadBytesResumable,
@@ -26,9 +27,10 @@ import { v4 as uuidv4 } from "uuid";
 
 const UploadIndex: React.FC = () => {
   const [uploadStage, setUploadStage] = useState("selecting");
-  const [selectedFile, setSelectedFile] = useState<File | undefined>();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedFileLoading, setSelectedFileLoading] = useState(false);
   const [mixTitle, setMixTitle] = useState("");
+  const [audioDownloadURL, setAudioDownloadURL] = useState("");
   // MOVE ALL MIX RELATED DATA INTO MIX OBJECT
   const [mixDetails, setMixDetails] = useState<Mix | null>(null);
   const [uploadProgress, setUploadProgress] = useState({
@@ -54,7 +56,7 @@ const UploadIndex: React.FC = () => {
     fileReader.onload = (readerEvent) => {
       if (readerEvent.target?.result) {
         // file is ready to be uploaded
-        setSelectedFile(evt.target?.files?.[0]);
+        setSelectedFile(evt.target?.files?.[0] as File);
         setSelectedFileLoading(false);
         setUploadStage("naming");
       }
@@ -66,19 +68,6 @@ const UploadIndex: React.FC = () => {
   ) => {
     evt.preventDefault();
     setUploadStage("uploading");
-
-    /** DO THIS WHEN WE PUBLISH ON NEXT PAGE */
-    // create a new 'mix' object with the audio and name
-    const newMix: Mix = {
-      id: uuidv4(),
-      creatorId: user?.uid,
-      title: mixTitle,
-      createdAt: serverTimestamp() as Timestamp,
-    };
-
-    // get a ref to store the mix in the mixes collection
-    const mixDocRef = await addDoc(collection(firestore, "mixes"), newMix);
-    /** END DO THIS */
 
     if (selectedFile) {
       // upload to mixes collection in storage
@@ -105,17 +94,12 @@ const UploadIndex: React.FC = () => {
             bytesTransferred: "",
             uploadPercent: 0,
           });
-          setSelectedFile(undefined);
+          setSelectedFile(null);
         },
         () => {
           // get download url for audio file
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            /**** SETSTATE DO THIS WHEN WE PUBLISH ON NEXT PAGEe */
-            // update the mix doc ref and add the download URL
-            updateDoc(mixDocRef, {
-              audioURL: downloadURL,
-            });
-            /** END DO THIS */
+            setAudioDownloadURL(downloadURL);
           });
         }
       );
@@ -136,6 +120,39 @@ const UploadIndex: React.FC = () => {
       setUploadStage("selecting");
     }
     // file has already been uploaded => delete file from storage and mix from database and go back to upload page?
+    const audioFileRef = ref(
+      storage,
+      `mixes/${user?.uid}/${selectedFile?.name}`
+    );
+    // Delete the file
+    deleteObject(audioFileRef)
+      .then(() => {
+        // File deleted successfully
+        // toast
+        toast({
+          title: "Upload cancelled.",
+          description: "Please upload another audio file to begin.",
+          status: "info",
+          position: "top",
+          duration: 3000,
+          isClosable: true,
+        });
+        // or redirect?
+      })
+      .then(() => {
+        setUploadStage("selecting");
+        setAudioDownloadURL("");
+        setMixTitle("");
+        setSelectedFile(null);
+        setUploadProgress({
+          uploadPercent: 0,
+          totalBytes: "",
+          bytesTransferred: "",
+        });
+      })
+      .catch((error) => {
+        // Uh-oh, an error occurred!
+      });
   };
 
   const onSelectImageToUpload = async (
@@ -145,7 +162,6 @@ const UploadIndex: React.FC = () => {
 
     if (evt.target.files?.[0]) {
       fileReader.readAsDataURL(evt.target.files[0]);
-      // fileReader.onloadstart = () => setSelectedFileLoading(true);
     }
 
     fileReader.onload = (readerEvent) => {
@@ -155,6 +171,25 @@ const UploadIndex: React.FC = () => {
         console.log("image:", readerEvent.target.result);
       }
     };
+  };
+
+  const publishMix = async (evt: React.FormEvent<HTMLFormElement>) => {
+    evt.preventDefault();
+
+    // create a new 'mix' object with the audio and name
+    const newMix: Mix = {
+      id: uuidv4(),
+      creatorId: user?.uid,
+      title: mixTitle,
+      createdAt: serverTimestamp() as Timestamp,
+    };
+
+    // get a ref to store the mix in the mixes collection
+    const mixDocRef = await addDoc(collection(firestore, "mixes"), newMix);
+    // update the mix doc ref and add the download URL
+    updateDoc(mixDocRef, {
+      audioURL: audioDownloadURL,
+    });
   };
 
   return user ? (

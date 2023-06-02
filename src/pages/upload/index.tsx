@@ -29,6 +29,8 @@ const UploadIndex: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | undefined>();
   const [selectedFileLoading, setSelectedFileLoading] = useState(false);
   const [mixTitle, setMixTitle] = useState("");
+  // MOVE ALL MIX RELATED DATA INTO MIX OBJECT
+  const [mixDetails, setMixDetails] = useState<Mix | null>(null);
   const [uploadProgress, setUploadProgress] = useState({
     uploadPercent: 0,
     totalBytes: "",
@@ -59,28 +61,13 @@ const UploadIndex: React.FC = () => {
     };
   };
 
-  const handleUploadCancel = () => {
-    if (uploadPercent < 100) {
-      toast({
-        title: "Upload cancelled.",
-        description: "Please upload another audio file to begin.",
-        status: "error",
-        position: "top",
-        duration: 3000,
-        isClosable: true,
-      });
-      uploadTaskRef.current?.cancel();
-      setUploadStage("selecting");
-    }
-    // file has been uploaded => delete file from storage and mix from database and go back to upload page?
-  };
-
   const handleCreateUploadedFile = async (
     evt: React.FormEvent<HTMLFormElement>
   ) => {
     evt.preventDefault();
     setUploadStage("uploading");
 
+    /** DO THIS WHEN WE PUBLISH ON NEXT PAGE */
     // create a new 'mix' object with the audio and name
     const newMix: Mix = {
       id: uuidv4(),
@@ -91,6 +78,7 @@ const UploadIndex: React.FC = () => {
 
     // get a ref to store the mix in the mixes collection
     const mixDocRef = await addDoc(collection(firestore, "mixes"), newMix);
+    /** END DO THIS */
 
     if (selectedFile) {
       // upload to mixes collection in storage
@@ -122,14 +110,32 @@ const UploadIndex: React.FC = () => {
         () => {
           // get download url for audio file
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            /**** SETSTATE DO THIS WHEN WE PUBLISH ON NEXT PAGEe */
             // update the mix doc ref and add the download URL
             updateDoc(mixDocRef, {
               audioURL: downloadURL,
             });
+            /** END DO THIS */
           });
         }
       );
     }
+  };
+
+  const handleUploadCancel = () => {
+    if (uploadPercent < 100) {
+      toast({
+        title: "Upload cancelled.",
+        description: "Please upload another audio file to begin.",
+        status: "error",
+        position: "top",
+        duration: 3000,
+        isClosable: true,
+      });
+      uploadTaskRef.current?.cancel();
+      setUploadStage("selecting");
+    }
+    // file has already been uploaded => delete file from storage and mix from database and go back to upload page?
   };
 
   const onSelectImageToUpload = async (

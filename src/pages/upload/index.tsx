@@ -32,24 +32,26 @@ const UploadIndex: React.FC = () => {
     useState({ uploadPercent: 0, totalBytes: "", bytesTransferred: "" });
   const [user] = useAuthState(auth);
   const uploadTaskRef = useRef<UploadTask | null>(null);
+  const toast = useToast();
 
   const onSelectFileToUpload = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const fileReader = new FileReader();
 
     if (evt.target.files?.[0]) {
       fileReader.readAsDataURL(evt.target.files[0]);
+      // show spinner on button while file loads from user's machine
       fileReader.onloadstart = () => setSelectedFileLoading(true);
     }
 
     fileReader.onload = (readerEvent) => {
       if (readerEvent.target?.result) {
+        // file is ready to be uploaded
         setSelectedFile(evt.target?.files?.[0]);
         setSelectedFileLoading(false);
       }
     };
   };
 
-  const toast = useToast();
   const handleUploadCancel = () => {
     if (uploadPercent < 100) {
       toast({
@@ -62,7 +64,7 @@ const UploadIndex: React.FC = () => {
       });
       uploadTaskRef.current?.cancel();
     }
-    // delete file and go back to upload page?
+    // file has been uploaded => delete file from storage and mix from database and go back to upload page?
   };
 
   const handleCreateUploadedFile = async (
@@ -77,6 +79,7 @@ const UploadIndex: React.FC = () => {
       duration: 3000,
       isClosable: true,
     });
+
     // create a new 'mix' object with the audio and name
     const newMix: Mix = {
       id: uuidv4(),
@@ -85,11 +88,11 @@ const UploadIndex: React.FC = () => {
       createdAt: serverTimestamp() as Timestamp,
     };
 
-    // store mix in the db
+    // get a ref to store the mix in the mixes collection
     const mixDocRef = await addDoc(collection(firestore, "mixes"), newMix);
 
     if (selectedFile) {
-      // store in storage and get download url for audio file
+      // upload to mixes collection in storage
       const audioRef = ref(storage, `mixes/${user?.uid}/${selectedFile.name}`);
       const uploadTask = uploadBytesResumable(audioRef, selectedFile);
       uploadTaskRef.current = uploadTask;
@@ -111,16 +114,18 @@ const UploadIndex: React.FC = () => {
           }
         },
         (error) => {
+          // error is handled by toast above
           setUploadProgress({
             totalBytes: "",
             bytesTransferred: "",
             uploadPercent: 0,
           });
           setSelectedFile(undefined);
-          // alert(error);
         },
         () => {
+          // get download url for audio file
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            // update the mix doc ref and add the download URL
             updateDoc(mixDocRef, {
               audioURL: downloadURL,
             });

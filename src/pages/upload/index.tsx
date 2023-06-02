@@ -1,8 +1,8 @@
 import { Mix } from "@/atoms/mixesAtoms";
-import NameFileToUploadCard from "@/components/Cards/NameFileToUploadCard";
-import SelectFileToUploadCard from "@/components/Cards/SelectFileToUploadCard";
 import UploadLayout from "@/components/Layout/UploadLayout";
 import LoggedOutUploadPage from "@/components/LoggedOut/LoggedOutUploadPage";
+import NameFileToUploadCard from "@/components/Upload/NameFileToUploadCard";
+import SelectFileToUploadCard from "@/components/Upload/SelectFileToUploadCard";
 import UploadSecondPage from "@/components/Upload/UploadSecondPage";
 import { auth, firestore, storage } from "@/firebase/clientApp";
 import bytesToMB from "@/helpers/bytesToMB";

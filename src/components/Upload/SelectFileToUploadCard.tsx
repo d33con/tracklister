@@ -35,7 +35,6 @@ const SelectFileToUploadCard: React.FC<SelectFileToUploadCardProps> = ({
           backgroundColor="blue.500"
           color="whiteAlpha.900"
           _hover={{ bg: "blue.600" }}
-          cursor="pointer"
           textTransform="uppercase"
           size="lg"
           width="100%"

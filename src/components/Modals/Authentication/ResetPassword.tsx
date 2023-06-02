@@ -24,10 +24,17 @@ const ResetPassword: React.FC = () => {
   const [sendPasswordResetEmail, sending, error] =
     useSendPasswordResetEmail(auth);
 
-  const handleFormSwitch = () => {
+  const showLoginForm = () => {
     setAuthModalState((prevState) => ({
       ...prevState,
       view: "login",
+    }));
+  };
+
+  const showSignupForm = () => {
+    setAuthModalState((prevState) => ({
+      ...prevState,
+      view: "signup",
     }));
   };
 
@@ -95,7 +102,7 @@ const ResetPassword: React.FC = () => {
           variant="link"
           color="blackAlpha.800"
           fontSize="14px"
-          onClick={handleFormSwitch}
+          onClick={showSignupForm}
         >
           sign up here.
         </Button>
@@ -106,7 +113,7 @@ const ResetPassword: React.FC = () => {
           variant="link"
           color="blackAlpha.800"
           fontSize="14px"
-          onClick={handleFormSwitch}
+          onClick={showLoginForm}
         >
           Log in here.
         </Button>

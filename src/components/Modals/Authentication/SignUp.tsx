@@ -43,7 +43,7 @@ const SignUp: React.FC = () => {
     }));
   };
 
-  const handleFormSwitch = () => {
+  const showLoginForm = () => {
     setAuthModalState((prevState) => ({
       ...prevState,
       view: "login",
@@ -101,7 +101,8 @@ const SignUp: React.FC = () => {
         <FormControl mb={4}>
           <Input
             size="lg"
-            placeholder="Password"
+            placeholder="Password (6 characters or more)"
+            _placeholder={{ fontSize: "17px" }}
             name="password"
             value={password}
             type="password"
@@ -134,6 +135,13 @@ const SignUp: React.FC = () => {
             Sign Up
           </Button>
         </Box>
+        {error && (
+          <Alert status="error" textAlign="center" mt={2}>
+            <AlertIcon />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
         {userCreationError && (
           <Alert status="error" textAlign="center" mt={2}>
             <AlertIcon />
@@ -149,12 +157,12 @@ const SignUp: React.FC = () => {
         )}
       </form>
       <Box textAlign="center" fontSize="14px" pt={8}>
-        Already using Tracklister{" "}
+        Already using Tracklister?{" "}
         <Button
           variant="link"
           color="blackAlpha.800"
           fontSize="14px"
-          onClick={handleFormSwitch}
+          onClick={showLoginForm}
         >
           Log in here.
         </Button>

@@ -36,7 +36,7 @@ const Login: React.FC = () => {
     }));
   };
 
-  const handleFormSwitch = () => {
+  const showSignupForm = () => {
     setAuthModalState((prevState) => ({
       ...prevState,
       view: "signup",
@@ -110,7 +110,7 @@ const Login: React.FC = () => {
           variant="link"
           color="blackAlpha.800"
           fontSize="14px"
-          onClick={handleFormSwitch}
+          onClick={showSignupForm}
         >
           sign up here.
         </Button>

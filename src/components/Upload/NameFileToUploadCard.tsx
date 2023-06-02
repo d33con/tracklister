@@ -16,7 +16,7 @@ import {
 import React, { useRef } from "react";
 
 type NamedAudioFileProps = {
-  selectedFile: File;
+  selectedFile: File | undefined;
   setSelectedFile: (file: File | undefined) => void;
   mixTitle: string;
   setMixTitle: (value: string) => void;

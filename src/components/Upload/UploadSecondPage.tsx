@@ -40,6 +40,7 @@ const UploadSecondPage: React.FC<UploadSecondPageProps> = ({
           onClick={handleUploadCancel}
           variant="ghost"
           textTransform="uppercase"
+          isDisabled={uploadPercent === 0}
         >
           Cancel
         </Button>

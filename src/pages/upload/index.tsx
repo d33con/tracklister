@@ -25,12 +25,18 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { v4 as uuidv4 } from "uuid";
 
 const UploadIndex: React.FC = () => {
+  const [uploadStage, setUploadStage] = useState("selecting");
   const [selectedFile, setSelectedFile] = useState<File | undefined>();
   const [selectedFileLoading, setSelectedFileLoading] = useState(false);
   const [mixTitle, setMixTitle] = useState("");
-  const [{ uploadPercent, totalBytes, bytesTransferred }, setUploadProgress] =
-    useState({ uploadPercent: 0, totalBytes: "", bytesTransferred: "" });
+  const [uploadProgress, setUploadProgress] = useState({
+    uploadPercent: 0,
+    totalBytes: "",
+    bytesTransferred: "",
+  });
+  const { uploadPercent, totalBytes, bytesTransferred } = uploadProgress;
   const [user] = useAuthState(auth);
+
   const uploadTaskRef = useRef<UploadTask | null>(null);
   const toast = useToast();
 
@@ -48,6 +54,7 @@ const UploadIndex: React.FC = () => {
         // file is ready to be uploaded
         setSelectedFile(evt.target?.files?.[0]);
         setSelectedFileLoading(false);
+        setUploadStage("naming");
       }
     };
   };
@@ -63,6 +70,7 @@ const UploadIndex: React.FC = () => {
         isClosable: true,
       });
       uploadTaskRef.current?.cancel();
+      setUploadStage("selecting");
     }
     // file has been uploaded => delete file from storage and mix from database and go back to upload page?
   };
@@ -71,14 +79,7 @@ const UploadIndex: React.FC = () => {
     evt: React.FormEvent<HTMLFormElement>
   ) => {
     evt.preventDefault();
-    toast({
-      title: "Upload starting.",
-      description: "You will be redirected shortly",
-      status: "info",
-      position: "top",
-      duration: 3000,
-      isClosable: true,
-    });
+    setUploadStage("uploading");
 
     // create a new 'mix' object with the audio and name
     const newMix: Mix = {
@@ -108,13 +109,9 @@ const UploadIndex: React.FC = () => {
             bytesTransferred: bytesToMB(snapshot.bytesTransferred),
             uploadPercent: progress,
           });
-          switch (snapshot.state) {
-            case "running":
-            // do something here
-          }
         },
         (error) => {
-          // error is handled by toast above
+          // cancel error is handled by toast above
           setUploadProgress({
             totalBytes: "",
             bytesTransferred: "",
@@ -156,7 +153,7 @@ const UploadIndex: React.FC = () => {
 
   return user ? (
     <>
-      {!selectedFile && !uploadPercent && (
+      {uploadStage === "selecting" && (
         <UploadLayout>
           <SelectFileToUploadCard
             onSelectFileToUpload={onSelectFileToUpload}
@@ -164,7 +161,7 @@ const UploadIndex: React.FC = () => {
           />
         </UploadLayout>
       )}
-      {selectedFile && !uploadPercent && (
+      {uploadStage === "naming" && (
         <UploadLayout>
           <NameFileToUploadCard
             selectedFile={selectedFile}
@@ -175,7 +172,7 @@ const UploadIndex: React.FC = () => {
           />
         </UploadLayout>
       )}
-      {uploadPercent && (
+      {uploadStage === "uploading" && (
         <UploadSecondPage
           uploadPercent={uploadPercent}
           totalBytes={totalBytes}

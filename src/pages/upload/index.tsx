@@ -20,7 +20,9 @@ import {
   getDownloadURL,
   ref,
   uploadBytesResumable,
+  uploadString,
 } from "firebase/storage";
+import { useRouter } from "next/router";
 import React, { useRef, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { v4 as uuidv4 } from "uuid";
@@ -29,6 +31,7 @@ const UploadIndex: React.FC = () => {
   const [uploadStage, setUploadStage] = useState("selecting");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedFileLoading, setSelectedFileLoading] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
   const [mixTitle, setMixTitle] = useState("");
   const [mixDescription, setMixDescription] = useState("");
   const [audioDownloadURL, setAudioDownloadURL] = useState("");
@@ -46,6 +49,8 @@ const UploadIndex: React.FC = () => {
 
   const uploadTaskRef = useRef<UploadTask | null>(null);
   const toast = useToast();
+
+  const router = useRouter();
 
   const onSelectFileToUpload = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const fileReader = new FileReader();
@@ -73,8 +78,11 @@ const UploadIndex: React.FC = () => {
     setUploadStage("uploading");
 
     if (selectedFile) {
-      // upload to mixes collection in storage
-      const audioRef = ref(storage, `mixes/${user?.uid}/${selectedFile.name}`);
+      // upload to audio collection in storage
+      const audioRef = ref(
+        storage,
+        `mixes/${user?.uid}/audio/${selectedFile.name}`
+      );
       const uploadTask = uploadBytesResumable(audioRef, selectedFile);
       uploadTaskRef.current = uploadTask;
 
@@ -125,7 +133,7 @@ const UploadIndex: React.FC = () => {
     // file has already been uploaded => delete file from storage and mix from database and go back to upload page?
     const audioFileRef = ref(
       storage,
-      `mixes/${user?.uid}/${selectedFile?.name}`
+      `mixes/${user?.uid}/audio/${selectedFile?.name}`
     );
     // Delete the file
     deleteObject(audioFileRef)
@@ -173,22 +181,42 @@ const UploadIndex: React.FC = () => {
   };
 
   const publishMix = async (evt: React.FormEvent<HTMLFormElement>) => {
+    setIsPublishing(true);
     evt.preventDefault();
 
     // create a new 'mix' object with the audio and name
     const newMix: Mix = {
       id: uuidv4(),
-      creatorId: user?.uid,
-      title: mixTitle,
       createdAt: serverTimestamp() as Timestamp,
+      creatorId: user?.uid,
+      audioURL: audioDownloadURL,
+      title: mixTitle,
+      description: mixDescription,
     };
 
-    // get a ref to store the mix in the mixes collection
-    const mixDocRef = await addDoc(collection(firestore, "mixes"), newMix);
-    // update the mix doc ref and add the download URL
-    updateDoc(mixDocRef, {
-      audioURL: audioDownloadURL,
-    });
+    // store the mix in the db
+    try {
+      const mixDocRef = await addDoc(collection(firestore, "mixes"), newMix);
+      // if there is an image get a ref to store the mix's image in the mixes/image collection
+      if (mixImage && audioDownloadURL) {
+        const mixImageRef = ref(
+          storage,
+          `mixes/${user?.uid}/images/${newMix.id}`
+        );
+        await uploadString(mixImageRef, mixImage, "data_url");
+        const mixImageDownloadURL = await getDownloadURL(mixImageRef);
+        // update the mix doc ref and add the download URL
+        await updateDoc(mixDocRef, {
+          imageURL: mixImageDownloadURL,
+        });
+      }
+    } catch (error: any) {
+      // handle error
+    }
+    setIsPublishing(false);
+
+    // redirect back to dashboard or to this mix's page
+    router.push("/dashboard/my-dashboard");
   };
 
   return user ? (
@@ -223,6 +251,9 @@ const UploadIndex: React.FC = () => {
           onSelectImageToUpload={onSelectImageToUpload}
           mixDescription={mixDescription}
           setMixDescription={setMixDescription}
+          publishMix={publishMix}
+          audioDownloadURL={audioDownloadURL}
+          isPublishing={isPublishing}
         />
       )}
     </>

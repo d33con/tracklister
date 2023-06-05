@@ -13,15 +13,17 @@ export type Mix = {
   tracklist?: Array<Object>;
 };
 
-interface MixesState {
+interface MixState {
   mixes: Mix[];
+  selectedMix: Mix | null;
 }
 
-const defaultMixState: MixesState = {
+const defaultMixState: MixState = {
+  selectedMix: null,
   mixes: [],
 };
 
-export const mixState = atom<MixesState>({
+export const mixState = atom<MixState>({
   key: "mixState",
   default: defaultMixState,
 });

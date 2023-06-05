@@ -24,6 +24,9 @@ type UploadSecondPageProps = {
   mixImage?: string;
   mixDescription: string;
   setMixDescription: (value: string) => void;
+  publishMix: (evt: React.FormEvent<HTMLFormElement>) => void;
+  isPublishing: boolean;
+  audioDownloadURL: string;
 };
 
 const UploadSecondPage: React.FC<UploadSecondPageProps> = ({
@@ -36,57 +39,64 @@ const UploadSecondPage: React.FC<UploadSecondPageProps> = ({
   mixDescription,
   setMixDescription,
   mixImage,
+  publishMix,
+  isPublishing,
+  audioDownloadURL,
 }) => {
   return (
     <Flex width="100%" flexDirection="column" p={12}>
-      <HStack mb={6}>
-        <Heading textAlign="left">Upload</Heading>
-        <Spacer />
-        <Button
-          onClick={handleUploadCancel}
-          variant="ghost"
-          textTransform="uppercase"
-          isDisabled={uploadPercent === 0}
-        >
-          Cancel
-        </Button>
-        <Button
-          isDisabled={uploadPercent < 100}
-          size="lg"
-          backgroundColor="blue.500"
-          color="whiteAlpha.900"
-          _hover={{ bg: "blue.600" }}
-        >
-          Publish
-        </Button>
-      </HStack>
-      <Stack w="100%" mb={6}>
-        <Box width="100%" pt={4} pb={4}>
-          <Progress value={uploadPercent} size="lg" colorScheme="blue" />
-        </Box>
-      </Stack>
-      <HStack>
-        <Text>{selectedFile?.name}</Text>
-        <Spacer />
-        <Text>
-          {bytesTransferred ? (
-            `${bytesTransferred} of ${totalBytes}`
-          ) : (
-            <Spinner />
-          )}{" "}
-          ({uploadPercent}% done)
-        </Text>
-      </HStack>
-      <Flex pt={8} pb={8}>
-        <UploadMixImage
-          onSelectImageToUpload={onSelectImageToUpload}
-          mixImage={mixImage}
-        />
-        <MixTagsAndDescription
-          mixDescription={mixDescription}
-          setMixDescription={setMixDescription}
-        />
-      </Flex>
+      <form onSubmit={publishMix}>
+        <HStack mb={6}>
+          <Heading textAlign="left">Upload</Heading>
+          <Spacer />
+          <Button
+            onClick={handleUploadCancel}
+            variant="ghost"
+            textTransform="uppercase"
+            isDisabled={uploadPercent === 0}
+          >
+            Cancel
+          </Button>
+          <Button
+            isDisabled={!audioDownloadURL}
+            isLoading={isPublishing}
+            size="lg"
+            backgroundColor="blue.500"
+            color="whiteAlpha.900"
+            _hover={{ bg: "blue.600" }}
+            type="submit"
+          >
+            Publish
+          </Button>
+        </HStack>
+        <Stack w="100%" mb={6}>
+          <Box width="100%" pt={4} pb={4}>
+            <Progress value={uploadPercent} size="lg" colorScheme="blue" />
+          </Box>
+        </Stack>
+        <HStack>
+          <Text>{selectedFile?.name}</Text>
+          <Spacer />
+          <Text>
+            {bytesTransferred ? (
+              `${bytesTransferred} of ${totalBytes}`
+            ) : (
+              <Spinner />
+            )}{" "}
+            ({uploadPercent}% done)
+          </Text>
+        </HStack>
+        <Flex pt={8} pb={8}>
+          <UploadMixImage
+            onSelectImageToUpload={onSelectImageToUpload}
+            mixImage={mixImage}
+          />
+          <MixTagsAndDescription
+            mixDescription={mixDescription}
+            setMixDescription={setMixDescription}
+          />
+        </Flex>
+      </form>
     </Flex>
   );
 };

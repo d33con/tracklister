@@ -10,9 +10,9 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React from "react";
 import MixTagsAndDescription from "./MixTagsAndDescription";
-import MixUploadImage from "./MixUploadImage";
+import UploadMixImage from "./UploadMixImage";
 
 type UploadSecondPageProps = {
   uploadPercent: number;
@@ -21,6 +21,9 @@ type UploadSecondPageProps = {
   selectedFile: File | null;
   handleUploadCancel: () => void;
   onSelectImageToUpload: (evt: React.ChangeEvent<HTMLInputElement>) => void;
+  mixImage?: string;
+  mixDescription: string;
+  setMixDescription: (value: string) => void;
 };
 
 const UploadSecondPage: React.FC<UploadSecondPageProps> = ({
@@ -30,10 +33,12 @@ const UploadSecondPage: React.FC<UploadSecondPageProps> = ({
   selectedFile,
   handleUploadCancel,
   onSelectImageToUpload,
+  mixDescription,
+  setMixDescription,
+  mixImage,
 }) => {
-  const [description, setDescription] = useState("");
   return (
-    <Flex w="100%" flexDirection="column" p={12}>
+    <Flex width="100%" flexDirection="column" p={12}>
       <HStack mb={6}>
         <Heading textAlign="left">Upload</Heading>
         <Spacer />
@@ -73,10 +78,13 @@ const UploadSecondPage: React.FC<UploadSecondPageProps> = ({
         </Text>
       </HStack>
       <Flex pt={8} pb={8}>
-        <MixUploadImage onSelectImageToUpload={onSelectImageToUpload} />
+        <UploadMixImage
+          onSelectImageToUpload={onSelectImageToUpload}
+          mixImage={mixImage}
+        />
         <MixTagsAndDescription
-          description={description}
-          setDescription={setDescription}
+          mixDescription={mixDescription}
+          setMixDescription={setMixDescription}
         />
       </Flex>
     </Flex>

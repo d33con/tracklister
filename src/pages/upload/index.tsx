@@ -30,8 +30,11 @@ const UploadIndex: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedFileLoading, setSelectedFileLoading] = useState(false);
   const [mixTitle, setMixTitle] = useState("");
+  const [mixDescription, setMixDescription] = useState("");
   const [audioDownloadURL, setAudioDownloadURL] = useState("");
+  const [mixImage, setMixImage] = useState("");
   // MOVE ALL MIX RELATED DATA INTO MIX OBJECT
+  // use recoil global state?
   const [mixDetails, setMixDetails] = useState<Mix | null>(null);
   const [uploadProgress, setUploadProgress] = useState({
     uploadPercent: 0,
@@ -155,9 +158,7 @@ const UploadIndex: React.FC = () => {
       });
   };
 
-  const onSelectImageToUpload = async (
-    evt: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const onSelectImageToUpload = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const fileReader = new FileReader();
 
     if (evt.target.files?.[0]) {
@@ -166,9 +167,7 @@ const UploadIndex: React.FC = () => {
 
     fileReader.onload = (readerEvent) => {
       if (readerEvent.target?.result) {
-        // setSelectedFile(evt.target?.files?.[0]);
-        // setSelectedFileLoading(false);
-        console.log("image:", readerEvent.target.result);
+        setMixImage(readerEvent.target.result as string);
       }
     };
   };
@@ -220,7 +219,10 @@ const UploadIndex: React.FC = () => {
           bytesTransferred={bytesTransferred}
           selectedFile={selectedFile}
           handleUploadCancel={handleUploadCancel}
+          mixImage={mixImage}
           onSelectImageToUpload={onSelectImageToUpload}
+          mixDescription={mixDescription}
+          setMixDescription={setMixDescription}
         />
       )}
     </>

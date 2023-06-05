@@ -1,14 +1,14 @@
-import { Flex, Input, StepDescription, Textarea } from "@chakra-ui/react";
-import React, { HTMLInputTypeAttribute, useState } from "react";
+import { Flex, Input, Textarea } from "@chakra-ui/react";
+import React from "react";
 
 type MixTagsAndDescriptionProps = {
-  description: string;
-  setDescription: (value: string) => void;
+  mixDescription: string;
+  setMixDescription: (value: string) => void;
 };
 
 const MixTagsAndDescription: React.FC<MixTagsAndDescriptionProps> = ({
-  description,
-  setDescription,
+  mixDescription,
+  setMixDescription,
 }) => {
   return (
     <Flex
@@ -19,10 +19,14 @@ const MixTagsAndDescription: React.FC<MixTagsAndDescriptionProps> = ({
       pb={4}
       pl={12}
     >
-      <Input placeholder="Genres / tags" size="lg" mb={6} />{" "}
+      <Input
+        placeholder="Genres / tags. Select from list or create your own"
+        size="lg"
+        mb={6}
+      />{" "}
       <Textarea
-        value={description}
-        onChange={(evt) => setDescription(evt.target.value)}
+        value={mixDescription}
+        onChange={(evt) => setMixDescription(evt.target.value)}
         placeholder="Description"
         size="lg"
         rows={8}

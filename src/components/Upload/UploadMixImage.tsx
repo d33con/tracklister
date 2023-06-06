@@ -28,8 +28,8 @@ const MixUploadImage: React.FC<MixUploadImageProps> = ({
         alt={mixImage}
         position="relative"
         left="-25%"
-        maxHeight="450px"
-        maxWidth="450px"
+        boxSize="450px"
+        objectFit="cover"
       />
       <input
         type="file"

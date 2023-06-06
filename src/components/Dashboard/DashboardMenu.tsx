@@ -1,20 +1,16 @@
 import {
   Avatar,
   Box,
-  Button,
   Divider,
-  Flex,
   HStack,
-  Heading,
+  Link,
   LinkBox,
   LinkOverlay,
-  SimpleGrid,
-  StackDivider,
   Text,
   VStack,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
 import NextLink from "next/link";
+import React, { useState } from "react";
 
 type DashboardMenuProps = {};
 
@@ -48,13 +44,31 @@ const DashboardMenu: React.FC<DashboardMenuProps> = () => {
             </Box>
           </HStack>
         </LinkBox>
+        <Link
+          as={NextLink}
+          color="blackAlpha.900"
+          href="/dashboard/my-dashboard"
+          textAlign="center"
+        >
+          My dashboard
+        </Link>
+        <Link
+          as={NextLink}
+          color="blackAlpha.900"
+          href="/dashboard/my-shows"
+          textAlign="center"
+        >
+          My shows
+        </Link>
         <Divider />
-        <Box h="40px" bg="tomato">
-          2
-        </Box>
-        <Box h="40px" bg="pink.100">
-          3
-        </Box>
+        <Link
+          as={NextLink}
+          color="blackAlpha.900"
+          href="/dashboard/new-uploads"
+          textAlign="center"
+        >
+          New shows
+        </Link>
       </VStack>
     </Box>
   );

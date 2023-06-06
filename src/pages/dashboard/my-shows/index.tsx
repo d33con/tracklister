@@ -1,15 +1,16 @@
 import { Mix } from "@/atoms/mixesAtom";
+import MixItem from "@/components/Mixes/MixItem";
 import { auth, firestore } from "@/firebase/clientApp";
 import useMixes from "@/hooks/useMixes";
-import { collection, getDocs, query } from "firebase/firestore";
+import { Center, Heading, Spinner } from "@chakra-ui/react";
+import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import MixItem from "./MixItem";
-import { Center, Flex, Spinner } from "@chakra-ui/react";
 import { useAuthState } from "react-firebase-hooks/auth";
+import DashboardLayout from "../../../components/Layout/DashboardLayout";
 
-type MixesProps = {};
+type MyShowsProps = {};
 
-const Mixes: React.FC<MixesProps> = () => {
+const MyShows: React.FC<MyShowsProps> = () => {
   const [user] = useAuthState(auth);
   const [isLoading, setIsLoading] = useState(false);
   const {
@@ -24,41 +25,39 @@ const Mixes: React.FC<MixesProps> = () => {
     const getMixes = async () => {
       setIsLoading(true);
       try {
-        // get all mixes
-        const mixesQuery = query(collection(firestore, "mixes"));
-
-        const mixDocs = await getDocs(mixesQuery);
-
-        const mixes = mixDocs.docs.map((mix) => ({ ...mix.data() }));
-        setMixStateValue((prevState) => ({
-          ...prevState,
-          mixes: mixes as Mix[],
-        }));
-
-        /* 
-        get genre filtered mixes
-        const genreMixes = query(
+        // get my mixes
+        const myMixesQuery = query(
           collection(firestore, "mixes"),
-          where("genres", "==", queryFromRouter),
+          where("creatorId", "==", user?.uid),
           orderBy("createdAt", "desc")
         );
-        */
+
+        const myMixDocs = await getDocs(myMixesQuery);
+
+        const myMixes = myMixDocs.docs.map((mix) => ({ ...mix.data() }));
+        setMixStateValue((prevState) => ({
+          ...prevState,
+          mixes: myMixes as Mix[],
+        }));
       } catch (error: any) {
         console.log(error.message);
       }
       setIsLoading(false);
     };
     getMixes();
-  }, [setMixStateValue]);
+  }, [setMixStateValue, user?.uid]);
 
   return (
-    <Flex direction="column" m={10} p={10}>
+    <DashboardLayout>
       {isLoading ? (
         <Center>
           <Spinner />
         </Center>
       ) : (
         <>
+          <Heading textAlign="left" mb={6}>
+            My Shows
+          </Heading>
           {mixStateValue.mixes.map((mix) => (
             <MixItem
               key={mix.id}
@@ -71,7 +70,7 @@ const Mixes: React.FC<MixesProps> = () => {
           ))}
         </>
       )}
-    </Flex>
+    </DashboardLayout>
   );
 };
-export default Mixes;
+export default MyShows;

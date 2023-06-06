@@ -5,7 +5,7 @@ import { useRecoilState } from "recoil";
 const useMixes = () => {
   const [mixStateValue, setMixStateValue] = useRecoilState(mixState);
 
-  const onFavouriteMix = () => {};
+  const onFavouriteMix = async () => {};
 
   const onSelectMix = () => {};
 
@@ -13,6 +13,9 @@ const useMixes = () => {
   return {
     mixStateValue,
     setMixStateValue,
+    onFavouriteMix,
+    onSelectMix,
+    onDeleteMix,
   };
 };
 export default useMixes;

@@ -1,15 +1,16 @@
 import { Mix } from "@/atoms/mixesAtom";
+import DashboardLayout from "@/components/Layout/DashboardLayout";
+import MixItem from "@/components/Mixes/MixItem";
 import { auth, firestore } from "@/firebase/clientApp";
 import useMixes from "@/hooks/useMixes";
-import { collection, getDocs, query } from "firebase/firestore";
+import { Center, Heading, Spinner } from "@chakra-ui/react";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import MixItem from "./MixItem";
-import { Center, Flex, Spinner } from "@chakra-ui/react";
 import { useAuthState } from "react-firebase-hooks/auth";
 
-type MixesProps = {};
+type NewUploadsProps = {};
 
-const Mixes: React.FC<MixesProps> = () => {
+const NewUploads: React.FC<NewUploadsProps> = () => {
   const [user] = useAuthState(auth);
   const [isLoading, setIsLoading] = useState(false);
   const {
@@ -24,41 +25,41 @@ const Mixes: React.FC<MixesProps> = () => {
     const getMixes = async () => {
       setIsLoading(true);
       try {
-        // get all mixes
-        const mixesQuery = query(collection(firestore, "mixes"));
+        // get other creator's mixes
+        const newMixesQuery = query(
+          collection(firestore, "mixes"),
+          where("creatorId", "!=", user?.uid)
+        );
 
-        const mixDocs = await getDocs(mixesQuery);
+        const newMixDocs = await getDocs(newMixesQuery);
 
-        const mixes = mixDocs.docs.map((mix) => ({ ...mix.data() }));
+        const newMixes = newMixDocs.docs.map((mix) => ({ ...mix.data() }));
+
+        // sort in place because apparently firestore can't orderBy using a different index to the one you are filtering by!!!
+        newMixes.sort((a, b) => b.createdAt - a.createdAt);
         setMixStateValue((prevState) => ({
           ...prevState,
-          mixes: mixes as Mix[],
+          mixes: newMixes as Mix[],
         }));
-
-        /* 
-        get genre filtered mixes
-        const genreMixes = query(
-          collection(firestore, "mixes"),
-          where("genres", "==", queryFromRouter),
-          orderBy("createdAt", "desc")
-        );
-        */
       } catch (error: any) {
         console.log(error.message);
       }
       setIsLoading(false);
     };
     getMixes();
-  }, [setMixStateValue]);
+  }, [setMixStateValue, user?.uid]);
 
   return (
-    <Flex direction="column" m={10} p={10}>
+    <DashboardLayout>
       {isLoading ? (
         <Center>
           <Spinner />
         </Center>
       ) : (
         <>
+          <Heading textAlign="left" mb={6}>
+            New Uploads
+          </Heading>
           {mixStateValue.mixes.map((mix) => (
             <MixItem
               key={mix.id}
@@ -71,7 +72,7 @@ const Mixes: React.FC<MixesProps> = () => {
           ))}
         </>
       )}
-    </Flex>
+    </DashboardLayout>
   );
 };
-export default Mixes;
+export default NewUploads;

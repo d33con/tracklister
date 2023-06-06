@@ -30,9 +30,6 @@ import { v4 as uuidv4 } from "uuid";
 const UploadIndex: React.FC = () => {
   const [uploadStage, setUploadStage] = useState("selecting");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [selectedFileLength, setSelectedFileLength] = useState<
-    number | undefined
-  >(0);
   const [selectedFileLoading, setSelectedFileLoading] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const [mixTitle, setMixTitle] = useState("");
@@ -68,7 +65,6 @@ const UploadIndex: React.FC = () => {
       if (readerEvent.target?.result) {
         // file is ready to be uploaded
         setSelectedFile(evt.target.files?.[0] as File);
-        setSelectedFileLength(evt.target.files?.length);
         setSelectedFileLoading(false);
         setUploadStage("naming");
       }
@@ -85,7 +81,7 @@ const UploadIndex: React.FC = () => {
       // upload to audio collection in storage
       const audioRef = ref(
         storage,
-        `mixes/${user?.uid}/audio/${selectedFile.name}`
+        `mixes/${user?.uid}/audio/${uuidv4()}-${selectedFile.name}`
       );
       const uploadTask = uploadBytesResumable(audioRef, selectedFile);
       uploadTaskRef.current = uploadTask;
@@ -194,7 +190,6 @@ const UploadIndex: React.FC = () => {
       createdAt: serverTimestamp() as Timestamp,
       creatorId: user?.uid,
       audioURL: audioDownloadURL,
-      audioLength: selectedFileLength,
       title: mixTitle,
       description: mixDescription,
       favouriteCount: 0,
@@ -218,6 +213,7 @@ const UploadIndex: React.FC = () => {
       }
     } catch (error: any) {
       // handle error
+      console.log(error.message);
     }
     setIsPublishing(false);
 

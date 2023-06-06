@@ -1,14 +1,24 @@
 import { Mix } from "@/atoms/mixesAtom";
-import { firestore } from "@/firebase/clientApp";
+import { auth, firestore } from "@/firebase/clientApp";
 import useMixes from "@/hooks/useMixes";
-import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
+import { collection, getDocs, query } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
+import MixItem from "./MixItem";
+import { Flex } from "@chakra-ui/react";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 type MixesProps = {};
 
 const Mixes: React.FC<MixesProps> = () => {
+  const [user] = useAuthState(auth);
   const [loading, isLoading] = useState(false);
-  const { mixStateValue, setMixStateValue } = useMixes();
+  const {
+    mixStateValue,
+    setMixStateValue,
+    onFavouriteMix,
+    onSelectMix,
+    onDeleteMix,
+  } = useMixes();
   const getMixes = async () => {
     try {
       // get all mixes
@@ -37,7 +47,21 @@ const Mixes: React.FC<MixesProps> = () => {
 
   useEffect(() => {
     getMixes();
-  }, []);
-  return <div>Have a good coding</div>;
+  });
+
+  return (
+    <Flex direction="column" m={10} p={10} border="1px solid red">
+      {mixStateValue.mixes.map((mix) => (
+        <MixItem
+          key={mix.id}
+          mix={mix}
+          onFavouriteMix={onFavouriteMix}
+          onSelectMix={onSelectMix}
+          onDeleteMix={onDeleteMix}
+          userIsCreator={user?.uid === mix.creatorId}
+        />
+      ))}
+    </Flex>
+  );
 };
 export default Mixes;

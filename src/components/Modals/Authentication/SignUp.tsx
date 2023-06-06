@@ -24,10 +24,11 @@ const SignUp: React.FC = () => {
     email: "",
     password: "",
     passwordConfirmation: "",
+    creatorName: "",
   });
   const [error, setError] = useState("");
 
-  const { email, password, passwordConfirmation } = signUpForm;
+  const { email, password, passwordConfirmation, creatorName } = signUpForm;
 
   const [
     createUserWithEmailAndPassword,
@@ -71,18 +72,17 @@ const SignUp: React.FC = () => {
     createUserWithEmailAndPassword(email, password);
   };
 
-  const createUserDocument = async (user: User) => {
-    await addDoc(
-      collection(firestore, "users"),
-      JSON.parse(JSON.stringify(user))
-    );
-  };
-
   useEffect(() => {
+    const createUserDocument = async (user: User) => {
+      await addDoc(collection(firestore, "users"), {
+        ...JSON.parse(JSON.stringify(user)),
+        creatorName,
+      });
+    };
     if (userCredentials) {
       createUserDocument(userCredentials.user);
     }
-  }, [userCredentials]);
+  }, [userCredentials, creatorName]);
 
   return (
     <Stack>
@@ -94,6 +94,17 @@ const SignUp: React.FC = () => {
             name="email"
             value={email}
             type="email"
+            onChange={handleChange}
+            required
+          />
+        </FormControl>
+        <FormControl mb={4}>
+          <Input
+            size="lg"
+            placeholder="Creator name"
+            name="creatorName"
+            value={creatorName}
+            type="text"
             onChange={handleChange}
             required
           />

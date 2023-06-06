@@ -28,11 +28,13 @@ const Navbar: React.FC = () => {
       alignItems="center"
       gap={4}
     >
-      <Box mr={4}>
-        <Heading size="md" color="pink.200" textTransform="uppercase">
-          Tracklister
-        </Heading>
-      </Box>
+      <Link as={NextLink} href="/" mr={6}>
+        <Box mr={4}>
+          <Heading size="md" color="pink.200" textTransform="uppercase">
+            Tracklister
+          </Heading>
+        </Box>
+      </Link>
       <SearchInput
         searchFocused={searchFocused}
         setSearchFocused={setSearchFocused}

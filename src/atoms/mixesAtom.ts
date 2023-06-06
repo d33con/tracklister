@@ -6,9 +6,11 @@ export type Mix = {
   createdAt: Timestamp;
   creatorId?: string;
   audioURL?: string;
+  audioLength?: number;
   title: string;
   imageURL?: string;
   description?: string;
+  favouriteCount?: number;
   genres?: Array<string>;
   tracklist?: Array<Object>;
 };

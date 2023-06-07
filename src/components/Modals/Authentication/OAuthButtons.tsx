@@ -8,11 +8,13 @@ import {
   AlertTitle,
   Button,
   Flex,
+  Icon,
 } from "@chakra-ui/react";
 import { User } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import React, { useEffect } from "react";
 import { useSignInWithGoogle } from "react-firebase-hooks/auth";
+import { FaGoogle } from "react-icons/fa";
 
 const OAuthButtons: React.FC = () => {
   const [signInWithGoogle, userCredentials, loading, error] =
@@ -37,7 +39,7 @@ const OAuthButtons: React.FC = () => {
         textTransform="uppercase"
         onClick={() => signInWithGoogle()}
       >
-        <LockIcon mr={2} />
+        <Icon as={FaGoogle} mr={2} />
         Login with Google
       </Button>
       {error && (

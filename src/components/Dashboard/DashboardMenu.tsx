@@ -3,6 +3,7 @@ import {
   Box,
   Divider,
   HStack,
+  Icon,
   Link,
   LinkBox,
   LinkOverlay,
@@ -11,31 +12,40 @@ import {
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import React, { useState } from "react";
+import { MdOutlineDashboard } from "react-icons/md";
+import { BsPersonLinesFill } from "react-icons/bs";
+import { AiOutlinePlaySquare } from "react-icons/ai";
+import { HiUserCircle } from "react-icons/hi";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "@/firebase/clientApp";
 
 type DashboardMenuProps = {};
 
 const DashboardMenu: React.FC<DashboardMenuProps> = () => {
   const [hovered, setHovered] = useState(false);
+  const [user] = useAuthState(auth);
 
   return (
-    <Box width="15%" p={6}>
+    <Box width="15%" p={8}>
       <VStack spacing={4} align="stretch">
         <LinkBox
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
         >
           <HStack spacing={1}>
-            <Avatar
-              src="https://react.semantic-ui.com/images/avatar/large/matthew.png"
-              size="md"
-            />
+            {user?.photoURL ? (
+              <Avatar src={user.photoURL} size="md" />
+            ) : (
+              <Icon as={HiUserCircle} boxSize={12} />
+            )}
             <LinkOverlay as={NextLink} href="#" />
             <Box>
-              <Text fontSize={20} color="blackAlpha.900">
-                Matthew
+              <Text ml={-1} fontSize={18} color="blackAlpha.900">
+                {user?.displayName || user?.email}
               </Text>
               <Text
-                mt={-2}
+                mt={-1}
+                ml={-1}
                 fontSize={14}
                 color={hovered ? "blackAlpha.800" : "blackAlpha.600"}
               >
@@ -44,29 +54,54 @@ const DashboardMenu: React.FC<DashboardMenuProps> = () => {
             </Box>
           </HStack>
         </LinkBox>
+        <Divider />
         <Link
           as={NextLink}
-          color="blackAlpha.900"
+          color="blackAlpha.700"
+          _hover={{ color: "blackAlpha.900 " }}
           href="/dashboard/my-dashboard"
-          textAlign="center"
+          textAlign="left"
+          textTransform="uppercase"
         >
-          My dashboard
+          <Icon
+            as={MdOutlineDashboard}
+            boxSize={6}
+            mr={4}
+            verticalAlign="bottom"
+          />
+          Dashboard
         </Link>
         <Link
           as={NextLink}
-          color="blackAlpha.900"
+          color="blackAlpha.700"
+          _hover={{ color: "blackAlpha.900 " }}
           href="/dashboard/my-shows"
-          textAlign="center"
+          textAlign="left"
+          textTransform="uppercase"
         >
+          <Icon
+            as={BsPersonLinesFill}
+            boxSize={6}
+            mr={4}
+            verticalAlign="bottom"
+          />
           My shows
         </Link>
         <Divider />
         <Link
           as={NextLink}
-          color="blackAlpha.900"
+          color="blackAlpha.700"
+          _hover={{ color: "blackAlpha.900 " }}
           href="/dashboard/new-uploads"
-          textAlign="center"
+          textAlign="left"
+          textTransform="uppercase"
         >
+          <Icon
+            as={AiOutlinePlaySquare}
+            boxSize={6}
+            mr={4}
+            verticalAlign="bottom"
+          />
           New shows
         </Link>
       </VStack>

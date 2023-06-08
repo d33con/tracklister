@@ -1,4 +1,5 @@
 import { Mix } from "@/atoms/mixesAtom";
+import convertDuration from "@/helpers/convertDuration";
 import {
   Box,
   Button,
@@ -10,7 +11,6 @@ import {
   Text,
 } from "@chakra-ui/react";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
-import { User } from "firebase/auth";
 import React from "react";
 import { AiOutlineHeart } from "react-icons/ai";
 import { BsCaretRightFill, BsPlayCircle } from "react-icons/bs";
@@ -64,7 +64,7 @@ const MixItem: React.FC<MixItemProps> = ({
         <Flex justifyContent="space-between" alignItems="center" mb={4} mr={4}>
           <Box bgColor="gray.100" height="3px" width="100%" pr={8} />
           <Text fontSize="14px" color="blackAlpha.700" ml={6}>
-            1:05:00
+            {convertDuration(mix.audioDuration!)}
           </Text>
         </Flex>
         <Flex direction="row" alignItems="center" mr={4}>

@@ -23,7 +23,7 @@ import {
   uploadString,
 } from "firebase/storage";
 import { useRouter } from "next/router";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { v4 as uuidv4 } from "uuid";
 
@@ -35,6 +35,7 @@ const UploadIndex: React.FC = () => {
   const [mixTitle, setMixTitle] = useState("");
   const [mixDescription, setMixDescription] = useState("");
   const [audioDownloadURL, setAudioDownloadURL] = useState("");
+  const [audioDuration, setAudioDuration] = useState(0);
   const [mixImage, setMixImage] = useState("");
   // MOVE ALL MIX RELATED DATA INTO MIX OBJECT
   // use recoil global state?
@@ -48,9 +49,25 @@ const UploadIndex: React.FC = () => {
   const [user] = useAuthState(auth);
 
   const uploadTaskRef = useRef<UploadTask | null>(null);
+  const uploadedAudioRef = useRef<HTMLAudioElement>(null);
   const toast = useToast();
 
   const router = useRouter();
+
+  // get the duration of the audio file selected
+  useEffect(() => {
+    if (selectedFile) {
+      const objectURL = URL.createObjectURL(selectedFile as Blob);
+      uploadedAudioRef.current?.setAttribute("src", objectURL);
+      uploadedAudioRef.current?.addEventListener(
+        "canplaythrough",
+        (e: React.ChangeEvent<HTMLAudioElement>) => {
+          setAudioDuration(Math.round(e.currentTarget?.duration));
+        }
+      );
+      return () => URL.revokeObjectURL(objectURL);
+    }
+  }, [selectedFile]);
 
   const onSelectFileToUpload = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const fileReader = new FileReader();
@@ -190,6 +207,7 @@ const UploadIndex: React.FC = () => {
       createdAt: serverTimestamp() as Timestamp,
       creatorId: user?.uid,
       audioURL: audioDownloadURL,
+      audioDuration,
       title: mixTitle,
       description: mixDescription,
       favouriteCount: 0,
@@ -233,6 +251,7 @@ const UploadIndex: React.FC = () => {
       )}
       {uploadStage === "naming" && (
         <UploadLayout>
+          <audio ref={uploadedAudioRef} hidden />
           <NameFileToUploadCard
             selectedFile={selectedFile}
             setSelectedFile={setSelectedFile}

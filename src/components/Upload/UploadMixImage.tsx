@@ -23,14 +23,16 @@ const MixUploadImage: React.FC<MixUploadImageProps> = ({
           {mixImage ? "Change image" : "Upload image"}
         </Button>
       </Box>
-      <Image
-        src={mixImage}
-        alt={mixImage}
-        position="relative"
-        left="-25%"
-        boxSize="450px"
-        objectFit="cover"
-      />
+      {mixImage && (
+        <Image
+          src={mixImage}
+          alt={mixImage}
+          position="relative"
+          left="-25%"
+          boxSize="450px"
+          objectFit="cover"
+        />
+      )}
       <input
         type="file"
         ref={selectedImageRef}

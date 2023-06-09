@@ -32,7 +32,6 @@ const MixItem: React.FC<MixItemProps> = ({
   onFavouriteMix,
   onDeleteMix,
   onSelectMix,
-  user,
 }) => {
   return (
     <Flex direction="row" mb={8} width="100%">
@@ -45,7 +44,6 @@ const MixItem: React.FC<MixItemProps> = ({
       />
       <Flex direction="column" width="100%">
         <Flex direction="row" mb={8}>
-          <audio src={mix.audioURL} hidden />
           <IconButton
             variant="link"
             aria-label="Play audio"
@@ -112,9 +110,16 @@ const MixItem: React.FC<MixItemProps> = ({
           <Text mr={4} color="blackAlpha.700" fontSize="14px">
             {formatDistanceToNow(mix.createdAt.toDate())} ago
           </Text>
-          <Text color="blackAlpha.700" fontSize="14px">
-            genres
-          </Text>
+          {mix.genres?.map((genre) => (
+            <Text
+              key={genre.label}
+              color="blackAlpha.800"
+              fontSize="14px"
+              mr={1}
+            >
+              {`#${genre.label}`}
+            </Text>
+          ))}
         </Flex>
       </Flex>
     </Flex>

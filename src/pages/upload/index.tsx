@@ -34,6 +34,7 @@ const UploadIndex: React.FC = () => {
   const [isPublishing, setIsPublishing] = useState(false);
   const [mixTitle, setMixTitle] = useState("");
   const [mixDescription, setMixDescription] = useState("");
+  const [mixGenres, setMixGenres] = useState([]);
   const [audioDownloadURL, setAudioDownloadURL] = useState("");
   const [audioDuration, setAudioDuration] = useState(0);
   const [mixImage, setMixImage] = useState("");
@@ -210,6 +211,7 @@ const UploadIndex: React.FC = () => {
       audioDuration,
       title: mixTitle,
       description: mixDescription,
+      genres: mixGenres,
       favouriteCount: 0,
     };
 
@@ -275,6 +277,7 @@ const UploadIndex: React.FC = () => {
           publishMix={publishMix}
           audioDownloadURL={audioDownloadURL}
           isPublishing={isPublishing}
+          setMixGenres={setMixGenres}
         />
       )}
     </>

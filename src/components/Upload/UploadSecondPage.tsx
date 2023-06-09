@@ -11,6 +11,10 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React from "react";
+import {
+  ActionMeta,
+  MultiValue,
+} from "react-select/dist/declarations/src/types";
 import MixTagsAndDescription from "./MixTagsAndDescription";
 import UploadMixImage from "./UploadMixImage";
 
@@ -27,6 +31,9 @@ type UploadSecondPageProps = {
   publishMix: (evt: React.FormEvent<HTMLFormElement>) => void;
   isPublishing: boolean;
   audioDownloadURL: string;
+  setMixGenres: (
+    newValue: MultiValue<{ value: string; label: string }>
+  ) => void;
 };
 
 const UploadSecondPage: React.FC<UploadSecondPageProps> = ({
@@ -42,6 +49,7 @@ const UploadSecondPage: React.FC<UploadSecondPageProps> = ({
   publishMix,
   isPublishing,
   audioDownloadURL,
+  setMixGenres,
 }) => {
   return (
     <Flex width="100%" flexDirection="column" p={12}>
@@ -94,6 +102,7 @@ const UploadSecondPage: React.FC<UploadSecondPageProps> = ({
           <MixTagsAndDescription
             mixDescription={mixDescription}
             setMixDescription={setMixDescription}
+            setMixGenres={setMixGenres}
           />
         </Flex>
       </form>

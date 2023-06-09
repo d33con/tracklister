@@ -1,5 +1,6 @@
 import { Mix } from "@/atoms/mixesAtom";
-import convertDuration from "@/helpers/convertDuration";
+import { convertDuration } from "@/helpers/convertDuration";
+import useMixes from "@/hooks/useMixes";
 import {
   Box,
   Button,
@@ -33,6 +34,13 @@ const MixItem: React.FC<MixItemProps> = ({
   onDeleteMix,
   onSelectMix,
 }) => {
+  const { mixStateValue, setMixStateValue } = useMixes();
+  const handlePlayMixClick = () => {
+    setMixStateValue((prevState) => ({
+      ...prevState,
+      currentlyPlayingMix: mix,
+    }));
+  };
   return (
     <Flex direction="row" mb={8} width="100%">
       <Image
@@ -51,6 +59,7 @@ const MixItem: React.FC<MixItemProps> = ({
             color="black"
             mr={8}
             icon={<BsPlayCircle />}
+            onClick={handlePlayMixClick}
           />
           <Flex textAlign="left" direction="column">
             <Text fontSize="18px" fontWeight="bold">

@@ -18,11 +18,13 @@ export type Mix = {
 interface MixState {
   mixes: Mix[];
   selectedMix: Mix | null;
+  currentlyPlayingMix: Mix | null;
 }
 
 const defaultMixState: MixState = {
-  selectedMix: null,
   mixes: [],
+  selectedMix: null,
+  currentlyPlayingMix: null,
 };
 
 export const mixState = atom<MixState>({

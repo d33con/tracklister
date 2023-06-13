@@ -1,20 +1,16 @@
 import { mixState } from "@/atoms/mixesAtom";
 import { convertPlayerDuration } from "@/helpers/convertDuration";
 import {
-  Center,
   Flex,
   IconButton,
   Image,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
   Slider,
   SliderFilledTrack,
   SliderThumb,
   SliderTrack,
   Text,
 } from "@chakra-ui/react";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { AiOutlineHeart } from "react-icons/ai";
 import { BiVolumeFull, BiVolumeMute } from "react-icons/bi";
 import {
@@ -32,17 +28,15 @@ const Player: React.FC<PlayerProps> = () => {
   const [audioPlaying, setAudioPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [remainingTime, setRemainingTime] = useState(0);
-  const [showVolumeControl, setShowVolumeControl] = useState(false);
-  const [volumeLevel, setVolumeLevel] = useState(0.5);
+  const [volumeLevel, setVolumeLevel] = useState(1);
+  const [prevVolumeLevel, setprevVolumeLevel] = useState(0);
   const [audioMuted, setAudioMuted] = useState(false);
   const playingAudioRef = useRef<HTMLAudioElement>(null);
   const audio = playingAudioRef?.current;
 
-  let audioProgress = (currentTime / audio?.duration) * 100;
-
-  const toggleAudio = useCallback(() => {
+  const toggleAudio = () => {
     setAudioPlaying((prevState) => !prevState);
-    audio?.addEventListener("timeupdate", (e) => {
+    audio?.addEventListener("timeupdate", () => {
       const currentTime = Math.floor(audio.currentTime);
       setCurrentTime(currentTime);
     });
@@ -50,14 +44,22 @@ const Player: React.FC<PlayerProps> = () => {
       setAudioPlaying(false);
       setCurrentTime(0);
     });
-  }, [audio]);
+  };
+
+  const handleProgressChange = (value: number) => {
+    setCurrentTime(value);
+    audio!.currentTime = value;
+  };
+
+  const handleVolumeChange = (val: number) => {
+    setVolumeLevel(val);
+    setprevVolumeLevel(val);
+  };
 
   useEffect(() => {
     audio?.addEventListener("canplay", () => {
       audio?.play();
-      const currentTime = Math.floor(audio.currentTime);
       setAudioPlaying(true);
-      setCurrentTime(currentTime);
       setRemainingTime(audio.duration);
     });
     if (audioPlaying) {
@@ -71,6 +73,20 @@ const Player: React.FC<PlayerProps> = () => {
       audio?.pause();
     }
   }, [audio, audioPlaying]);
+
+  useEffect(() => {
+    if (audio) {
+      audio.volume = volumeLevel;
+    }
+  }, [volumeLevel, audio]);
+
+  useEffect(() => {
+    if (audioMuted) {
+      setVolumeLevel(0);
+    } else {
+      setVolumeLevel(prevVolumeLevel);
+    }
+  }, [prevVolumeLevel, audioMuted]);
 
   return (
     <section>
@@ -121,12 +137,12 @@ const Player: React.FC<PlayerProps> = () => {
           textAlign="left"
           direction="column"
           alignItems="start"
-          width="350px"
+          width="400px"
         >
-          <Text color="whiteAlpha.900" fontSize="16px">
+          <Text color="whiteAlpha.900" fontSize="14px" noOfLines={1}>
             {currentlyPlayingMix?.title}
           </Text>
-          <Text color="whiteAlpha.900" fontSize="12px">
+          <Text color="whiteAlpha.900" fontSize="11px">
             by {currentlyPlayingMix?.creatorId}
           </Text>
         </Flex>
@@ -157,9 +173,13 @@ const Player: React.FC<PlayerProps> = () => {
           </Text>
           <Slider
             aria-label="Audio seek track"
-            value={audioProgress}
+            defaultValue={0}
+            value={currentTime}
+            min={0}
+            max={audio?.duration}
             size="sm"
             pr={2}
+            onChange={handleProgressChange}
           >
             <SliderTrack>
               <SliderFilledTrack />
@@ -170,41 +190,31 @@ const Player: React.FC<PlayerProps> = () => {
             {convertPlayerDuration(remainingTime)}
           </Text>
         </Flex>
-        <Popover isOpen={showVolumeControl} matchWidth>
-          <PopoverTrigger>
-            <IconButton
-              icon={audioMuted ? <BiVolumeMute /> : <BiVolumeFull />}
-              aria-label="Volume control"
-              color="whiteAlpha.900"
-              variant="link"
-              size="lg"
-              ml={2}
-              onMouseEnter={() => setShowVolumeControl(true)}
-              onClick={() => setAudioMuted((prevState) => !prevState)}
-            />
-          </PopoverTrigger>
-          <PopoverContent
-            width="40px"
+        <Flex direction="row" alignItems="center">
+          <IconButton
+            icon={audioMuted ? <BiVolumeMute /> : <BiVolumeFull />}
+            aria-label="Volume control"
+            color="whiteAlpha.900"
+            variant="link"
+            size="lg"
+            ml={2}
+            onClick={() => setAudioMuted((prevState) => !prevState)}
+          />
+          <Slider
+            aria-label="Volume control slider"
+            min={0}
+            max={1}
+            step={0.1}
+            value={volumeLevel}
+            onChange={(val) => handleVolumeChange(val)}
             bgColor="blue.800"
-            onMouseLeave={() => setShowVolumeControl(false)}
+            width="80px"
           >
-            <Center>
-              <Slider
-                aria-label="Volume control slider"
-                value={volumeLevel}
-                orientation="vertical"
-                minH="36"
-                bgColor="blue.800"
-                mb="34px"
-                pt="12px"
-              >
-                <SliderTrack pt={2} pb={2}>
-                  <SliderFilledTrack pt={2} pb={2} />
-                </SliderTrack>
-              </Slider>
-            </Center>
-          </PopoverContent>
-        </Popover>
+            <SliderTrack height={3}>
+              <SliderFilledTrack height={3} />
+            </SliderTrack>
+          </Slider>
+        </Flex>
       </Flex>
     </section>
   );

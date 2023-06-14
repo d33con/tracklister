@@ -2,6 +2,7 @@ import { mixState } from "@/atoms/mixesAtom";
 import { convertPlayerDuration } from "@/helpers/convertDuration";
 import {
   Flex,
+  Icon,
   IconButton,
   Image,
   Slider,
@@ -18,6 +19,7 @@ import {
   BsListUl,
   BsPauseCircle,
   BsPlayCircle,
+  BsSoundwave,
 } from "react-icons/bs";
 import { useRecoilValue } from "recoil";
 
@@ -127,12 +129,16 @@ const Player: React.FC<PlayerProps> = () => {
             onClick={toggleAudio}
           />
         )}
-        <Image
-          src={currentlyPlayingMix?.imageURL}
-          alt={currentlyPlayingMix?.title}
-          boxSize="40px"
-          mr={4}
-        />
+        {currentlyPlayingMix?.imageURL ? (
+          <Image
+            src={currentlyPlayingMix?.imageURL}
+            alt={currentlyPlayingMix?.title}
+            boxSize="40px"
+            mr={4}
+          />
+        ) : (
+          <Icon as={BsSoundwave} boxSize="40px" mr={4} />
+        )}
         <Flex
           textAlign="left"
           direction="column"

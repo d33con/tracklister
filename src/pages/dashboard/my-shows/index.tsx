@@ -7,12 +7,14 @@ import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import DashboardLayout from "../../../components/Layout/DashboardLayout";
+import NoUserMixes from "@/components/Dashboard/NoUserMixes";
 
 type MyShowsProps = {};
 
 const MyShows: React.FC<MyShowsProps> = () => {
   const [user] = useAuthState(auth);
   const [isLoading, setIsLoading] = useState(false);
+  const [noMixes, setNoMixes] = useState(false);
   const {
     mixStateValue,
     setMixStateValue,
@@ -35,6 +37,11 @@ const MyShows: React.FC<MyShowsProps> = () => {
         const myMixDocs = await getDocs(myMixesQuery);
 
         const myMixes = myMixDocs.docs.map((mix) => ({ ...mix.data() }));
+
+        if (myMixes.length === 0) {
+          setNoMixes(true);
+        }
+
         setMixStateValue((prevState) => ({
           ...prevState,
           mixes: myMixes as Mix[],
@@ -53,6 +60,8 @@ const MyShows: React.FC<MyShowsProps> = () => {
         <Center>
           <Spinner />
         </Center>
+      ) : noMixes ? (
+        <NoUserMixes />
       ) : (
         <>
           <Heading textAlign="left" mb={6}>

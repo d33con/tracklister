@@ -1,3 +1,4 @@
+import { MixGenreState } from "@/atoms/mixGenresAtom";
 import { Mix } from "@/atoms/mixesAtom";
 import UploadLayout from "@/components/Layout/UploadLayout";
 import LoggedOutUploadPage from "@/components/LoggedOut/LoggedOutUploadPage";
@@ -37,7 +38,7 @@ const UploadIndex: React.FC = () => {
   const [isPublishing, setIsPublishing] = useState(false);
   const [mixTitle, setMixTitle] = useState("");
   const [mixDescription, setMixDescription] = useState("");
-  const [mixGenres, setMixGenres] = useState([]);
+  const [mixGenres, setMixGenres] = useState<MixGenreState>([]);
   const [audioDownloadURL, setAudioDownloadURL] = useState("");
   const [audioDuration, setAudioDuration] = useState(0);
   const [mixImage, setMixImage] = useState("");

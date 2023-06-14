@@ -11,10 +11,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React from "react";
-import {
-  ActionMeta,
-  MultiValue,
-} from "react-select/dist/declarations/src/types";
+import { MultiValue } from "react-select/dist/declarations/src/types";
 import MixTagsAndDescription from "./MixTagsAndDescription";
 import UploadMixImage from "./UploadMixImage";
 

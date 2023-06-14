@@ -1,9 +1,9 @@
 import { atom } from "recoil";
 
-export type MixGenre = Array<{
+export type MixGenre = {
   name: string;
   displayName: string;
-}>;
+};
 
 export type MixGenreState = Array<{
   label: string;

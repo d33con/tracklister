@@ -1,7 +1,7 @@
 import { genres } from "@/helpers/genreTags";
 import { Box, Flex, Textarea } from "@chakra-ui/react";
 import React from "react";
-import Select, { ActionMeta, MultiValue } from "react-select";
+import Select, { MultiValue } from "react-select";
 
 type MixTagsAndDescriptionProps = {
   mixDescription: string;

@@ -11,7 +11,10 @@ import {
   Timestamp,
   addDoc,
   collection,
+  doc,
+  getDoc,
   serverTimestamp,
+  setDoc,
   updateDoc,
 } from "firebase/firestore";
 import {
@@ -60,12 +63,11 @@ const UploadIndex: React.FC = () => {
     if (selectedFile) {
       const objectURL = URL.createObjectURL(selectedFile as Blob);
       uploadedAudioRef.current?.setAttribute("src", objectURL);
-      uploadedAudioRef.current?.addEventListener(
-        "canplaythrough",
-        (e: React.ChangeEvent<HTMLAudioElement>) => {
-          setAudioDuration(Math.round(e.currentTarget?.duration));
-        }
-      );
+      uploadedAudioRef.current?.addEventListener("canplaythrough", () => {
+        setAudioDuration(
+          Math.round(uploadedAudioRef.current?.duration as number)
+        );
+      });
       return () => URL.revokeObjectURL(objectURL);
     }
   }, [selectedFile]);
@@ -198,9 +200,32 @@ const UploadIndex: React.FC = () => {
     };
   };
 
+  const handleMixGenreCreation = () => {
+    if (mixGenres.length > 0) {
+      mixGenres.map(async (genre: { label: string; value: string }) => {
+        const safeGenre = genre.value.toLowerCase().replace(/\W/g, "");
+        const mixGenresDocRef = doc(firestore, "mixGenres", safeGenre);
+        const mixGenreDoc = await getDoc(mixGenresDocRef);
+
+        if (mixGenreDoc.exists()) {
+          return;
+        }
+
+        // create the mixGenre
+        await setDoc(mixGenresDocRef, {
+          name: safeGenre,
+          displayName: genre.label,
+        });
+      });
+    }
+  };
+
   const publishMix = async (evt: React.FormEvent<HTMLFormElement>) => {
     setIsPublishing(true);
     evt.preventDefault();
+
+    // check if mix genres exist
+    handleMixGenreCreation();
 
     // create a new 'mix' object with the audio and name
     const newMix: Mix = {
@@ -211,7 +236,9 @@ const UploadIndex: React.FC = () => {
       audioDuration,
       title: mixTitle,
       description: mixDescription,
-      genres: mixGenres,
+      genres: mixGenres.map(
+        (genre: { label: string; value: string }) => genre.label
+      ),
       favouriteCount: 0,
     };
 

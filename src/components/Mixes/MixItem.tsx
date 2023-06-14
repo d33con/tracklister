@@ -14,7 +14,7 @@ import {
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import React from "react";
 import { AiOutlineHeart } from "react-icons/ai";
-import { BsCaretRightFill, BsPlayCircle } from "react-icons/bs";
+import { BsCaretRightFill, BsPlayCircle, BsSoundwave } from "react-icons/bs";
 import { RiDeleteBin7Line, RiEditBoxLine } from "react-icons/ri";
 
 type MixItemProps = {
@@ -43,13 +43,17 @@ const MixItem: React.FC<MixItemProps> = ({
   };
   return (
     <Flex direction="row" mb={8} width="100%">
-      <Image
-        src={mix.imageURL}
-        alt={mix.title}
-        boxSize="150px"
-        borderRadius={6}
-        mr={8}
-      />
+      {mix.imageURL ? (
+        <Image
+          src={mix.imageURL}
+          alt={mix.title}
+          boxSize="150px"
+          borderRadius={6}
+          mr={8}
+        />
+      ) : (
+        <Icon as={BsSoundwave} boxSize="150px" mr={8} />
+      )}
       <Flex direction="column" width="100%">
         <Flex direction="row" mb={8}>
           <IconButton
@@ -120,13 +124,8 @@ const MixItem: React.FC<MixItemProps> = ({
             {formatDistanceToNow(mix.createdAt.toDate())} ago
           </Text>
           {mix.genres?.map((genre) => (
-            <Text
-              key={genre.label}
-              color="blackAlpha.800"
-              fontSize="14px"
-              mr={1}
-            >
-              {`#${genre.label}`}
+            <Text key={genre} color="blackAlpha.800" fontSize="14px" mr={1}>
+              {`#${genre}`}
             </Text>
           ))}
         </Flex>

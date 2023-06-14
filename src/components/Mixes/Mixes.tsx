@@ -34,15 +34,6 @@ const Mixes: React.FC<MixesProps> = () => {
           ...prevState,
           mixes: mixes as Mix[],
         }));
-
-        /* 
-        get genre filtered mixes
-        const genreMixes = query(
-          collection(firestore, "mixes"),
-          where("genres", "==", queryFromRouter),
-          orderBy("createdAt", "desc")
-        );
-        */
       } catch (error: any) {
         console.log(error.message);
       }

@@ -29,7 +29,7 @@ const Player: React.FC<PlayerProps> = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [remainingTime, setRemainingTime] = useState(0);
   const [volumeLevel, setVolumeLevel] = useState(1);
-  const [prevVolumeLevel, setprevVolumeLevel] = useState(0);
+  const [prevVolumeLevel, setprevVolumeLevel] = useState(1);
   const [audioMuted, setAudioMuted] = useState(false);
   const playingAudioRef = useRef<HTMLAudioElement>(null);
   const audio = playingAudioRef?.current;

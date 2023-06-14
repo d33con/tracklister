@@ -1,16 +1,15 @@
-import { firestore } from "@/firebase/clientApp";
-import { Button, Flex, Heading, SimpleGrid } from "@chakra-ui/react";
-import { collection, getDocs, query } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
-import NextLink from "next/link";
-import { Link } from "@chakra-ui/react";
 import { MixGenre } from "@/atoms/mixGenresAtom";
+import { firestore } from "@/firebase/clientApp";
 import { colors } from "@/helpers/chakraColors";
+import { Button, Flex, Heading, Link, SimpleGrid } from "@chakra-ui/react";
+import { collection, getDocs, query } from "firebase/firestore";
+import NextLink from "next/link";
+import React, { useEffect, useState } from "react";
 
 type DiscoverIndexProps = {};
 
 const DiscoverIndex: React.FC<DiscoverIndexProps> = () => {
-  const [mixGenres, setMixGenres] = useState<MixGenre>([]);
+  const [mixGenres, setMixGenres] = useState([]);
 
   useEffect(() => {
     const getGenres = async () => {
@@ -31,11 +30,11 @@ const DiscoverIndex: React.FC<DiscoverIndexProps> = () => {
 
   return (
     <Flex p={24} direction="column">
-      <Heading mb={8} textAlign="center">
+      <Heading mb={8} textAlign="center" size="xl">
         Discover Music Shows
       </Heading>
       <SimpleGrid columns={4} spacing={4} p={12}>
-        {mixGenres.map((genre, idx: number) => (
+        {mixGenres.map((genre: MixGenre, idx: number) => (
           <Link
             as={NextLink}
             href={`/discover/${genre.name}`}

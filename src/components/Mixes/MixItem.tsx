@@ -8,10 +8,12 @@ import {
   Icon,
   IconButton,
   Image,
+  Link,
   Spacer,
   Text,
 } from "@chakra-ui/react";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
+import NextLink from "next/link";
 import React from "react";
 import { AiOutlineHeart } from "react-icons/ai";
 import { BsCaretRightFill, BsPlayCircle, BsSoundwave } from "react-icons/bs";
@@ -124,9 +126,16 @@ const MixItem: React.FC<MixItemProps> = ({
             {formatDistanceToNow(mix.createdAt.toDate())} ago
           </Text>
           {mix.genres?.map((genre) => (
-            <Text key={genre} color="blackAlpha.800" fontSize="14px" mr={1}>
+            <Link
+              as={NextLink}
+              href={`/discover/${genre.toLowerCase().replace(/\W/g, "")}`}
+              key={genre}
+              color="blackAlpha.800"
+              fontSize="14px"
+              mr={1}
+            >
               {`#${genre}`}
-            </Text>
+            </Link>
           ))}
         </Flex>
       </Flex>

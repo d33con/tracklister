@@ -10,8 +10,6 @@ import bytesToMB from "@/helpers/bytesToMB";
 import { useToast } from "@chakra-ui/react";
 import {
   Timestamp,
-  addDoc,
-  collection,
   doc,
   getDoc,
   serverTimestamp,
@@ -234,6 +232,7 @@ const UploadIndex: React.FC = () => {
       createdAt: serverTimestamp() as Timestamp,
       creatorId: user?.uid,
       audioURL: audioDownloadURL,
+      filename: selectedFile?.name,
       audioDuration,
       title: mixTitle,
       description: mixDescription,
@@ -245,7 +244,8 @@ const UploadIndex: React.FC = () => {
 
     // store the mix in the db
     try {
-      const mixDocRef = await addDoc(collection(firestore, "mixes"), newMix);
+      const mixDocRef = doc(firestore, "mixes", newMix.id);
+      await setDoc(mixDocRef, newMix);
       // if there is an image get a ref to store the mix's image in the mixes/image collection
       if (mixImage && audioDownloadURL) {
         const mixImageRef = ref(

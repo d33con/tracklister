@@ -11,8 +11,10 @@ import {
   FormControl,
   Input,
   Stack,
+  useToast,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { useSetRecoilState } from "recoil";
 
@@ -28,6 +30,9 @@ const Login: React.FC = () => {
 
   const [signInWithEmailAndPassword, user, loading, error] =
     useSignInWithEmailAndPassword(auth);
+
+  const router = useRouter();
+  const toast = useToast();
 
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     setLoginForm((prevState) => ({
@@ -50,10 +55,23 @@ const Login: React.FC = () => {
     }));
   };
 
-  function handleSubmit(evt: React.FormEvent<HTMLFormElement>) {
+  const handleSubmit = async (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
-    signInWithEmailAndPassword(email, password);
-  }
+    await signInWithEmailAndPassword(email, password);
+    toast({
+      title: "Welcome back.",
+      description: "You have successfully signed in.",
+      status: "success",
+      position: "top",
+      duration: 3000,
+      isClosable: true,
+    });
+  };
+
+  useEffect(() => {
+    router.reload;
+    // eslint-disable-next-line
+  }, [user]);
 
   return (
     <Stack>

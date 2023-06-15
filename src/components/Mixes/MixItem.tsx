@@ -1,4 +1,5 @@
 import { Mix } from "@/atoms/mixesAtom";
+import { auth } from "@/firebase/clientApp";
 import { convertDuration } from "@/helpers/convertDuration";
 import {
   Box,
@@ -10,10 +11,13 @@ import {
   Link,
   Spacer,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
+import { User } from "firebase/auth";
 import NextLink from "next/link";
-import React from "react";
+import React, { useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { AiOutlineHeart } from "react-icons/ai";
 import { BsCaretRightFill, BsPlayCircle, BsSoundwave } from "react-icons/bs";
 import { RiDeleteBin7Line, RiEditBoxLine } from "react-icons/ri";
@@ -23,7 +27,7 @@ type MixItemProps = {
   userIsCreator: boolean;
   userFavourited?: boolean;
   onFavouriteMix: () => void;
-  onDeleteMix: () => void;
+  onDeleteMix: (mix: Mix, user: User) => Promise<boolean>;
   onSelectMix: () => void;
   onPlayMix: (mix: Mix) => void;
 };
@@ -39,6 +43,40 @@ const MixItem: React.FC<MixItemProps> = ({
 }) => {
   // TODO : allow playing and pausing in main window
   // const { mixStateValue } = useMixes();
+  const toast = useToast();
+  const [user] = useAuthState(auth);
+  const [deletingMix, setDeletingMix] = useState(false);
+
+  const handleDeleteMix = async () => {
+    try {
+      setDeletingMix(true);
+      const success = await onDeleteMix(mix, user as User);
+      if (!success) {
+        throw new Error("Failed to delete mix");
+      }
+    } catch (error: any) {
+      // fail toast
+      toast({
+        title: "Your mix could not be deletd.",
+        description: "Please try again.",
+        status: "error",
+        position: "top",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+    setDeletingMix(false);
+    // success toast
+    toast({
+      title: "Mix deleted.",
+      description: "Your mix has succesfully been deleted",
+      status: "success",
+      position: "top",
+      duration: 3000,
+      isClosable: true,
+    });
+  };
+
   return (
     <Flex direction="row" mb={8} width="100%">
       {mix.imageURL ? (
@@ -115,6 +153,8 @@ const MixItem: React.FC<MixItemProps> = ({
                 variant="outline"
                 size="sm"
                 mr={2}
+                onClick={handleDeleteMix}
+                isLoading={deletingMix}
               >
                 Delete
               </Button>

@@ -6,6 +6,7 @@ export type Mix = {
   createdAt: Timestamp;
   creatorId?: string;
   audioURL?: string;
+  filename?: string;
   audioDuration?: number;
   title: string;
   imageURL?: string;

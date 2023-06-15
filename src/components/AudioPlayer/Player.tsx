@@ -59,10 +59,12 @@ const Player: React.FC<PlayerProps> = () => {
   };
 
   useEffect(() => {
+    audio?.addEventListener("loadedmetadata", () => {
+      setRemainingTime(audio.duration);
+    });
     audio?.addEventListener("canplay", () => {
       audio?.play();
       setAudioPlaying(true);
-      setRemainingTime(audio.duration);
     });
     if (audioPlaying) {
       audio?.play();
@@ -193,7 +195,7 @@ const Player: React.FC<PlayerProps> = () => {
             <SliderThumb />
           </Slider>
           <Text color="whiteAlpha.900" fontSize="12px" ml={4} width="50px">
-            {convertPlayerDuration(remainingTime)}
+            {remainingTime ? convertPlayerDuration(remainingTime) : "--:--"}
           </Text>
         </Flex>
         <Flex direction="row" alignItems="center">

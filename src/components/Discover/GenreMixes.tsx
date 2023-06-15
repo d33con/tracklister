@@ -23,6 +23,7 @@ const GenreMixes: React.FC<GenreMixesProps> = ({ mixGenre }) => {
     onFavouriteMix,
     onSelectMix,
     onDeleteMix,
+    onPlayMix,
   } = useMixes();
 
   useEffect(() => {
@@ -73,6 +74,7 @@ const GenreMixes: React.FC<GenreMixesProps> = ({ mixGenre }) => {
               onSelectMix={onSelectMix}
               onDeleteMix={onDeleteMix}
               userIsCreator={user?.uid === mix.creatorId}
+              onPlayMix={onPlayMix}
             />
           ))}
         </>

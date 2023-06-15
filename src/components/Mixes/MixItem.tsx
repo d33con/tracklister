@@ -1,6 +1,5 @@
 import { Mix } from "@/atoms/mixesAtom";
 import { convertDuration } from "@/helpers/convertDuration";
-import useMixes from "@/hooks/useMixes";
 import {
   Box,
   Button,
@@ -26,6 +25,7 @@ type MixItemProps = {
   onFavouriteMix: () => void;
   onDeleteMix: () => void;
   onSelectMix: () => void;
+  onPlayMix: (mix: Mix) => void;
 };
 
 const MixItem: React.FC<MixItemProps> = ({
@@ -35,14 +35,10 @@ const MixItem: React.FC<MixItemProps> = ({
   onFavouriteMix,
   onDeleteMix,
   onSelectMix,
+  onPlayMix,
 }) => {
-  const { mixStateValue, setMixStateValue } = useMixes();
-  const handlePlayMixClick = () => {
-    setMixStateValue((prevState) => ({
-      ...prevState,
-      currentlyPlayingMix: mix,
-    }));
-  };
+  // TODO : allow playing and pausing in main window
+  // const { mixStateValue } = useMixes();
   return (
     <Flex direction="row" mb={8} width="100%">
       {mix.imageURL ? (
@@ -58,6 +54,17 @@ const MixItem: React.FC<MixItemProps> = ({
       )}
       <Flex direction="column" width="100%">
         <Flex direction="row" mb={8}>
+          {/* {mixStateValue.currentlyPlayingMix?.id === mix.id ? (
+            <IconButton
+              variant="link"
+              aria-label="Pause audio"
+              fontSize="50px"
+              color="blackAlpha.900"
+              mr={4}
+              icon={<BsPauseCircle />}
+              // onClick={() => onPauseMix()}
+            />
+          ) : ( */}
           <IconButton
             variant="link"
             aria-label="Play audio"
@@ -65,8 +72,9 @@ const MixItem: React.FC<MixItemProps> = ({
             color="black"
             mr={8}
             icon={<BsPlayCircle />}
-            onClick={handlePlayMixClick}
+            onClick={() => onPlayMix(mix)}
           />
+          {/* )} */}
           <Flex textAlign="left" direction="column">
             <Text fontSize="18px" fontWeight="bold">
               {mix.title}

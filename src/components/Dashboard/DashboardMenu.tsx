@@ -1,3 +1,5 @@
+import { loggedInUserState } from "@/atoms/userAtom";
+import { auth } from "@/firebase/clientApp";
 import {
   Avatar,
   Box,
@@ -12,20 +14,19 @@ import {
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import React, { useState } from "react";
-import { MdOutlineDashboard } from "react-icons/md";
-import { BsPersonLinesFill } from "react-icons/bs";
-import { AiOutlinePlaySquare } from "react-icons/ai";
-import { HiUserCircle } from "react-icons/hi";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "@/firebase/clientApp";
-import useUser from "@/hooks/useUser";
+import { AiOutlinePlaySquare } from "react-icons/ai";
+import { BsPersonLinesFill } from "react-icons/bs";
+import { HiUserCircle } from "react-icons/hi";
+import { MdOutlineDashboard } from "react-icons/md";
+import { useRecoilValue } from "recoil";
 
 type DashboardMenuProps = {};
 
 const DashboardMenu: React.FC<DashboardMenuProps> = () => {
   const [hovered, setHovered] = useState(false);
   const [user] = useAuthState(auth);
-  const { loggedInUserStateValue } = useUser();
+  const currentUser = useRecoilValue(loggedInUserState);
 
   return (
     <Box width="15%" p={8}>
@@ -43,7 +44,7 @@ const DashboardMenu: React.FC<DashboardMenuProps> = () => {
             <LinkOverlay as={NextLink} href="#" />
             <Box>
               <Text ml={-1} fontSize={18} color="blackAlpha.900">
-                {loggedInUserStateValue.user?.creatorName ||
+                {currentUser.user?.creatorName ||
                   user?.displayName ||
                   user?.email}
               </Text>

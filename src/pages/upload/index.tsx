@@ -102,7 +102,7 @@ const UploadIndex: React.FC = () => {
       // upload to audio collection in storage
       const audioRef = ref(
         storage,
-        `mixes/${user?.uid}/audio/${uuidv4()}-${selectedFile.name}`
+        `mixes/${user?.uid}/audio/${selectedFile.name}`
       );
       const uploadTask = uploadBytesResumable(audioRef, selectedFile);
       uploadTaskRef.current = uploadTask;

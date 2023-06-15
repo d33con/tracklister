@@ -13,7 +13,7 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { User } from "firebase/auth";
-import { addDoc, collection } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { useSetRecoilState } from "recoil";
@@ -74,7 +74,8 @@ const SignUp: React.FC = () => {
 
   useEffect(() => {
     const createUserDocument = async (user: User) => {
-      await addDoc(collection(firestore, "users"), {
+      const userDocRef = doc(firestore, "users", user.uid);
+      await setDoc(userDocRef, {
         ...JSON.parse(JSON.stringify(user)),
         creatorName,
       });

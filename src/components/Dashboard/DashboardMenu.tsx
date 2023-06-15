@@ -18,12 +18,14 @@ import { AiOutlinePlaySquare } from "react-icons/ai";
 import { HiUserCircle } from "react-icons/hi";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase/clientApp";
+import useUser from "@/hooks/useUser";
 
 type DashboardMenuProps = {};
 
 const DashboardMenu: React.FC<DashboardMenuProps> = () => {
   const [hovered, setHovered] = useState(false);
   const [user] = useAuthState(auth);
+  const { loggedInUserStateValue } = useUser();
 
   return (
     <Box width="15%" p={8}>
@@ -41,7 +43,9 @@ const DashboardMenu: React.FC<DashboardMenuProps> = () => {
             <LinkOverlay as={NextLink} href="#" />
             <Box>
               <Text ml={-1} fontSize={18} color="blackAlpha.900">
-                {user?.displayName || user?.email}
+                {loggedInUserStateValue.user?.creatorName ||
+                  user?.displayName ||
+                  user?.email}
               </Text>
               <Text
                 mt={-1}

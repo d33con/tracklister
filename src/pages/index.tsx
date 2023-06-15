@@ -1,11 +1,13 @@
 import LoggedOutHomepage from "@/components/LoggedOut/LoggedOutHomepage";
 import Mixes from "@/components/Mixes/Mixes";
 import { auth } from "@/firebase/clientApp";
+import useUser from "@/hooks/useUser";
 import { Flex, Heading, Text } from "@chakra-ui/react";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 export default function Home() {
   const [user, loading, error] = useAuthState(auth);
+  const { loggedInUserStateValue } = useUser();
 
   return (
     <>
@@ -19,7 +21,7 @@ export default function Home() {
               pt={8}
               backgroundColor="green.200"
             >
-              Hello, {user.email}
+              Hello, {loggedInUserStateValue.user?.creatorName}
             </Text>
             <Heading pl={10} pr={10} mt={4}>
               Latest Mixes

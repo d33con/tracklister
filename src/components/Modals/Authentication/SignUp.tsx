@@ -74,10 +74,12 @@ const SignUp: React.FC = () => {
 
   useEffect(() => {
     const createUserDocument = async (user: User) => {
-      const userDocRef = doc(firestore, "users", user.uid);
+      const creatorSlug = creatorName.replace(/\s+/g, "-").toLowerCase();
+      const userDocRef = doc(firestore, "users", creatorSlug);
       await setDoc(userDocRef, {
         ...JSON.parse(JSON.stringify(user)),
         creatorName,
+        creatorSlug,
       });
     };
     if (userCredentials) {

@@ -9,9 +9,11 @@ export type Mix = {
   filename?: string;
   audioDuration?: number;
   title: string;
+  slug: string;
   imageURL?: string;
   description?: string;
   favouriteCount?: number;
+  favouritedUsers?: Array<string>;
   genres?: Array<string>;
   tracklist?: Array<Object>;
 };

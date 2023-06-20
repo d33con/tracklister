@@ -202,8 +202,8 @@ const UploadIndex: React.FC = () => {
   const handleMixGenreCreation = () => {
     if (mixGenres.length > 0) {
       mixGenres.map(async (genre: { label: string; value: string }) => {
-        const safeGenre = genre.value.toLowerCase().replace(/\W/g, "");
-        const mixGenresDocRef = doc(firestore, "mixGenres", safeGenre);
+        const kebabCaseGenre = genre.value.replace(/\s+/g, "-").toLowerCase();
+        const mixGenresDocRef = doc(firestore, "mixGenres", kebabCaseGenre);
         const mixGenreDoc = await getDoc(mixGenresDocRef);
 
         if (mixGenreDoc.exists()) {
@@ -212,7 +212,7 @@ const UploadIndex: React.FC = () => {
 
         // create the mixGenre
         await setDoc(mixGenresDocRef, {
-          name: safeGenre,
+          name: kebabCaseGenre,
           displayName: genre.label,
         });
       });
@@ -235,6 +235,7 @@ const UploadIndex: React.FC = () => {
       filename: selectedFile?.name,
       audioDuration,
       title: mixTitle,
+      slug: mixTitle.replace(/\s+/g, "-").toLowerCase(),
       description: mixDescription,
       genres: mixGenres.map(
         (genre: { label: string; value: string }) => genre.label

@@ -26,7 +26,7 @@ type MixItemProps = {
   mix: Mix;
   userIsCreator: boolean;
   userFavourited?: boolean;
-  onFavouriteMix: () => void;
+  onFavouriteMix: (mix: Mix, user: User) => void;
   onDeleteMix: (mix: Mix, user: User) => Promise<boolean>;
   onSelectMix: () => void;
   onPlayMix: (mix: Mix) => void;
@@ -54,6 +54,15 @@ const MixItem: React.FC<MixItemProps> = ({
       if (!success) {
         throw new Error("Failed to delete mix");
       }
+      // success toast
+      toast({
+        title: "Mix deleted.",
+        description: "Your mix has succesfully been deleted",
+        status: "success",
+        position: "top",
+        duration: 3000,
+        isClosable: true,
+      });
     } catch (error: any) {
       // fail toast
       toast({
@@ -66,15 +75,6 @@ const MixItem: React.FC<MixItemProps> = ({
       });
     }
     setDeletingMix(false);
-    // success toast
-    toast({
-      title: "Mix deleted.",
-      description: "Your mix has succesfully been deleted",
-      status: "success",
-      position: "top",
-      duration: 3000,
-      isClosable: true,
-    });
   };
 
   return (
@@ -114,10 +114,16 @@ const MixItem: React.FC<MixItemProps> = ({
           />
           {/* )} */}
           <Flex textAlign="left" direction="column">
-            <Text fontSize="18px" fontWeight="bold">
-              {mix.title}
-            </Text>
-            <Text>{userIsCreator ? "" : "author"}</Text>
+            <Link as={NextLink} href={`/${mix.creatorSlug}/${mix.slug}`} mr={6}>
+              <Text fontSize="18px" fontWeight="bold">
+                {mix.title}
+              </Text>
+            </Link>
+            {userIsCreator ? null : (
+              <Link as={NextLink} href={`/${mix.creatorSlug}/`} mr={6}>
+                <Text fontSize="16px">{mix.creatorName}</Text>
+              </Link>
+            )}
           </Flex>
         </Flex>
         <Flex justifyContent="space-between" alignItems="center" mb={4} mr={4}>
@@ -133,8 +139,9 @@ const MixItem: React.FC<MixItemProps> = ({
             variant="outline"
             size="sm"
             mr={2}
+            onClick={() => onFavouriteMix(mix, user)}
           >
-            1
+            {mix.favouriteCount}
           </Button>
           {userIsCreator && (
             <>

@@ -1,14 +1,35 @@
 import { Mix, mixState } from "@/atoms/mixesAtom";
 import { firestore, storage } from "@/firebase/clientApp";
 import { User } from "firebase/auth";
-import { deleteDoc, doc, getDoc } from "firebase/firestore";
+import { deleteDoc, doc } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
 import { useRecoilState } from "recoil";
 
 const useMixes = () => {
   const [mixStateValue, setMixStateValue] = useRecoilState(mixState);
 
-  const onFavouriteMix = async () => {};
+  const onFavouriteMix = async (mix: Mix, user: User) => {
+    // if user not logged in show login modal
+
+    if (user) {
+      const mixDocRef = doc(firestore, "mixes", mix.id);
+      // user hasn't already favourited mix
+
+      // update mix's favouriteCount
+      // updateDoc(mixDocRef, {
+      //   favouritedUsers: [user.uid],
+      //   favouriteCount: increment(1),
+      // });
+      // create new favouriteMixes doc on user collection
+      // update mixes state
+
+      // user has already favourited mix
+
+      // update mix's favouriteCount
+      // remove mix from user's favouriteMixes doc
+      // update mixes state
+    }
+  };
 
   const onSelectMix = () => {};
 

@@ -1,12 +1,14 @@
-import { firestore } from "@/firebase/clientApp";
+import { Mix } from "@/atoms/mixesAtom";
+import { auth, firestore } from "@/firebase/clientApp";
 import useMixes from "@/hooks/useMixes";
+import useUser from "@/hooks/useUser";
 import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
 import { Pathway_Extreme } from "next/font/google";
 import React, { useEffect } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import Player from "../AudioPlayer/Player";
 import Footer from "../Footer/Footer";
 import Navbar from "../Navbar/Navbar";
-import { Mix } from "@/atoms/mixesAtom";
 
 const font = Pathway_Extreme({ subsets: ["latin"] });
 
@@ -18,6 +20,8 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     onSelectMix,
     onDeleteMix,
   } = useMixes();
+  const { getLoggedInUser } = useUser();
+  const [user] = useAuthState(auth);
 
   useEffect(() => {
     const getLatestMix = async () => {
@@ -42,6 +46,11 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     };
     getLatestMix();
   }, [setMixStateValue]);
+
+  useEffect(() => {
+    getLoggedInUser();
+    // eslint-disable-next-line
+  }, [user]);
 
   return (
     <div className={font.className}>

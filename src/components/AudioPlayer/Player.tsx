@@ -5,6 +5,7 @@ import {
   Icon,
   IconButton,
   Image,
+  Link,
   Slider,
   SliderFilledTrack,
   SliderThumb,
@@ -22,6 +23,7 @@ import {
   BsSoundwave,
 } from "react-icons/bs";
 import { useRecoilValue } from "recoil";
+import NextLink from "next/link";
 
 type PlayerProps = {};
 
@@ -147,12 +149,23 @@ const Player: React.FC<PlayerProps> = () => {
           alignItems="start"
           width="400px"
         >
-          <Text color="whiteAlpha.900" fontSize="14px" noOfLines={1}>
-            {currentlyPlayingMix?.title}
-          </Text>
-          <Text color="whiteAlpha.900" fontSize="11px">
-            by {currentlyPlayingMix?.creatorId}
-          </Text>
+          <Link
+            as={NextLink}
+            href={`/${currentlyPlayingMix?.creatorSlug}/${currentlyPlayingMix?.slug}`}
+          >
+            <Text color="whiteAlpha.900" fontSize="14px" noOfLines={1}>
+              {currentlyPlayingMix?.title}
+            </Text>
+          </Link>
+          <Link
+            as={NextLink}
+            href={`/${currentlyPlayingMix?.creatorSlug}`}
+            mr={6}
+          >
+            <Text color="whiteAlpha.900" fontSize="11px">
+              by {currentlyPlayingMix?.creatorName}
+            </Text>
+          </Link>
         </Flex>
         <IconButton
           icon={<AiOutlineHeart />}

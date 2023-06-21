@@ -44,10 +44,6 @@ const Player: React.FC<PlayerProps> = () => {
       const currentTime = Math.floor(audio.currentTime);
       setCurrentTime(currentTime);
     });
-    audio?.addEventListener("ended", () => {
-      setAudioPlaying(false);
-      setCurrentTime(0);
-    });
   };
 
   const handleProgressChange = (value: number) => {
@@ -67,6 +63,11 @@ const Player: React.FC<PlayerProps> = () => {
     audio?.addEventListener("canplay", () => {
       audio?.play();
       setAudioPlaying(true);
+    });
+    audio?.addEventListener("ended", () => {
+      setAudioPlaying(false);
+      setCurrentTime(0);
+      setRemainingTime(audio.duration);
     });
     if (audioPlaying) {
       audio?.play();
@@ -167,27 +168,47 @@ const Player: React.FC<PlayerProps> = () => {
             </Text>
           </Link>
         </Flex>
-        <IconButton
-          icon={<AiOutlineHeart />}
-          aria-label="Favourite mix"
-          color="whiteAlpha.900"
-          variant="link"
-          size="lg"
-        />
-        <IconButton
-          icon={<BsFillPersonFill />}
-          aria-label="View profile"
-          color="whiteAlpha.900"
-          variant="link"
-          size="lg"
-        />
-        <IconButton
-          icon={<BsListUl />}
-          aria-label="Favourite mix"
-          color="whiteAlpha.900"
-          variant="link"
-          size="lg"
-        />
+        <Flex direction="row" alignItems="center">
+          <IconButton
+            icon={<AiOutlineHeart />}
+            aria-label="Favourite mix"
+            color="whiteAlpha.900"
+            variant="link"
+            size="lg"
+            _active={{
+              color: "whiteAlpha.900",
+            }}
+          />
+          <Link as={NextLink} href={`/${currentlyPlayingMix?.creatorSlug}`}>
+            <IconButton
+              icon={<BsFillPersonFill />}
+              aria-label="View creator profile"
+              color="whiteAlpha.900"
+              variant="link"
+              size="lg"
+              mt={1}
+              _active={{
+                color: "whiteAlpha.900",
+              }}
+            />
+          </Link>
+          <Link
+            as={NextLink}
+            href={`/${currentlyPlayingMix?.creatorSlug}/${currentlyPlayingMix?.slug}`}
+          >
+            <IconButton
+              icon={<BsListUl />}
+              aria-label="View tracklist"
+              color="whiteAlpha.900"
+              variant="link"
+              size="lg"
+              mt={1}
+              _active={{
+                color: "whiteAlpha.900",
+              }}
+            />
+          </Link>
+        </Flex>
         <Flex direction="row" ml={8} width="100%">
           <Text color="whiteAlpha.900" fontSize="12px" mr={4} width="50px">
             {convertPlayerDuration(currentTime)}

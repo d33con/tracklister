@@ -49,8 +49,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   useEffect(() => {
     getLoggedInUser();
-    // eslint-disable-next-line
-  }, [user]);
+  }, []);
 
   return (
     <div className={font.className}>

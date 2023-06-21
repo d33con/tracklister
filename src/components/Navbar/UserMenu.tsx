@@ -1,5 +1,5 @@
-import { LoggedInUser } from "@/atoms/userAtom";
 import { auth } from "@/firebase/clientApp";
+import useUser from "@/hooks/useUser";
 import {
   Avatar,
   Link,
@@ -9,19 +9,20 @@ import {
   MenuList,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
-import React from "react";
+import { useEffect } from "react";
 import { useSignOut } from "react-firebase-hooks/auth";
 
-type UserMenuProps = {
-  user: LoggedInUser;
-};
-
-const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
+const UserMenu = () => {
   const [signOut, loading, error] = useSignOut(auth);
+  const { loggedInUserStateValue, getLoggedInUser } = useUser();
 
   const handleSignOut = () => {
     signOut();
   };
+
+  useEffect(() => {
+    getLoggedInUser();
+  }, []);
 
   const avatarSize = "36px";
 
@@ -56,7 +57,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
           <Link
             as={NextLink}
             color="blackAlpha.900"
-            href={`/${user.creatorSlug}`}
+            href={`/${loggedInUserStateValue.user?.creatorSlug}`}
             textAlign="center"
           >
             My profile

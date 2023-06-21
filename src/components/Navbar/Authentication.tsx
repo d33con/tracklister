@@ -1,17 +1,17 @@
-import { LoggedInUser } from "@/atoms/userAtom";
+import { User } from "firebase/auth";
 import React from "react";
 import AuthModal from "../Modals/Authentication/AuthModal";
 import AuthButtons from "./AuthButtons";
 import UserMenu from "./UserMenu";
 
 type AuthenticationProps = {
-  user?: LoggedInUser;
+  user?: User;
 };
 
 const Authentication: React.FC<AuthenticationProps> = ({ user }) => {
   return (
     <>
-      {user ? <UserMenu user={user} /> : <AuthButtons />}
+      {user ? <UserMenu /> : <AuthButtons />}
       <AuthModal />
     </>
   );

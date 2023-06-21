@@ -1,5 +1,6 @@
 import { Timestamp } from "firebase/firestore";
 import { atom } from "recoil";
+import { StringLiteral } from "typescript";
 
 export type Mix = {
   id: string;
@@ -15,8 +16,15 @@ export type Mix = {
   favouriteCount?: number;
   favouritedUsers?: Array<string>;
   genres?: Array<string>;
-  tracklist?: Array<Object>;
+  tracklist?: Tracklist;
 };
+
+export type Tracklist = Array<{
+  id: string;
+  trackTime: number;
+  trackName: string;
+  label: string;
+}>;
 
 interface MixState {
   mixes: Mix[];

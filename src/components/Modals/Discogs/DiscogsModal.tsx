@@ -1,4 +1,4 @@
-import { discogsModalState } from "@/atoms/discogsModalAtom";
+import { DiscogsModalState, discogsModalState } from "@/atoms/discogsModalAtom";
 import ReleaseDetail from "@/components/Upload/ReleaseDetail";
 import {
   ChevronDownIcon,
@@ -26,25 +26,20 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 import axios from "axios";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useRecoilState } from "recoil";
 
-type DiscogsMasterSearchResult = {
-  id: number;
-  title: string;
-  thumb: string;
-  uri: string;
-  label: Array<string>;
-  format: Array<string>;
+type DiscogsModalProps = {
+  sendDiscogsDetailsToTracklist: (
+    artists: string | Array<string>,
+    track: string
+  ) => void;
 };
 
-const DiscogsModal: React.FC = () => {
+const DiscogsModal: React.FC<DiscogsModalProps> = ({
+  sendDiscogsDetailsToTracklist,
+}) => {
   const [modalState, setModalState] = useRecoilState(discogsModalState);
-  const [searchValue, setSearchValue] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [detailShown, setDetailShown] = useState(false);
-  const [resultDetail, setResultDetail] = useState({});
-  const [loadingDetailId, setLoadingDetailId] = useState<number | null>(null);
 
   const handleModalClose = useCallback(() => {
     setModalState((prevState) => ({
@@ -53,18 +48,34 @@ const DiscogsModal: React.FC = () => {
     }));
   }, [setModalState]);
 
+  const handleAddTrackFromModal = (track, artist) => {
+    setModalState((prevState) => ({
+      ...prevState,
+      open: false,
+    }));
+    sendDiscogsDetailsToTracklist(track, artist);
+  };
+
   const handleMoreDetailsClick = async (releaseId: number) => {
-    if (releaseId !== resultDetail.id) {
+    if (releaseId !== modalState.individualTrackDetails.id) {
       await getReleaseDetails(releaseId);
     } else {
-      setDetailShown(false);
-      setResultDetail({});
+      setModalState((prevState) => ({
+        ...prevState,
+        loadingTrackDetail: true,
+        individualTrackDetails: {
+          id: null,
+        },
+      }));
     }
   };
 
   const getReleaseDetails = async (releaseId: number) => {
     try {
-      setLoadingDetailId(releaseId);
+      setModalState((prevState) => ({
+        ...prevState,
+        loadingTrackDetailId: releaseId,
+      }));
       const response = await axios.get(
         "https://api.discogs.com/masters/" + releaseId,
         {
@@ -73,40 +84,46 @@ const DiscogsModal: React.FC = () => {
           },
         }
       );
-      setResultDetail(response.data);
-      setDetailShown(true);
-      setLoadingDetailId(null);
-    } catch (error: any) {
-      console.log(error.message);
-    }
-  };
-
-  const getSearchSuggestions = async (value: string) => {
-    try {
-      const response = await axios.get(
-        "https://api.discogs.com/database/search",
-        {
-          params: {
-            q: value,
-            type: "master",
-            token: process.env.NEXT_PUBLIC_DISCOGS_TOKEN,
-            per_page: 10,
-            page: 1,
-          },
-        }
-      );
-      const results = response.data.results.map(
-        (obj: DiscogsMasterSearchResult) => obj
-      );
-      setSearchResults(results);
+      setModalState((prevState) => ({
+        ...prevState,
+        loadingTrackDetail: true,
+        loadingTrackDetailId: null,
+        individualTrackDetails: response.data,
+      }));
     } catch (error: any) {
       console.log(error.message);
     }
   };
 
   useEffect(() => {
-    searchValue.length > 3 && getSearchSuggestions(searchValue);
-  }, [searchValue]);
+    const getSearchSuggestions = async (value: string) => {
+      try {
+        const response = await axios.get(
+          "https://api.discogs.com/database/search",
+          {
+            params: {
+              q: value,
+              type: "master",
+              token: process.env.NEXT_PUBLIC_DISCOGS_TOKEN,
+              per_page: 10,
+              page: 1,
+            },
+          }
+        );
+        const results = response.data.results.map(
+          (obj: DiscogsModalState) => obj
+        );
+        setModalState((prevState) => ({
+          ...prevState,
+          results,
+        }));
+      } catch (error: any) {
+        console.log(error.message);
+      }
+    };
+    modalState.searchValue.length > 3 &&
+      getSearchSuggestions(modalState.searchValue);
+  }, [modalState.searchValue, setModalState]);
 
   return (
     <Modal onClose={handleModalClose} isOpen={modalState.open} size="4xl">
@@ -121,8 +138,13 @@ const DiscogsModal: React.FC = () => {
             <Input
               placeholder="eg. Artist - Title or Catalogue Number"
               size="lg"
-              value={searchValue}
-              onChange={(evt) => setSearchValue(evt.target.value)}
+              value={modalState.searchValue}
+              onChange={(evt) =>
+                setModalState((prevState) => ({
+                  ...prevState,
+                  searchValue: evt.target.value,
+                }))
+              }
               autoFocus
             />
             <InputRightElement>
@@ -132,13 +154,13 @@ const DiscogsModal: React.FC = () => {
           <Box position="relative" padding="10">
             <Divider />
             <AbsoluteCenter bg="white" px="4">
-              {searchValue.length > 3 && searchResults
+              {modalState.searchValue.length > 3 && modalState.results
                 ? `Results`
                 : `No results`}
             </AbsoluteCenter>
           </Box>
           <Flex direction="column">
-            {searchResults.map((result: DiscogsMasterSearchResult) => (
+            {modalState.results.map((result) => (
               <Flex direction="row" key={result.id} mb={3} width="100%">
                 <Flex direction="column" width="100%">
                   <Flex
@@ -168,7 +190,8 @@ const DiscogsModal: React.FC = () => {
                       {result.label && result.label[0]} /{" "}
                       {result.format && result.format[0]}
                     </Box>
-                    {detailShown && result.id === resultDetail.id ? (
+                    {modalState.loadingTrackDetail &&
+                    result.id === modalState.individualTrackDetails.id ? (
                       <Button
                         leftIcon={<ChevronUpIcon />}
                         colorScheme="blue"
@@ -186,7 +209,9 @@ const DiscogsModal: React.FC = () => {
                         variant="outline"
                         aria-label="Hide release details"
                         size="sm"
-                        isLoading={loadingDetailId === result.id}
+                        isLoading={
+                          modalState.loadingTrackDetailId === result.id
+                        }
                         onClick={() => handleMoreDetailsClick(result.id)}
                       >
                         Show tracklist
@@ -194,11 +219,17 @@ const DiscogsModal: React.FC = () => {
                     )}
                   </Flex>
                   <Flex direction="row" justifyContent="center">
-                    {detailShown && result.id === resultDetail.id && (
-                      <Box>
-                        <ReleaseDetail releaseDetail={resultDetail} />
-                      </Box>
-                    )}
+                    {modalState.loadingTrackDetail &&
+                      result.id === modalState.individualTrackDetails.id && (
+                        <Box>
+                          <ReleaseDetail
+                            releaseDetail={modalState.individualTrackDetails}
+                            sendDiscogsDetailsToTracklist={
+                              handleAddTrackFromModal
+                            }
+                          />
+                        </Box>
+                      )}
                   </Flex>
                 </Flex>
               </Flex>

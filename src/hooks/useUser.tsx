@@ -32,6 +32,9 @@ const useUser = () => {
         user: {
           creatorName: users[0].creatorName,
           uid: users[0].uid,
+          creatorSlug: users[0].creatorSlug,
+          email: users[0].email,
+          photoURL: users[0].photoURL,
         },
       });
       return true;

@@ -2,6 +2,9 @@ import { atom } from "recoil";
 
 export type LoggedInUser = {
   creatorName: string;
+  creatorSlug: string;
+  photoURL?: string;
+  email: string;
   uid: string;
 };
 

@@ -1,4 +1,4 @@
-import { auth } from "@/firebase/clientApp";
+import useUser from "@/hooks/useUser";
 import {
   Box,
   CloseButton,
@@ -9,15 +9,18 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
-import React, { useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
+import React, { useEffect, useState } from "react";
 import { BsSoundwave } from "react-icons/bs";
 import Authentication from "./Authentication";
 import SearchInput from "./SearchInput";
 
 const Navbar: React.FC = () => {
   const [searchFocused, setSearchFocused] = useState(false);
-  const [user, loading, error] = useAuthState(auth);
+  const { loggedInUserStateValue, getLoggedInUser } = useUser();
+
+  useEffect(() => {
+    getLoggedInUser();
+  }, []);
 
   return (
     <Flex
@@ -58,7 +61,7 @@ const Navbar: React.FC = () => {
             Upload
           </Link>
         </Box>
-        <Authentication user={user} />
+        <Authentication user={loggedInUserStateValue.user} />
       </Box>
     </Flex>
   );

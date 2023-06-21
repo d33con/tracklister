@@ -1,7 +1,7 @@
+import { LoggedInUser } from "@/atoms/userAtom";
 import { auth } from "@/firebase/clientApp";
 import {
   Avatar,
-  Button,
   Link,
   Menu,
   MenuButton,
@@ -12,9 +12,11 @@ import NextLink from "next/link";
 import React from "react";
 import { useSignOut } from "react-firebase-hooks/auth";
 
-type UserMenuProps = {};
+type UserMenuProps = {
+  user: LoggedInUser;
+};
 
-const UserMenu: React.FC<UserMenuProps> = () => {
+const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
   const [signOut, loading, error] = useSignOut(auth);
 
   const handleSignOut = () => {
@@ -48,6 +50,26 @@ const UserMenu: React.FC<UserMenuProps> = () => {
             textAlign="center"
           >
             My dashboard
+          </Link>
+        </MenuItem>
+        <MenuItem>
+          <Link
+            as={NextLink}
+            color="blackAlpha.900"
+            href={`/${user.creatorSlug}`}
+            textAlign="center"
+          >
+            My profile
+          </Link>
+        </MenuItem>
+        <MenuItem>
+          <Link
+            as={NextLink}
+            color="blackAlpha.900"
+            href="/settings/profile"
+            textAlign="center"
+          >
+            Settings
           </Link>
         </MenuItem>
         <MenuItem>

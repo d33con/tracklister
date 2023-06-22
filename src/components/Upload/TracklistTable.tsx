@@ -22,11 +22,11 @@ import React from "react";
 import { BsDashCircle, BsPlusCircle } from "react-icons/bs";
 import { RiDeleteBin7Line } from "react-icons/ri";
 import { SiDiscogs } from "react-icons/si";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { v4 as uuidv4 } from "uuid";
 
 const TracklistTable = () => {
-  const [modalState, setModalState] = useRecoilState(discogsModalState);
+  const setModalState = useSetRecoilState(discogsModalState);
   const [tracklist, setTracklist] = useRecoilState(tracklistState);
 
   const handleChange = (

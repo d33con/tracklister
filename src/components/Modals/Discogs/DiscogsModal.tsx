@@ -28,11 +28,11 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useCallback, useEffect } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 
 const DiscogsModal = () => {
   const [modalState, setModalState] = useRecoilState(discogsModalState);
-  const [tracklist, setTracklist] = useRecoilState(tracklistState);
+  const setTracklist = useSetRecoilState(tracklistState);
 
   const handleModalClose = useCallback(() => {
     setModalState((prevState) => ({

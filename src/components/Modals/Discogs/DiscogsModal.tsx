@@ -1,4 +1,5 @@
 import { DiscogsModalState, discogsModalState } from "@/atoms/discogsModalAtom";
+import { tracklistState } from "@/atoms/tracklistAtom";
 import ReleaseDetail from "@/components/Upload/ReleaseDetail";
 import {
   ChevronDownIcon,
@@ -26,20 +27,12 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 import axios from "axios";
-import React, { useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useRecoilState } from "recoil";
 
-type DiscogsModalProps = {
-  sendDiscogsDetailsToTracklist: (
-    artists: string | Array<string>,
-    track: string
-  ) => void;
-};
-
-const DiscogsModal: React.FC<DiscogsModalProps> = ({
-  sendDiscogsDetailsToTracklist,
-}) => {
+const DiscogsModal = () => {
   const [modalState, setModalState] = useRecoilState(discogsModalState);
+  const [tracklist, setTracklist] = useRecoilState(tracklistState);
 
   const handleModalClose = useCallback(() => {
     setModalState((prevState) => ({
@@ -48,24 +41,39 @@ const DiscogsModal: React.FC<DiscogsModalProps> = ({
     }));
   }, [setModalState]);
 
-  const handleAddTrackFromModal = (track, artist) => {
+  const addDiscogsDetailsToTracklist = (artist: string, track: string) => {
     setModalState((prevState) => ({
       ...prevState,
       open: false,
     }));
-    sendDiscogsDetailsToTracklist(track, artist);
+    setTracklist((prevState) =>
+      prevState.map((item) =>
+        item.id === modalState.tracklistId
+          ? {
+              ...item,
+              trackName: `${artist} - ${track}`,
+              label: modalState.selectedReleaseLabel,
+            }
+          : item
+      )
+    );
   };
 
-  const handleMoreDetailsClick = async (releaseId: number) => {
-    if (releaseId !== modalState.individualTrackDetails.id) {
+  const handleMoreDetailsClick = async (
+    releaseId: number,
+    selectedReleaseLabel: string
+  ) => {
+    if (releaseId !== modalState.individualTrackDetails?.id) {
       await getReleaseDetails(releaseId);
+      setModalState((prevState) => ({
+        ...prevState,
+        selectedReleaseLabel,
+      }));
     } else {
       setModalState((prevState) => ({
         ...prevState,
         loadingTrackDetail: true,
-        individualTrackDetails: {
-          id: null,
-        },
+        individualTrackDetails: null,
       }));
     }
   };
@@ -130,9 +138,7 @@ const DiscogsModal: React.FC<DiscogsModalProps> = ({
       <ModalOverlay />
       <ModalContent p={8}>
         <ModalCloseButton />
-        <ModalHeader textAlign="center">
-          Adding track using Discogs at 00:00
-        </ModalHeader>
+        <ModalHeader textAlign="center">Add a track using Discogs</ModalHeader>
         <ModalBody>
           <InputGroup>
             <Input
@@ -191,14 +197,16 @@ const DiscogsModal: React.FC<DiscogsModalProps> = ({
                       {result.format && result.format[0]}
                     </Box>
                     {modalState.loadingTrackDetail &&
-                    result.id === modalState.individualTrackDetails.id ? (
+                    result.id === modalState.individualTrackDetails?.id ? (
                       <Button
                         leftIcon={<ChevronUpIcon />}
                         colorScheme="blue"
                         variant="outline"
                         aria-label="Show release details"
                         size="sm"
-                        onClick={() => handleMoreDetailsClick(result.id)}
+                        onClick={() =>
+                          handleMoreDetailsClick(result.id, result.label[0])
+                        }
                       >
                         Hide tracklist
                       </Button>
@@ -212,7 +220,9 @@ const DiscogsModal: React.FC<DiscogsModalProps> = ({
                         isLoading={
                           modalState.loadingTrackDetailId === result.id
                         }
-                        onClick={() => handleMoreDetailsClick(result.id)}
+                        onClick={() =>
+                          handleMoreDetailsClick(result.id, result.label[0])
+                        }
                       >
                         Show tracklist
                       </Button>
@@ -220,12 +230,11 @@ const DiscogsModal: React.FC<DiscogsModalProps> = ({
                   </Flex>
                   <Flex direction="row" justifyContent="center">
                     {modalState.loadingTrackDetail &&
-                      result.id === modalState.individualTrackDetails.id && (
+                      result.id === modalState.individualTrackDetails?.id && (
                         <Box>
                           <ReleaseDetail
-                            releaseDetail={modalState.individualTrackDetails}
-                            sendDiscogsDetailsToTracklist={
-                              handleAddTrackFromModal
+                            addDiscogsDetailsToTracklist={
+                              addDiscogsDetailsToTracklist
                             }
                           />
                         </Box>

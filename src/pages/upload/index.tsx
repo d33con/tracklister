@@ -1,5 +1,6 @@
 import { MixGenreState } from "@/atoms/mixGenresAtom";
 import { Mix } from "@/atoms/mixesAtom";
+import { tracklistState } from "@/atoms/tracklistAtom";
 import UploadLayout from "@/components/Layout/UploadLayout";
 import LoggedOutUploadPage from "@/components/LoggedOut/LoggedOutUploadPage";
 import NameFileToUploadCard from "@/components/Upload/NameFileToUploadCard";
@@ -27,6 +28,7 @@ import {
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { useRecoilValue } from "recoil";
 import { v4 as uuidv4 } from "uuid";
 
 const UploadIndex: React.FC = () => {
@@ -40,6 +42,7 @@ const UploadIndex: React.FC = () => {
   const [audioDownloadURL, setAudioDownloadURL] = useState("");
   const [audioDuration, setAudioDuration] = useState(0);
   const [mixImage, setMixImage] = useState("");
+  const tracklist = useRecoilValue(tracklistState);
   // MOVE ALL MIX RELATED DATA INTO MIX OBJECT
   // use recoil global state?
   const [mixDetails, setMixDetails] = useState<Mix | null>(null);
@@ -241,6 +244,7 @@ const UploadIndex: React.FC = () => {
         (genre: { label: string; value: string }) => genre.label
       ),
       favouriteCount: 0,
+      tracklist,
     };
 
     // store the mix in the db

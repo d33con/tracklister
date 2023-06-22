@@ -1,29 +1,36 @@
+import { discogsModalState } from "@/atoms/discogsModalAtom";
 import { AddIcon } from "@chakra-ui/icons";
-import { Box, Button, Flex, Spacer } from "@chakra-ui/react";
+import { Box, Button, Flex } from "@chakra-ui/react";
 import React from "react";
+import { useRecoilValue } from "recoil";
 import { v4 } from "uuid";
 
 type ReleaseDetailProps = {
-  releaseDetail: object;
+  addDiscogsDetailsToTracklist: (artists: string, track: string) => void;
 };
 
-const ReleaseDetail: React.FC<ReleaseDetailProps> = ({ releaseDetail }) => {
+const ReleaseDetail: React.FC<ReleaseDetailProps> = ({
+  addDiscogsDetailsToTracklist,
+}) => {
+  const { individualTrackDetails } = useRecoilValue(discogsModalState);
+
   return (
     <Flex direction="column" key={v4()}>
-      {releaseDetail.tracklist.map((singleTrack, singleArtist) => {
-        singleArtist = releaseDetail.artists[0].name;
+      {individualTrackDetails?.tracklist.map((track) => {
+        const singleArtist = individualTrackDetails?.artists[0].name;
         const artists =
-          releaseDetail.artists && releaseDetail.artists.length > 1
-            ? releaseDetail.artists.map((name) => {
-                return name.join.length > 0
-                  ? `${name.name} ${name.join} `
-                  : `${name.name}`;
+          individualTrackDetails?.artists &&
+          individualTrackDetails.artists.length > 1
+            ? individualTrackDetails.artists.map((artist) => {
+                return artist.join.length > 0
+                  ? `${artist.name} ${artist.join} `
+                  : `${artist.name}`;
               })
             : singleArtist;
         return (
-          <Flex direction="row" key={v4()}>
+          <Flex direction="row" key={track.position}>
             <Box mr={4}>
-              {singleTrack.position} . {artists} - {singleTrack.title}
+              {track.position} . {artists} - {track.title}
             </Box>
             <Button
               leftIcon={<AddIcon />}
@@ -31,7 +38,9 @@ const ReleaseDetail: React.FC<ReleaseDetailProps> = ({ releaseDetail }) => {
               variant="outline"
               aria-label="Add this track"
               size="sm"
-              // onClick={() => handleMoreDetailsClick(result.id)}
+              onClick={() =>
+                addDiscogsDetailsToTracklist(artists as string, track.title)
+              }
             >
               Add
             </Button>

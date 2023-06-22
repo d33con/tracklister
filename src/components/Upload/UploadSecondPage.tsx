@@ -6,7 +6,6 @@ import {
   AccordionPanel,
   Box,
   Button,
-  Center,
   Flex,
   HStack,
   Heading,
@@ -16,15 +15,12 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React from "react";
 import { MultiValue } from "react-select/dist/declarations/src/types";
-import MixTagsAndDescription from "./MixTagsAndDescription";
-import UploadMixImage from "./UploadMixImage";
-import TracklistTable from "./TracklistTable";
 import DiscogsModal from "../Modals/Discogs/DiscogsModal";
-import { Tracklist } from "@/atoms/mixesAtom";
-import { PlusSquareIcon } from "@chakra-ui/icons";
-import { v4 as uuidv4 } from "uuid";
+import MixTagsAndDescription from "./MixTagsAndDescription";
+import TracklistTable from "./TracklistTable";
+import UploadMixImage from "./UploadMixImage";
 
 type UploadSecondPageProps = {
   uploadPercent: number;
@@ -59,31 +55,6 @@ const UploadSecondPage: React.FC<UploadSecondPageProps> = ({
   audioDownloadURL,
   setMixGenres,
 }) => {
-  const [tracklist, setTracklist] = useState<Tracklist>([
-    {
-      id: uuidv4(),
-      trackTime: 0,
-      trackName: "",
-      label: "",
-    },
-  ]);
-
-  const addNewTrackRow = () => {
-    setTracklist((prevState) => [
-      ...prevState,
-      {
-        id: uuidv4(),
-        trackTime: 0,
-        trackName: "",
-        label: "",
-      },
-    ]);
-  };
-
-  const deleteTrack = (id: string) => {
-    setTracklist((prevState) => prevState.filter((track) => track.id !== id));
-  };
-
   return (
     <Flex width="100%" flexDirection="column" p={12}>
       <form onSubmit={publishMix}>
@@ -150,20 +121,7 @@ const UploadSecondPage: React.FC<UploadSecondPageProps> = ({
                 </AccordionButton>
               </h2>
               <AccordionPanel pb={4}>
-                <TracklistTable
-                  tracklist={tracklist}
-                  deleteTrack={deleteTrack}
-                />
-                <Center mt={8} mb={6}>
-                  <Button
-                    leftIcon={<PlusSquareIcon />}
-                    colorScheme="teal"
-                    variant="solid"
-                    onClick={addNewTrackRow}
-                  >
-                    Add new track row
-                  </Button>
-                </Center>
+                <TracklistTable />
               </AccordionPanel>
             </AccordionItem>
           </Accordion>

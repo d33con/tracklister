@@ -1,3 +1,4 @@
+import { uploadMixState } from "@/atoms/uploadMixAtom";
 import bytesToMB from "@/helpers/bytesToMB";
 import {
   Box,
@@ -14,23 +15,21 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React, { useRef } from "react";
+import { useRecoilState } from "recoil";
 
 type NamedAudioFileProps = {
-  selectedFile: File | null;
-  setSelectedFile: (file: File | null) => void;
-  mixTitle: string;
-  setMixTitle: (value: string) => void;
-  handleCreateUploadedFile: (evt: React.FormEvent<HTMLFormElement>) => void;
+  onSelectAudioFileToUpload: (evt: React.ChangeEvent<HTMLInputElement>) => void;
+  handleCreateUploadedAudioFile: (
+    evt: React.FormEvent<HTMLFormElement>
+  ) => void;
 };
 
 const NameAudioFileCard: React.FC<NamedAudioFileProps> = ({
-  selectedFile,
-  setSelectedFile,
-  mixTitle,
-  setMixTitle,
-  handleCreateUploadedFile,
+  onSelectAudioFileToUpload,
+  handleCreateUploadedAudioFile,
 }) => {
   const uploadFileRef = useRef<HTMLInputElement>(null);
+  const [uploadMix, setUploadMix] = useRecoilState(uploadMixState);
 
   return (
     <Card size="lg" variant="outline" p={6}>
@@ -38,7 +37,7 @@ const NameAudioFileCard: React.FC<NamedAudioFileProps> = ({
         <Heading size="lg">Name your upload</Heading>
       </CardHeader>
       <CardBody>
-        <form onSubmit={handleCreateUploadedFile}>
+        <form onSubmit={handleCreateUploadedAudioFile}>
           <FormControl>
             <Flex flexDir="row">
               <Input
@@ -47,9 +46,14 @@ const NameAudioFileCard: React.FC<NamedAudioFileProps> = ({
                 htmlSize={50}
                 width="auto"
                 name="title"
-                value={mixTitle}
+                value={uploadMix.mixTitle}
                 type="text"
-                onChange={(evt) => setMixTitle(evt.target.value)}
+                onChange={(evt) =>
+                  setUploadMix((prevState) => ({
+                    ...prevState,
+                    mixTitle: evt.target.value,
+                  }))
+                }
                 required
               />
               <Box>
@@ -61,7 +65,7 @@ const NameAudioFileCard: React.FC<NamedAudioFileProps> = ({
                   color="whiteAlpha.900"
                   _hover={{ bg: "blue.600" }}
                   textTransform="uppercase"
-                  isDisabled={mixTitle.length === 0}
+                  isDisabled={uploadMix.mixTitle?.length === 0}
                   type="submit"
                 >
                   Confirm name
@@ -73,7 +77,8 @@ const NameAudioFileCard: React.FC<NamedAudioFileProps> = ({
       </CardBody>
       <CardFooter>
         <Text align="left" mr={2}>
-          {selectedFile?.name} ({bytesToMB(selectedFile?.size as number)})
+          {uploadMix.selectedAudioFile?.name} (
+          {bytesToMB(uploadMix.selectedAudioFile?.size as number)})
         </Text>
         <Link
           color="blackAlpha.900"
@@ -86,7 +91,7 @@ const NameAudioFileCard: React.FC<NamedAudioFileProps> = ({
             hidden
             accept="audio/*"
             ref={uploadFileRef}
-            onChange={(evt) => setSelectedFile(evt.target?.files?.[0] as File)}
+            onChange={onSelectAudioFileToUpload}
           />
         </Link>
       </CardFooter>

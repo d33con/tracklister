@@ -1,3 +1,4 @@
+import { uploadMixState } from "@/atoms/uploadMixAtom";
 import {
   Button,
   Card,
@@ -8,17 +9,17 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React, { useRef } from "react";
+import { useRecoilValue } from "recoil";
 
 type SelectFileToUploadCardProps = {
-  onSelectFileToUpload: (evt: React.ChangeEvent<HTMLInputElement>) => void;
-  selectedFileLoading?: boolean;
+  onSelectAudioFileToUpload: (evt: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 const SelectFileToUploadCard: React.FC<SelectFileToUploadCardProps> = ({
-  onSelectFileToUpload,
-  selectedFileLoading,
+  onSelectAudioFileToUpload,
 }) => {
   const uploadFileRef = useRef<HTMLInputElement>(null);
+  const uploadMix = useRecoilValue(uploadMixState);
 
   return (
     <Card size="sm" variant="outline" p={6}>
@@ -39,7 +40,7 @@ const SelectFileToUploadCard: React.FC<SelectFileToUploadCardProps> = ({
           size="lg"
           width="100%"
           onClick={() => uploadFileRef.current?.click()}
-          isLoading={selectedFileLoading}
+          isLoading={uploadMix.selectedAudioFileLoading}
         >
           Upload
         </Button>
@@ -48,7 +49,7 @@ const SelectFileToUploadCard: React.FC<SelectFileToUploadCardProps> = ({
           hidden
           accept="audio/*"
           ref={uploadFileRef}
-          onChange={onSelectFileToUpload}
+          onChange={onSelectAudioFileToUpload}
         />
       </CardFooter>
     </Card>

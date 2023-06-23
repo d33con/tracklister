@@ -1,6 +1,7 @@
 import { MixGenreState } from "@/atoms/mixGenresAtom";
 import { Mix } from "@/atoms/mixesAtom";
 import { tracklistState } from "@/atoms/tracklistAtom";
+import { uploadMixState } from "@/atoms/uploadMixAtom";
 import UploadLayout from "@/components/Layout/UploadLayout";
 import LoggedOutUploadPage from "@/components/LoggedOut/LoggedOutUploadPage";
 import NameFileToUploadCard from "@/components/Upload/NameFileToUploadCard";
@@ -28,23 +29,19 @@ import {
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useRecoilState } from "recoil";
 import { v4 as uuidv4 } from "uuid";
 
 const UploadIndex: React.FC = () => {
-  const [uploadStage, setUploadStage] = useState("selecting");
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [selectedFileLoading, setSelectedFileLoading] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
-  const [mixTitle, setMixTitle] = useState("");
   const [mixDescription, setMixDescription] = useState("");
   const [mixGenres, setMixGenres] = useState<MixGenreState>([]);
   const [audioDownloadURL, setAudioDownloadURL] = useState("");
   const [audioDuration, setAudioDuration] = useState(0);
   const [mixImage, setMixImage] = useState("");
   const tracklist = useRecoilValue(tracklistState);
-  // MOVE ALL MIX RELATED DATA INTO MIX OBJECT
-  // use recoil global state?
+  const [uploadMix, setUploadMix] = useRecoilState(uploadMixState);
+  // GET THE CURRENT LOGGED IN USER FROM GLOBAL STATE
   const [mixDetails, setMixDetails] = useState<Mix | null>(null);
   const [uploadProgress, setUploadProgress] = useState({
     uploadPercent: 0,
@@ -62,8 +59,10 @@ const UploadIndex: React.FC = () => {
 
   // get the duration of the audio file selected
   useEffect(() => {
-    if (selectedFile) {
-      const objectURL = URL.createObjectURL(selectedFile as Blob);
+    if (uploadMix.selectedAudioFile) {
+      const objectURL = URL.createObjectURL(
+        uploadMix.selectedAudioFile as Blob
+      );
       uploadedAudioRef.current?.setAttribute("src", objectURL);
       uploadedAudioRef.current?.addEventListener("canplaythrough", () => {
         setAudioDuration(
@@ -72,40 +71,54 @@ const UploadIndex: React.FC = () => {
       });
       return () => URL.revokeObjectURL(objectURL);
     }
-  }, [selectedFile]);
+  }, [uploadMix.selectedAudioFile]);
 
-  const onSelectFileToUpload = (evt: React.ChangeEvent<HTMLInputElement>) => {
+  const onSelectAudioFileToUpload = (
+    evt: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const fileReader = new FileReader();
 
     if (evt.target.files?.[0]) {
       fileReader.readAsDataURL(evt.target.files[0]);
       // show spinner on button while file loads from user's machine
-      fileReader.onloadstart = () => setSelectedFileLoading(true);
+      fileReader.onloadstart = () =>
+        setUploadMix((prevState) => ({
+          ...prevState,
+          selectedAudioFileLoading: true,
+        }));
     }
 
     fileReader.onload = (readerEvent) => {
       if (readerEvent.target?.result) {
         // file is ready to be uploaded
-        setSelectedFile(evt.target.files?.[0] as File);
-        setSelectedFileLoading(false);
-        setUploadStage("naming");
+        setUploadMix((prevState) => ({
+          ...prevState,
+          selectedAudioFile: evt.target.files?.[0] as File,
+          selectedAudioFileLoading: false,
+          uploadStage: "naming",
+        }));
       }
     };
   };
 
-  const handleCreateUploadedFile = async (
+  const handleCreateUploadedAudioFile = async (
     evt: React.FormEvent<HTMLFormElement>
   ) => {
     evt.preventDefault();
-    setUploadStage("uploading");
-
-    if (selectedFile) {
+    setUploadMix((prevState) => ({
+      ...prevState,
+      uploadStage: "uploading",
+    }));
+    if (uploadMix.selectedAudioFile) {
       // upload to audio collection in storage
       const audioRef = ref(
         storage,
-        `mixes/${user?.uid}/audio/${selectedFile.name}`
+        `mixes/${user?.uid}/audio/${uploadMix.selectedAudioFile.name}`
       );
-      const uploadTask = uploadBytesResumable(audioRef, selectedFile);
+      const uploadTask = uploadBytesResumable(
+        audioRef,
+        uploadMix.selectedAudioFile
+      );
       uploadTaskRef.current = uploadTask;
 
       uploadTask.on(
@@ -127,7 +140,10 @@ const UploadIndex: React.FC = () => {
             bytesTransferred: "",
             uploadPercent: 0,
           });
-          setSelectedFile(null);
+          setUploadMix((prevState) => ({
+            ...prevState,
+            selectedAudioFile: null,
+          }));
         },
         () => {
           // get download url for audio file
@@ -150,12 +166,15 @@ const UploadIndex: React.FC = () => {
         isClosable: true,
       });
       uploadTaskRef.current?.cancel();
-      setUploadStage("selecting");
+      setUploadMix((prevState) => ({
+        ...prevState,
+        uploadStage: "selecting",
+      }));
     }
     // file has already been uploaded => delete file from storage and mix from database and go back to upload page?
     const audioFileRef = ref(
       storage,
-      `mixes/${user?.uid}/audio/${selectedFile?.name}`
+      `mixes/${user?.uid}/audio/${uploadMix.selectedAudioFile?.name}`
     );
     // Delete the file
     deleteObject(audioFileRef)
@@ -173,10 +192,13 @@ const UploadIndex: React.FC = () => {
         // or redirect?
       })
       .then(() => {
-        setUploadStage("selecting");
+        setUploadMix((prevState) => ({
+          ...prevState,
+          uploadStage: "selecting",
+          mixTitle: "",
+          selectedAudioFile: null,
+        }));
         setAudioDownloadURL("");
-        setMixTitle("");
-        setSelectedFile(null);
         setUploadProgress({
           uploadPercent: 0,
           totalBytes: "",
@@ -235,10 +257,10 @@ const UploadIndex: React.FC = () => {
       createdAt: serverTimestamp() as Timestamp,
       creatorId: user?.uid,
       audioURL: audioDownloadURL,
-      filename: selectedFile?.name,
+      filename: uploadMix.selectedAudioFile?.name,
       audioDuration,
-      title: mixTitle,
-      slug: mixTitle.replace(/\s+/g, "-").toLowerCase(),
+      title: uploadMix.mixTitle,
+      slug: uploadMix.mixTitle.replace(/\s+/g, "-").toLowerCase(),
       description: mixDescription,
       genres: mixGenres.map(
         (genre: { label: string; value: string }) => genre.label
@@ -276,32 +298,28 @@ const UploadIndex: React.FC = () => {
 
   return user ? (
     <>
-      {uploadStage === "selecting" && (
+      {uploadMix.uploadStage === "selecting" && (
         <UploadLayout>
           <SelectFileToUploadCard
-            onSelectFileToUpload={onSelectFileToUpload}
-            selectedFileLoading={selectedFileLoading}
+            onSelectAudioFileToUpload={onSelectAudioFileToUpload}
           />
         </UploadLayout>
       )}
-      {uploadStage === "naming" && (
+      {uploadMix.uploadStage === "naming" && (
         <UploadLayout>
           <audio ref={uploadedAudioRef} hidden />
           <NameFileToUploadCard
-            selectedFile={selectedFile}
-            setSelectedFile={setSelectedFile}
-            mixTitle={mixTitle}
-            setMixTitle={setMixTitle}
-            handleCreateUploadedFile={handleCreateUploadedFile}
+            onSelectAudioFileToUpload={onSelectAudioFileToUpload}
+            handleCreateUploadedAudioFile={handleCreateUploadedAudioFile}
           />
         </UploadLayout>
       )}
-      {uploadStage === "uploading" && (
+      {uploadMix.uploadStage === "uploading" && (
         <UploadSecondPage
           uploadPercent={uploadPercent}
           totalBytes={totalBytes}
           bytesTransferred={bytesTransferred}
-          selectedFile={selectedFile}
+          selectedFile={uploadMix.selectedAudioFile}
           handleUploadCancel={handleUploadCancel}
           mixImage={mixImage}
           onSelectImageToUpload={onSelectImageToUpload}

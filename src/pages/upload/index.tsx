@@ -31,9 +31,12 @@ import React, { useEffect, useRef, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useRecoilValue, useRecoilState } from "recoil";
 import { v4 as uuidv4 } from "uuid";
+import { MultiValue } from "react-select/dist/declarations/src/types";
 
 const UploadIndex: React.FC = () => {
-  const [mixGenres, setMixGenres] = useState<MixGenreState>([]);
+  const [mixGenres, setMixGenres] = useState<
+    MultiValue<{ value: string; label: string }>
+  >([]);
   const tracklist = useRecoilValue(tracklistState);
   const [uploadMix, setUploadMix] = useRecoilState(uploadMixState);
   // GET THE CURRENT LOGGED IN USER FROM GLOBAL STATE
@@ -216,26 +219,9 @@ const UploadIndex: React.FC = () => {
       });
   };
 
-  const onSelectImageToUpload = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    const fileReader = new FileReader();
-
-    if (evt.target.files?.[0]) {
-      fileReader.readAsDataURL(evt.target.files[0]);
-    }
-
-    fileReader.onload = (readerEvent) => {
-      if (readerEvent.target?.result) {
-        setUploadMix((prevState) => ({
-          ...prevState,
-          selectedImageFile: readerEvent.target?.result as string,
-        }));
-      }
-    };
-  };
-
   const handleMixGenreCreation = () => {
     if (mixGenres.length > 0) {
-      mixGenres.map(async (genre: { label: string; value: string }) => {
+      mixGenres.map(async (genre) => {
         const kebabCaseGenre = genre.value.replace(/\s+/g, "-").toLowerCase();
         const mixGenresDocRef = doc(firestore, "mixGenres", kebabCaseGenre);
         const mixGenreDoc = await getDoc(mixGenresDocRef);
@@ -274,9 +260,7 @@ const UploadIndex: React.FC = () => {
       title: uploadMix.mix.title,
       slug: uploadMix.mix.title.replace(/\s+/g, "-").toLowerCase(),
       description: uploadMix.mix.description,
-      genres: mixGenres.map(
-        (genre: { label: string; value: string }) => genre.label
-      ),
+      genres: mixGenres.map((genre) => genre.label),
       favouriteCount: 0,
       tracklist,
     };

@@ -46,12 +46,15 @@ const NameAudioFileCard: React.FC<NamedAudioFileProps> = ({
                 htmlSize={50}
                 width="auto"
                 name="title"
-                value={uploadMix.mixTitle}
+                value={uploadMix.mix.title}
                 type="text"
                 onChange={(evt) =>
                   setUploadMix((prevState) => ({
                     ...prevState,
-                    mixTitle: evt.target.value,
+                    mix: {
+                      ...prevState.mix,
+                      title: evt.target.value,
+                    },
                   }))
                 }
                 required
@@ -65,7 +68,7 @@ const NameAudioFileCard: React.FC<NamedAudioFileProps> = ({
                   color="whiteAlpha.900"
                   _hover={{ bg: "blue.600" }}
                   textTransform="uppercase"
-                  isDisabled={uploadMix.mixTitle?.length === 0}
+                  isDisabled={uploadMix.mix.title?.length === 0}
                   type="submit"
                 >
                   Confirm name

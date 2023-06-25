@@ -1,21 +1,21 @@
+import { uploadMixState } from "@/atoms/uploadMixAtom";
 import { genres } from "@/helpers/genreTags";
 import { Box, Flex, Textarea } from "@chakra-ui/react";
 import React from "react";
 import Select, { MultiValue } from "react-select";
+import { useRecoilState } from "recoil";
 
 type MixTagsAndDescriptionProps = {
-  mixDescription: string;
-  setMixDescription: (value: string) => void;
   setMixGenres: (
     newValue: MultiValue<{ value: string; label: string }>
   ) => void;
 };
 
 const MixTagsAndDescription: React.FC<MixTagsAndDescriptionProps> = ({
-  mixDescription,
-  setMixDescription,
   setMixGenres,
 }) => {
+  const [uploadMix, setUploadMix] = useRecoilState(uploadMixState);
+
   return (
     <Flex
       width="100%"
@@ -38,8 +38,16 @@ const MixTagsAndDescription: React.FC<MixTagsAndDescriptionProps> = ({
         />
       </Box>
       <Textarea
-        value={mixDescription}
-        onChange={(evt) => setMixDescription(evt.target.value)}
+        value={uploadMix.mix.description}
+        onChange={(evt) =>
+          setUploadMix((prevState) => ({
+            ...prevState,
+            mix: {
+              ...prevState.mix,
+              description: evt.target.value,
+            },
+          }))
+        }
         placeholder="Description"
         size="lg"
         rows={8}

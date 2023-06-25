@@ -1,32 +1,50 @@
+import { uploadMixState } from "@/atoms/uploadMixAtom";
 import { Box, Button, Flex, Image } from "@chakra-ui/react";
 import React, { useRef } from "react";
+import { useRecoilState } from "recoil";
 
-type MixUploadImageProps = {
-  onSelectImageToUpload: (evt: React.ChangeEvent<HTMLInputElement>) => void;
-  mixImage?: string;
-};
-
-const MixUploadImage: React.FC<MixUploadImageProps> = ({
-  onSelectImageToUpload,
-  mixImage,
-}) => {
+const MixUploadImage = () => {
+  const [uploadMix, setUploadMix] = useRecoilState(uploadMixState);
   const selectedImageRef = useRef<HTMLInputElement>(null);
+
+  const onSelectImageToUpload = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    const fileReader = new FileReader();
+
+    if (evt.target.files?.[0]) {
+      fileReader.readAsDataURL(evt.target.files[0]);
+    }
+
+    fileReader.onload = (readerEvent) => {
+      if (readerEvent.target?.result) {
+        setUploadMix((prevState) => ({
+          ...prevState,
+          selectedImageFile: readerEvent.target?.result as string,
+        }));
+      }
+    };
+  };
+
   return (
     <Flex
       width="25%"
       justifyContent="center"
-      bg={mixImage ? "white" : "blue.900"}
+      bg={uploadMix.selectedImageFile ? "white" : "blue.900"}
       alignItems="center"
     >
-      <Box position="relative" top={0} left={mixImage ? "50%" : 0} zIndex={1}>
+      <Box
+        position="relative"
+        top={0}
+        left={uploadMix.selectedImageFile ? "50%" : 0}
+        zIndex={1}
+      >
         <Button size="lg" onClick={() => selectedImageRef.current?.click()}>
-          {mixImage ? "Change image" : "Upload image"}
+          {uploadMix.selectedImageFile ? "Change image" : "Upload image"}
         </Button>
       </Box>
-      {mixImage && (
+      {uploadMix.selectedImageFile && (
         <Image
-          src={mixImage}
-          alt={mixImage}
+          src={uploadMix.selectedImageFile}
+          alt={uploadMix.selectedImageFile}
           position="relative"
           left="-25%"
           boxSize="450px"

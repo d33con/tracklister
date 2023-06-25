@@ -21,40 +21,26 @@ import DiscogsModal from "../Modals/Discogs/DiscogsModal";
 import MixTagsAndDescription from "./MixTagsAndDescription";
 import TracklistTable from "./TracklistTable";
 import UploadMixImage from "./UploadMixImage";
+import { useRecoilState } from "recoil";
+import { uploadMixState } from "@/atoms/uploadMixAtom";
 
 type UploadSecondPageProps = {
-  uploadPercent: number;
-  totalBytes: string;
-  bytesTransferred: string;
   selectedFile: File | null;
   handleUploadCancel: () => void;
-  onSelectImageToUpload: (evt: React.ChangeEvent<HTMLInputElement>) => void;
-  mixImage?: string;
-  mixDescription: string;
-  setMixDescription: (value: string) => void;
   publishMix: (evt: React.FormEvent<HTMLFormElement>) => void;
-  isPublishing: boolean;
-  audioDownloadURL: string;
   setMixGenres: (
     newValue: MultiValue<{ value: string; label: string }>
   ) => void;
 };
 
 const UploadSecondPage: React.FC<UploadSecondPageProps> = ({
-  uploadPercent,
-  totalBytes,
-  bytesTransferred,
   selectedFile,
   handleUploadCancel,
-  onSelectImageToUpload,
-  mixDescription,
-  setMixDescription,
-  mixImage,
   publishMix,
-  isPublishing,
-  audioDownloadURL,
   setMixGenres,
 }) => {
+  const [uploadMix, setUploadMix] = useRecoilState(uploadMixState);
+
   return (
     <Flex width="100%" flexDirection="column" p={12}>
       <form onSubmit={publishMix}>
@@ -65,13 +51,13 @@ const UploadSecondPage: React.FC<UploadSecondPageProps> = ({
             onClick={handleUploadCancel}
             variant="ghost"
             textTransform="uppercase"
-            isDisabled={uploadPercent === 0}
+            isDisabled={uploadMix.uploadProgress.uploadPercent === 0}
           >
             Cancel
           </Button>
           <Button
-            isDisabled={!audioDownloadURL}
-            isLoading={isPublishing}
+            isDisabled={!uploadMix.mix.audioURL}
+            isLoading={uploadMix.isPublishing}
             size="lg"
             backgroundColor="blue.500"
             color="whiteAlpha.900"
@@ -83,31 +69,28 @@ const UploadSecondPage: React.FC<UploadSecondPageProps> = ({
         </HStack>
         <Stack w="100%" mb={6}>
           <Box width="100%" pt={4} pb={4}>
-            <Progress value={uploadPercent} size="lg" colorScheme="blue" />
+            <Progress
+              value={uploadMix.uploadProgress.uploadPercent}
+              size="lg"
+              colorScheme="blue"
+            />
           </Box>
         </Stack>
         <HStack>
           <Text>{selectedFile?.name}</Text>
           <Spacer />
           <Text>
-            {bytesTransferred ? (
-              `${bytesTransferred} of ${totalBytes}`
+            {uploadMix.uploadProgress.bytesTransferred ? (
+              `${uploadMix.uploadProgress.bytesTransferred} of ${uploadMix.uploadProgress.totalBytes}`
             ) : (
               <Spinner />
             )}{" "}
-            ({uploadPercent}% done)
+            ({uploadMix.uploadProgress.uploadPercent}% done)
           </Text>
         </HStack>
         <Flex pt={8} pb={8}>
-          <UploadMixImage
-            onSelectImageToUpload={onSelectImageToUpload}
-            mixImage={mixImage}
-          />
-          <MixTagsAndDescription
-            mixDescription={mixDescription}
-            setMixDescription={setMixDescription}
-            setMixGenres={setMixGenres}
-          />
+          <UploadMixImage />
+          <MixTagsAndDescription setMixGenres={setMixGenres} />
         </Flex>
         <Flex pt={8} pb={8} width="100%">
           <Accordion width="100%" allowToggle>

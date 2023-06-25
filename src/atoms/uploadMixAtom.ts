@@ -1,17 +1,36 @@
 import { atom } from "recoil";
+import { Mix } from "./mixesAtom";
+import { Timestamp } from "firebase/firestore";
 
 export interface UploadMixState {
   uploadStage: "selecting" | "naming" | "uploading";
   selectedAudioFile: File | null;
   selectedAudioFileLoading: boolean;
-  mixTitle: string;
+  selectedImageFile?: string;
+  isPublishing: boolean;
+  uploadProgress: {
+    uploadPercent: number;
+    totalBytes: string;
+    bytesTransferred: string;
+  };
+  mix: Mix;
 }
 
 const defaultUploadMixState: UploadMixState = {
   uploadStage: "selecting",
   selectedAudioFile: null,
   selectedAudioFileLoading: false,
-  mixTitle: "", // use Mix object's title here instead
+  isPublishing: false,
+  uploadProgress: {
+    uploadPercent: 0,
+    totalBytes: "",
+    bytesTransferred: "",
+  },
+  mix: {
+    id: "",
+    title: "",
+    slug: "",
+  },
 };
 
 export const uploadMixState = atom<UploadMixState>({

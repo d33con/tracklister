@@ -33,22 +33,10 @@ import { useRecoilValue, useRecoilState } from "recoil";
 import { v4 as uuidv4 } from "uuid";
 
 const UploadIndex: React.FC = () => {
-  const [isPublishing, setIsPublishing] = useState(false);
-  const [mixDescription, setMixDescription] = useState("");
   const [mixGenres, setMixGenres] = useState<MixGenreState>([]);
-  const [audioDownloadURL, setAudioDownloadURL] = useState("");
-  const [audioDuration, setAudioDuration] = useState(0);
-  const [mixImage, setMixImage] = useState("");
   const tracklist = useRecoilValue(tracklistState);
   const [uploadMix, setUploadMix] = useRecoilState(uploadMixState);
   // GET THE CURRENT LOGGED IN USER FROM GLOBAL STATE
-  const [mixDetails, setMixDetails] = useState<Mix | null>(null);
-  const [uploadProgress, setUploadProgress] = useState({
-    uploadPercent: 0,
-    totalBytes: "",
-    bytesTransferred: "",
-  });
-  const { uploadPercent, totalBytes, bytesTransferred } = uploadProgress;
   const [user] = useAuthState(auth);
 
   const uploadTaskRef = useRef<UploadTask | null>(null);
@@ -65,13 +53,19 @@ const UploadIndex: React.FC = () => {
       );
       uploadedAudioRef.current?.setAttribute("src", objectURL);
       uploadedAudioRef.current?.addEventListener("canplaythrough", () => {
-        setAudioDuration(
-          Math.round(uploadedAudioRef.current?.duration as number)
-        );
+        setUploadMix((prevState) => ({
+          ...prevState,
+          mix: {
+            ...prevState.mix,
+            audioDuration: Math.round(
+              uploadedAudioRef.current?.duration as number
+            ),
+          },
+        }));
       });
       return () => URL.revokeObjectURL(objectURL);
     }
-  }, [uploadMix.selectedAudioFile]);
+  }, [uploadMix.selectedAudioFile, setUploadMix]);
 
   const onSelectAudioFileToUpload = (
     evt: React.ChangeEvent<HTMLInputElement>
@@ -127,28 +121,37 @@ const UploadIndex: React.FC = () => {
           const progress = Math.round(
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100
           );
-          setUploadProgress({
-            totalBytes: bytesToMB(snapshot.totalBytes),
-            bytesTransferred: bytesToMB(snapshot.bytesTransferred),
-            uploadPercent: progress,
-          });
+          setUploadMix((prevState) => ({
+            ...prevState,
+            uploadProgress: {
+              totalBytes: bytesToMB(snapshot.totalBytes),
+              bytesTransferred: bytesToMB(snapshot.bytesTransferred),
+              uploadPercent: progress,
+            },
+          }));
         },
         (error) => {
           // cancel error is handled by toast above
-          setUploadProgress({
-            totalBytes: "",
-            bytesTransferred: "",
-            uploadPercent: 0,
-          });
           setUploadMix((prevState) => ({
             ...prevState,
             selectedAudioFile: null,
+            uploadProgress: {
+              totalBytes: "",
+              bytesTransferred: "",
+              uploadPercent: 0,
+            },
           }));
         },
         () => {
           // get download url for audio file
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setAudioDownloadURL(downloadURL);
+            setUploadMix((prevState) => ({
+              ...prevState,
+              mix: {
+                ...prevState.mix,
+                audioURL: downloadURL,
+              },
+            }));
           });
         }
       );
@@ -156,7 +159,7 @@ const UploadIndex: React.FC = () => {
   };
 
   const handleUploadCancel = () => {
-    if (uploadPercent < 100) {
+    if (uploadMix.uploadProgress.uploadPercent < 100) {
       toast({
         title: "Upload cancelled.",
         description: "Please upload another audio file to begin.",
@@ -195,15 +198,18 @@ const UploadIndex: React.FC = () => {
         setUploadMix((prevState) => ({
           ...prevState,
           uploadStage: "selecting",
-          mixTitle: "",
+          mix: {
+            ...prevState.mix,
+            title: "",
+            audioURL: "",
+          },
           selectedAudioFile: null,
+          uploadProgress: {
+            uploadPercent: 0,
+            totalBytes: "",
+            bytesTransferred: "",
+          },
         }));
-        setAudioDownloadURL("");
-        setUploadProgress({
-          uploadPercent: 0,
-          totalBytes: "",
-          bytesTransferred: "",
-        });
       })
       .catch((error) => {
         // Uh-oh, an error occurred!
@@ -219,7 +225,10 @@ const UploadIndex: React.FC = () => {
 
     fileReader.onload = (readerEvent) => {
       if (readerEvent.target?.result) {
-        setMixImage(readerEvent.target.result as string);
+        setUploadMix((prevState) => ({
+          ...prevState,
+          selectedImageFile: readerEvent.target?.result as string,
+        }));
       }
     };
   };
@@ -245,7 +254,10 @@ const UploadIndex: React.FC = () => {
   };
 
   const publishMix = async (evt: React.FormEvent<HTMLFormElement>) => {
-    setIsPublishing(true);
+    setUploadMix((prevState) => ({
+      ...prevState,
+      isPublishing: true,
+    }));
     evt.preventDefault();
 
     // check if mix genres exist
@@ -256,12 +268,12 @@ const UploadIndex: React.FC = () => {
       id: uuidv4(),
       createdAt: serverTimestamp() as Timestamp,
       creatorId: user?.uid,
-      audioURL: audioDownloadURL,
+      audioURL: uploadMix.mix.audioURL,
       filename: uploadMix.selectedAudioFile?.name,
-      audioDuration,
-      title: uploadMix.mixTitle,
-      slug: uploadMix.mixTitle.replace(/\s+/g, "-").toLowerCase(),
-      description: mixDescription,
+      audioDuration: uploadMix.mix.audioDuration,
+      title: uploadMix.mix.title,
+      slug: uploadMix.mix.title.replace(/\s+/g, "-").toLowerCase(),
+      description: uploadMix.mix.description,
       genres: mixGenres.map(
         (genre: { label: string; value: string }) => genre.label
       ),
@@ -274,12 +286,16 @@ const UploadIndex: React.FC = () => {
       const mixDocRef = doc(firestore, "mixes", newMix.id);
       await setDoc(mixDocRef, newMix);
       // if there is an image get a ref to store the mix's image in the mixes/image collection
-      if (mixImage && audioDownloadURL) {
+      if (uploadMix.selectedImageFile && uploadMix.mix.audioURL) {
         const mixImageRef = ref(
           storage,
           `mixes/${user?.uid}/images/${newMix.id}`
         );
-        await uploadString(mixImageRef, mixImage, "data_url");
+        await uploadString(
+          mixImageRef,
+          uploadMix.selectedImageFile,
+          "data_url"
+        );
         const mixImageDownloadURL = await getDownloadURL(mixImageRef);
         // update the mix doc ref and add the download URL
         await updateDoc(mixDocRef, {
@@ -290,8 +306,10 @@ const UploadIndex: React.FC = () => {
       // handle error
       console.log(error.message);
     }
-    setIsPublishing(false);
-
+    setUploadMix((prevState) => ({
+      ...prevState,
+      isPublishing: false,
+    }));
     // redirect back to dashboard or to this mix's page
     router.push("/dashboard/my-dashboard");
   };
@@ -316,18 +334,9 @@ const UploadIndex: React.FC = () => {
       )}
       {uploadMix.uploadStage === "uploading" && (
         <UploadSecondPage
-          uploadPercent={uploadPercent}
-          totalBytes={totalBytes}
-          bytesTransferred={bytesTransferred}
           selectedFile={uploadMix.selectedAudioFile}
           handleUploadCancel={handleUploadCancel}
-          mixImage={mixImage}
-          onSelectImageToUpload={onSelectImageToUpload}
-          mixDescription={mixDescription}
-          setMixDescription={setMixDescription}
           publishMix={publishMix}
-          audioDownloadURL={audioDownloadURL}
-          isPublishing={isPublishing}
           setMixGenres={setMixGenres}
         />
       )}

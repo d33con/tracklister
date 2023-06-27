@@ -4,7 +4,7 @@
 - ~~Adding genres~~
 - Individual mix pages
 - Comment on mixes
-- Adding tracklist
+- ~~Adding tracklist~~
 - Editing mixes
 - ~~Deleting mixes~~
 - Profile page

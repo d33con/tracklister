@@ -1,94 +1,209 @@
 import { Mix } from "@/atoms/mixesAtom";
-import NoUserMixes from "@/components/Dashboard/NoUserMixes";
-import MixItem from "@/components/Mixes/MixItem";
+import PageNotFound from "@/components/Error/PageNotFound";
 import { auth, firestore } from "@/firebase/clientApp";
+import useCreator from "@/hooks/useCreator";
 import useMixes from "@/hooks/useMixes";
-import { Flex, Center, Spinner, Heading } from "@chakra-ui/react";
 import {
-  query,
-  collection,
-  where,
-  orderBy,
-  getDocs,
-  doc,
-  getDoc,
-} from "firebase/firestore";
+  Avatar,
+  Button,
+  Card,
+  CardBody,
+  Center,
+  Flex,
+  Heading,
+  Icon,
+  IconButton,
+  Image,
+  Link,
+  Spacer,
+  Spinner,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tr,
+} from "@chakra-ui/react";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { GetServerSidePropsContext } from "next";
+import NextLink from "next/link";
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { BsPlayCircle, BsSoundwave } from "react-icons/bs";
+import { AiOutlineHeart } from "react-icons/ai";
 
 type MixPageProps = {
   slug: string;
+  creator: string;
 };
 
-const MixPage: React.FC<MixPageProps> = ({ slug }) => {
+const MixPage: React.FC<MixPageProps> = ({ slug, creator }) => {
   const [user] = useAuthState(auth);
   const [isLoading, setIsLoading] = useState(false);
-  const [noMixes, setNoMixes] = useState(false);
-  const {
-    mixStateValue,
-    setMixStateValue,
-    onFavouriteMix,
-    onSelectMix,
-    onDeleteMix,
-    onPlayMix,
-  } = useMixes();
+  const [notFound, setNotFound] = useState(false);
+  const { mixStateValue, setMixStateValue, onPlayMix, onFavouriteMix } =
+    useMixes();
+
+  const { getCreator } = useCreator();
 
   useEffect(() => {
-    const getMixes = async () => {
+    const getSelectedMix = async () => {
       setIsLoading(true);
       try {
-        // get my mixes
-        const myMixesQuery = query(
+        // get the mix with this slug
+        const singleMixQuery = query(
           collection(firestore, "mixes"),
           where("slug", "==", slug)
         );
 
-        const myMixDocs = await getDocs(myMixesQuery);
+        const singleMixDocs = await getDocs(singleMixQuery);
 
-        const myMixes = myMixDocs.docs.map((mix) => ({ ...mix.data() }));
-
-        if (myMixes.length === 0) {
-          setNoMixes(true);
+        if (singleMixDocs.docs.length === 0) {
+          setNotFound(true);
         }
+
+        const currentMix = singleMixDocs.docs[0].data();
 
         setMixStateValue((prevState) => ({
           ...prevState,
-          mixes: myMixes as Mix[],
+          selectedMix: currentMix as Mix,
         }));
       } catch (error: any) {
         console.log(error.message);
       }
       setIsLoading(false);
     };
-    getMixes();
-  }, [setMixStateValue, slug]);
+
+    getSelectedMix();
+    getCreator(creator);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setMixStateValue, slug, creator]);
 
   return (
-    <Flex direction="column" p={24}>
+    <Flex direction="column">
       {isLoading ? (
         <Center>
           <Spinner />
         </Center>
-      ) : noMixes ? (
-        <NoUserMixes />
+      ) : notFound ? (
+        <PageNotFound />
       ) : (
-        <>
-          <Heading textAlign="left" mb={6}>
-            {slug}
-          </Heading>
-          {mixStateValue.mixes.map((mix) => (
-            <MixItem
-              key={mix.id}
-              mix={mix}
-              onFavouriteMix={onFavouriteMix}
-              onSelectMix={onSelectMix}
-              onDeleteMix={onDeleteMix}
-              userIsCreator={user?.uid === mix.creatorId}
-              onPlayMix={onPlayMix}
-            />
-          ))}
-        </>
+        <Flex direction="column">
+          <Flex direction="column" p={24} backgroundColor="blackAlpha.700">
+            <Flex direction="row" alignItems="center" width="100%">
+              <IconButton
+                variant="link"
+                aria-label="Play audio"
+                fontSize="100px"
+                color="whiteAlpha.900"
+                mr={8}
+                icon={<BsPlayCircle />}
+                onClick={() => onPlayMix(mixStateValue.selectedMix!)}
+              />
+              <Heading textAlign="left">
+                {mixStateValue.selectedMixCreator?.creatorName} -{" "}
+                {mixStateValue.selectedMix?.title}
+              </Heading>
+              <Spacer />
+              {mixStateValue.selectedMix?.imageURL ? (
+                <Image
+                  src={mixStateValue.selectedMix?.imageURL}
+                  alt={mixStateValue.selectedMix?.title}
+                  boxSize="350px"
+                  borderRadius={6}
+                  mr={8}
+                />
+              ) : (
+                <Icon as={BsSoundwave} boxSize="350px" mr={8} />
+              )}
+            </Flex>
+            <Flex direction="row" alignItems="center" mr={4}>
+              <Button
+                leftIcon={<AiOutlineHeart />}
+                color="whiteAlpha.900"
+                _hover={{ color: "whiteAlpha.700" }}
+                variant="outline"
+                size="sm"
+                mr={2}
+                onClick={() => onFavouriteMix(mixStateValue.selectedMix!, user)}
+              >
+                {mixStateValue.selectedMix?.favouriteCount}
+              </Button>
+            </Flex>
+          </Flex>
+          <Flex p={24} direction="column">
+            <Card variant="elevated" width="100%">
+              <Link
+                as={NextLink}
+                href={`/${mixStateValue.selectedMixCreator?.creatorSlug}`}
+              >
+                <CardBody display="flex" flexDir="row">
+                  <Avatar
+                    size="lg"
+                    mr={4}
+                    name={mixStateValue.selectedMixCreator?.creatorName}
+                    src={mixStateValue.selectedMixCreator?.photoURL}
+                  />
+                  <Text fontSize="18px">
+                    {mixStateValue.selectedMixCreator?.creatorName}
+                  </Text>
+                </CardBody>
+              </Link>
+            </Card>
+            <Flex justifyContent="start" my={12}>
+              {mixStateValue.selectedMix?.genres?.map((genre) => (
+                <Link
+                  as={NextLink}
+                  href={`/discover/${genre.toLowerCase().replace(/\W/g, "")}`}
+                  key={genre}
+                >
+                  <Button
+                    variant="outline"
+                    colorScheme="gray"
+                    borderRadius={16}
+                    mr={4}
+                  >
+                    {genre}
+                  </Button>
+                </Link>
+              ))}
+            </Flex>
+            <Text mb={8} color="blackAlpha.800">
+              {mixStateValue.selectedMix?.description}
+            </Text>
+            <Heading mb={8}>Tracklist</Heading>
+            <TableContainer>
+              <Table variant="simple">
+                <Thead>
+                  <Tr>
+                    <Th>Time</Th>
+                    <Th>Track</Th>
+                    <Th>Label</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {mixStateValue.selectedMix?.tracklist?.map((track) => {
+                    const minutes = Math.floor(track.trackTime / 60);
+                    let seconds = track.trackTime % 60;
+                    const secondsString =
+                      seconds < 10 ? `0${seconds}` : `${seconds}`;
+                    return (
+                      <Tr key={track.id}>
+                        <Td>
+                          {minutes}:{secondsString}
+                        </Td>
+                        <Td>{track.trackName}</Td>
+                        <Td>{track.label}</Td>
+                      </Tr>
+                    );
+                  })}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          </Flex>
+        </Flex>
       )}
     </Flex>
   );
@@ -99,6 +214,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     return {
       props: {
         slug: context.query.mixSlug,
+        creator: context.query.creatorSlug,
       },
     };
   } catch (error) {

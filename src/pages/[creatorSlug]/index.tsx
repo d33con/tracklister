@@ -1,23 +1,20 @@
-import { Mix } from "@/atoms/mixesAtom";
-import { LoggedInUser } from "@/atoms/userAtom";
+import { Creator, Mix } from "@/atoms/mixesAtom";
 import NoUserMixes from "@/components/Dashboard/NoUserMixes";
 import MixItem from "@/components/Mixes/MixItem";
 import { auth, firestore } from "@/firebase/clientApp";
 import useMixes from "@/hooks/useMixes";
-import { Flex, Center, Spinner, Heading } from "@chakra-ui/react";
+import { Center, Flex, Heading, Spinner } from "@chakra-ui/react";
 import {
-  query,
   collection,
-  where,
-  orderBy,
-  getDocs,
   doc,
   getDoc,
+  getDocs,
+  query,
+  where,
 } from "firebase/firestore";
 import { GetServerSidePropsContext } from "next";
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import safeJSONStringify from "safe-json-stringify";
 
 type CreatorProfileProps = {
   creator: Creator;
@@ -102,22 +99,16 @@ const CreatorProfile: React.FC<CreatorProfileProps> = ({ creator }) => {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   try {
-    const creatorDocRef = query(
-      collection(firestore, "users"),
-      where("creatorSlug", "==", context.query.creatorSlug)
+    const creatorDocRef = doc(
+      firestore,
+      "users",
+      context.query.creatorSlug as string
     );
-
-    const creatorSnapshot = await getDocs(creatorDocRef);
-
-    let creatorArray = [] as Array<object>;
-
-    creatorSnapshot.forEach((doc) => {
-      creatorArray.push(doc.data());
-    });
+    const creatorDoc = await getDoc(creatorDocRef);
 
     return {
       props: {
-        creator: creatorArray[0] || "",
+        creator: creatorDoc.exists() ? { ...creatorDoc.data() } : {},
       },
     };
   } catch (error) {

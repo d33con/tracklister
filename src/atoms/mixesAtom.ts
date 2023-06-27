@@ -19,15 +19,24 @@ export type Mix = {
   tracklist?: Tracklist;
 };
 
+export type Creator = {
+  creatorName: string;
+  creatorSlug: string;
+  photoURL: string;
+  followerCount?: number;
+};
+
 interface MixState {
   mixes: Mix[];
   selectedMix: Mix | null;
+  selectedMixCreator: Creator | null;
   currentlyPlayingMix: Mix | null;
 }
 
 const defaultMixState: MixState = {
   mixes: [],
   selectedMix: null,
+  selectedMixCreator: null,
   currentlyPlayingMix: null,
 };
 

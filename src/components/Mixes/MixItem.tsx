@@ -187,7 +187,7 @@ const MixItem: React.FC<MixItemProps> = ({
               key={genre}
               color="blackAlpha.800"
               fontSize="14px"
-              mr={1}
+              mr={2}
             >
               {`#${genre}`}
             </Link>

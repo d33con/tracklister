@@ -17,7 +17,6 @@ const NewUploads: React.FC<NewUploadsProps> = () => {
     mixStateValue,
     setMixStateValue,
     onFavouriteMix,
-    onSelectMix,
     onDeleteMix,
     onPlayMix,
   } = useMixes();
@@ -66,7 +65,6 @@ const NewUploads: React.FC<NewUploadsProps> = () => {
               key={mix.id}
               mix={mix}
               onFavouriteMix={onFavouriteMix}
-              onSelectMix={onSelectMix}
               onDeleteMix={onDeleteMix}
               userIsCreator={user?.uid === mix.creatorId}
               onPlayMix={onPlayMix}

@@ -28,7 +28,6 @@ type MixItemProps = {
   userFavourited?: boolean;
   onFavouriteMix: (mix: Mix, user: User) => void;
   onDeleteMix: (mix: Mix, user: User) => Promise<boolean>;
-  onSelectMix: () => void;
   onPlayMix: (mix: Mix) => void;
 };
 
@@ -38,7 +37,6 @@ const MixItem: React.FC<MixItemProps> = ({
   userFavourited,
   onFavouriteMix,
   onDeleteMix,
-  onSelectMix,
   onPlayMix,
 }) => {
   // TODO : allow playing and pausing in main window

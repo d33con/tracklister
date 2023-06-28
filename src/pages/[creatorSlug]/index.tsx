@@ -28,7 +28,6 @@ const CreatorProfile: React.FC<CreatorProfileProps> = ({ creator }) => {
     mixStateValue,
     setMixStateValue,
     onFavouriteMix,
-    onSelectMix,
     onDeleteMix,
     onPlayMix,
   } = useMixes();
@@ -85,7 +84,6 @@ const CreatorProfile: React.FC<CreatorProfileProps> = ({ creator }) => {
               key={mix.id}
               mix={mix}
               onFavouriteMix={onFavouriteMix}
-              onSelectMix={onSelectMix}
               onDeleteMix={onDeleteMix}
               userIsCreator={user?.uid === mix.creatorId}
               onPlayMix={onPlayMix}

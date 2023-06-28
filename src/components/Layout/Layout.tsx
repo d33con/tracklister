@@ -13,13 +13,8 @@ import Navbar from "../Navbar/Navbar";
 const font = Pathway_Extreme({ subsets: ["latin"] });
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const {
-    mixStateValue,
-    setMixStateValue,
-    onFavouriteMix,
-    onSelectMix,
-    onDeleteMix,
-  } = useMixes();
+  const { mixStateValue, setMixStateValue, onFavouriteMix, onDeleteMix } =
+    useMixes();
   const { getLoggedInUser } = useUser();
   const [user] = useAuthState(auth);
 

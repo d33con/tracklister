@@ -19,7 +19,6 @@ const MyShows: React.FC<MyShowsProps> = () => {
     mixStateValue,
     setMixStateValue,
     onFavouriteMix,
-    onSelectMix,
     onDeleteMix,
     onPlayMix,
   } = useMixes();
@@ -73,7 +72,6 @@ const MyShows: React.FC<MyShowsProps> = () => {
               key={mix.id}
               mix={mix}
               onFavouriteMix={onFavouriteMix}
-              onSelectMix={onSelectMix}
               onDeleteMix={onDeleteMix}
               userIsCreator={user?.uid === mix.creatorId}
               onPlayMix={onPlayMix}

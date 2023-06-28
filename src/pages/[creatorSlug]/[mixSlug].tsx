@@ -33,6 +33,7 @@ import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { BsPlayCircle, BsSoundwave } from "react-icons/bs";
 import { AiOutlineHeart } from "react-icons/ai";
+import formatDistanceToNow from "date-fns/formatDistanceToNow";
 
 type MixPageProps = {
   slug: string;
@@ -92,25 +93,54 @@ const MixPage: React.FC<MixPageProps> = ({ slug, creator }) => {
       ) : (
         <Flex direction="column">
           <Flex direction="column" p={24} backgroundColor="blackAlpha.700">
-            <Flex direction="row" alignItems="center" width="100%">
-              <IconButton
-                variant="link"
-                aria-label="Play audio"
-                fontSize="100px"
-                color="whiteAlpha.900"
-                mr={8}
-                icon={<BsPlayCircle />}
-                onClick={() => onPlayMix(mixStateValue.selectedMix!)}
-              />
-              <Heading textAlign="left">
-                {mixStateValue.selectedMixCreator?.creatorName} -{" "}
-                {mixStateValue.selectedMix?.title}
-              </Heading>
+            <Flex direction="row" alignItems="center">
+              <Flex direction="column">
+                <Flex direction="row" alignItems="center" mb={8}>
+                  <IconButton
+                    variant="link"
+                    aria-label="Play audio"
+                    fontSize="100px"
+                    color="whiteAlpha.900"
+                    mr={8}
+                    icon={<BsPlayCircle />}
+                    onClick={() => onPlayMix(mixStateValue.selectedMix!)}
+                  />
+                  <Heading>
+                    {mixStateValue.selectedMixCreator?.creatorName} -{" "}
+                    {mixStateValue.selectedMix!.title}
+                  </Heading>
+                </Flex>
+                <Flex
+                  direction="row"
+                  justifyContent="space-between"
+                  width="100%"
+                >
+                  <Button
+                    leftIcon={<AiOutlineHeart />}
+                    color="whiteAlpha.900"
+                    _hover={{ color: "whiteAlpha.700" }}
+                    variant="outline"
+                    size="sm"
+                    mr={2}
+                    onClick={() =>
+                      onFavouriteMix(mixStateValue.selectedMix!, user)
+                    }
+                  >
+                    {mixStateValue.selectedMix?.favouriteCount}
+                  </Button>
+                  <Text mr={4} color="whiteAlpha.900" fontSize="14px">
+                    {formatDistanceToNow(
+                      mixStateValue.selectedMix!.createdAt!.toDate()
+                    )}{" "}
+                    ago
+                  </Text>
+                </Flex>
+              </Flex>
               <Spacer />
               {mixStateValue.selectedMix?.imageURL ? (
                 <Image
-                  src={mixStateValue.selectedMix?.imageURL}
-                  alt={mixStateValue.selectedMix?.title}
+                  src={mixStateValue.selectedMix!.imageURL}
+                  alt={mixStateValue.selectedMix!.title}
                   boxSize="350px"
                   borderRadius={6}
                   mr={8}
@@ -119,21 +149,8 @@ const MixPage: React.FC<MixPageProps> = ({ slug, creator }) => {
                 <Icon as={BsSoundwave} boxSize="350px" mr={8} />
               )}
             </Flex>
-            <Flex direction="row" alignItems="center" mr={4}>
-              <Button
-                leftIcon={<AiOutlineHeart />}
-                color="whiteAlpha.900"
-                _hover={{ color: "whiteAlpha.700" }}
-                variant="outline"
-                size="sm"
-                mr={2}
-                onClick={() => onFavouriteMix(mixStateValue.selectedMix!, user)}
-              >
-                {mixStateValue.selectedMix?.favouriteCount}
-              </Button>
-            </Flex>
           </Flex>
-          <Flex p={24} direction="column">
+          <Flex p={24} direction="column" mt={-6}>
             <Card variant="elevated" width="100%">
               <Link
                 as={NextLink}
@@ -153,7 +170,7 @@ const MixPage: React.FC<MixPageProps> = ({ slug, creator }) => {
               </Link>
             </Card>
             <Flex justifyContent="start" my={12}>
-              {mixStateValue.selectedMix?.genres?.map((genre) => (
+              {mixStateValue.selectedMix!.genres?.map((genre) => (
                 <Link
                   as={NextLink}
                   href={`/discover/${genre.toLowerCase().replace(/\W/g, "")}`}
@@ -171,7 +188,7 @@ const MixPage: React.FC<MixPageProps> = ({ slug, creator }) => {
               ))}
             </Flex>
             <Text mb={8} color="blackAlpha.800">
-              {mixStateValue.selectedMix?.description}
+              {mixStateValue.selectedMix!.description}
             </Text>
             <Heading mb={8}>Tracklist</Heading>
             <TableContainer>
@@ -184,7 +201,7 @@ const MixPage: React.FC<MixPageProps> = ({ slug, creator }) => {
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {mixStateValue.selectedMix?.tracklist?.map((track) => {
+                  {mixStateValue.selectedMix!.tracklist?.map((track) => {
                     const minutes = Math.floor(track.trackTime / 60);
                     let seconds = track.trackTime % 60;
                     const secondsString =

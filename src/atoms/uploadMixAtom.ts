@@ -1,6 +1,6 @@
 import { atom } from "recoil";
 import { Mix } from "./mixesAtom";
-import { Timestamp } from "firebase/firestore";
+import { Timestamp, serverTimestamp } from "firebase/firestore";
 
 export interface UploadMixState {
   uploadStage: "selecting" | "naming" | "uploading";
@@ -27,6 +27,7 @@ const defaultUploadMixState: UploadMixState = {
     bytesTransferred: "",
   },
   mix: {
+    createdAt: serverTimestamp() as Timestamp,
     id: "",
     title: "",
     slug: "",

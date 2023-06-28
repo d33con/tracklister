@@ -16,7 +16,7 @@ export type Mix = {
   imageURL?: string;
   description?: string;
   favouriteCount?: number;
-  favouritedUsers?: Array<string>;
+  favouritedByUsers?: Array<string>;
   genres?: Array<string>;
   tracklist?: Tracklist;
 };

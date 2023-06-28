@@ -1,4 +1,4 @@
-import { Mix } from "@/atoms/mixesAtom";
+import { Mix, mixState } from "@/atoms/mixesAtom";
 import PageNotFound from "@/components/Error/PageNotFound";
 import { auth, firestore } from "@/firebase/clientApp";
 import useCreator from "@/hooks/useCreator";
@@ -31,9 +31,11 @@ import { GetServerSidePropsContext } from "next";
 import NextLink from "next/link";
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { BsPlayCircle, BsSoundwave } from "react-icons/bs";
+import { BsPlayCircle, BsSoundwave, BsCalendar2Week } from "react-icons/bs";
 import { AiOutlineHeart } from "react-icons/ai";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
+import { useRecoilValue } from "recoil";
+import { User } from "firebase/auth";
 
 type MixPageProps = {
   slug: string;
@@ -44,14 +46,14 @@ const MixPage: React.FC<MixPageProps> = ({ slug, creatorSlug }) => {
   const [user] = useAuthState(auth);
   const [isLoading, setIsLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
-  const { mixStateValue, setMixStateValue, onPlayMix, onFavouriteMix } =
-    useMixes();
+  const { setMixStateValue, onPlayMix, onFavouriteMix } = useMixes();
+  const mixStateValue = useRecoilValue(mixState);
 
   const { getCreatorFromSlug } = useCreator();
 
   useEffect(() => {
     const getSelectedMix = async () => {
-      setIsLoading(true);
+      // setIsLoading(true);
       try {
         // get the mix with this slug
         const singleMixQuery = query(
@@ -74,7 +76,7 @@ const MixPage: React.FC<MixPageProps> = ({ slug, creatorSlug }) => {
       } catch (error: any) {
         console.log(error.message);
       }
-      setIsLoading(false);
+      // setIsLoading(false);
     };
 
     getSelectedMix();
@@ -107,7 +109,7 @@ const MixPage: React.FC<MixPageProps> = ({ slug, creatorSlug }) => {
                   />
                   <Heading>
                     {mixStateValue.selectedMixCreator?.creatorName} -{" "}
-                    {mixStateValue.selectedMix!.title}
+                    {mixStateValue.selectedMix?.title}
                   </Heading>
                 </Flex>
                 <Flex
@@ -123,24 +125,36 @@ const MixPage: React.FC<MixPageProps> = ({ slug, creatorSlug }) => {
                     size="sm"
                     mr={2}
                     onClick={() =>
-                      onFavouriteMix(mixStateValue.selectedMix!, user)
+                      onFavouriteMix(
+                        mixStateValue.selectedMix as Mix,
+                        user as User
+                      )
                     }
                   >
                     {mixStateValue.selectedMix?.favouriteCount}
                   </Button>
-                  <Text mr={4} color="whiteAlpha.900" fontSize="14px">
-                    {formatDistanceToNow(
-                      mixStateValue.selectedMix!.createdAt!.toDate()
-                    )}{" "}
-                    ago
-                  </Text>
+                  <Flex alignItems="center">
+                    <Icon
+                      as={BsCalendar2Week}
+                      mr={3}
+                      boxSize="20px"
+                      color="whiteAlpha.900"
+                    />
+                    <Text mr={4} color="whiteAlpha.900" fontSize="14px">
+                      {mixStateValue.selectedMix &&
+                        formatDistanceToNow(
+                          mixStateValue.selectedMix.createdAt.toDate()
+                        )}{" "}
+                      ago
+                    </Text>
+                  </Flex>
                 </Flex>
               </Flex>
               <Spacer />
               {mixStateValue.selectedMix?.imageURL ? (
                 <Image
-                  src={mixStateValue.selectedMix!.imageURL}
-                  alt={mixStateValue.selectedMix!.title}
+                  src={mixStateValue.selectedMix?.imageURL}
+                  alt={mixStateValue.selectedMix?.title}
                   boxSize="350px"
                   borderRadius={6}
                   mr={8}
@@ -170,7 +184,7 @@ const MixPage: React.FC<MixPageProps> = ({ slug, creatorSlug }) => {
               </Link>
             </Card>
             <Flex justifyContent="start" my={12}>
-              {mixStateValue.selectedMix!.genres?.map((genre) => (
+              {mixStateValue.selectedMix?.genres?.map((genre) => (
                 <Link
                   as={NextLink}
                   href={`/discover/${genre.toLowerCase().replace(/\W/g, "")}`}
@@ -188,7 +202,7 @@ const MixPage: React.FC<MixPageProps> = ({ slug, creatorSlug }) => {
               ))}
             </Flex>
             <Text mb={8} color="blackAlpha.800">
-              {mixStateValue.selectedMix!.description}
+              {mixStateValue.selectedMix?.description}
             </Text>
             <Heading mb={8}>Tracklist</Heading>
             <TableContainer>
@@ -201,7 +215,7 @@ const MixPage: React.FC<MixPageProps> = ({ slug, creatorSlug }) => {
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {mixStateValue.selectedMix!.tracklist?.map((track) => {
+                  {mixStateValue.selectedMix?.tracklist?.map((track) => {
                     const minutes = Math.floor(track.trackTime / 60);
                     let seconds = track.trackTime % 60;
                     const secondsString =

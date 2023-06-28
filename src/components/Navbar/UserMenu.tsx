@@ -1,3 +1,4 @@
+import { currentUserState } from "@/atoms/userAtom";
 import { auth } from "@/firebase/clientApp";
 import useUser from "@/hooks/useUser";
 import {
@@ -11,10 +12,12 @@ import {
 import NextLink from "next/link";
 import { useEffect } from "react";
 import { useSignOut } from "react-firebase-hooks/auth";
+import { useRecoilValue } from "recoil";
 
 const UserMenu = () => {
   const [signOut, loading, error] = useSignOut(auth);
-  const { loggedInUserStateValue, getLoggedInUser } = useUser();
+  const currentUser = useRecoilValue(currentUserState);
+  const { getLoggedInUser } = useUser();
 
   const handleSignOut = () => {
     signOut();
@@ -57,7 +60,7 @@ const UserMenu = () => {
           <Link
             as={NextLink}
             color="blackAlpha.900"
-            href={`/${loggedInUserStateValue.user?.creatorSlug}`}
+            href={`/${currentUser?.creatorSlug}`}
             textAlign="center"
           >
             My profile

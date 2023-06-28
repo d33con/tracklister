@@ -1,37 +1,56 @@
 import { Mix, mixState } from "@/atoms/mixesAtom";
+import { currentUserState } from "@/atoms/userAtom";
 import { firestore, storage } from "@/firebase/clientApp";
 import { User } from "firebase/auth";
-import { deleteDoc, doc } from "firebase/firestore";
+import { deleteDoc, doc, increment, updateDoc } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
+import useUser from "./useUser";
 
 const useMixes = () => {
   const [mixStateValue, setMixStateValue] = useRecoilState(mixState);
+  const currentUser = useRecoilValue(currentUserState);
+  const { getLoggedInUser } = useUser();
 
   const onFavouriteMix = async (mix: Mix, user: User) => {
     // if user not logged in show login modal
+    try {
+      if (user) {
+        // const { favouritedByUsers } = mixStateValue;
+        getLoggedInUser();
+        const hasAlreadyFavourited = mix.favouritedByUsers?.includes(
+          currentUser!.creatorSlug
+        );
 
-    if (user) {
-      const mixDocRef = doc(firestore, "mixes", mix.id);
-      // user hasn't already favourited mix
+        const updatedMix = { ...mix };
+        const updatedMixes = [...mixStateValue.mixes];
+        // const updatedFavouritedUsers = [...mixStateValue.favouritedByUsers];
+        const mixDocRef = doc(firestore, "mixes", mix.id);
+        // user hasn't already favourited mix
+        if (!hasAlreadyFavourited) {
+          // update mix's favouriteCount
+          await updateDoc(mixDocRef, {
+            favouriteCount: increment(1),
+            // favouritedByUsers: arrayUnion(currentUser.user?.creatorSlug),
+          });
+          // create new favouriteMixes doc on user collection
 
-      // update mix's favouriteCount
-      // updateDoc(mixDocRef, {
-      //   favouritedUsers: [user.uid],
-      //   favouriteCount: increment(1),
-      // });
-      // create new favouriteMixes doc on user collection
-      // update mixes state
-
-      // user has already favourited mix
+          // update mixes state
+        }
+        // user has already favourited mix
+        await updateDoc(mixDocRef, {
+          favouriteCount: increment(-1),
+          // favouritedByUsers: arrayRemove(currentUser.user?.creatorSlug),
+        });
+      }
 
       // update mix's favouriteCount
       // remove mix from user's favouriteMixes doc
       // update mixes state
+    } catch (error: any) {
+      console.log(error.message);
     }
   };
-
-  const onSelectMix = () => {};
 
   const onDeleteMix = async (mix: Mix, user: User): Promise<boolean> => {
     try {
@@ -77,7 +96,6 @@ const useMixes = () => {
     mixStateValue,
     setMixStateValue,
     onFavouriteMix,
-    onSelectMix,
     onDeleteMix,
     onPlayMix,
   };

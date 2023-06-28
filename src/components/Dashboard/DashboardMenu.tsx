@@ -1,4 +1,4 @@
-import { loggedInUserState } from "@/atoms/userAtom";
+import { currentUserState } from "@/atoms/userAtom";
 import { auth } from "@/firebase/clientApp";
 import {
   Avatar,
@@ -26,7 +26,7 @@ type DashboardMenuProps = {};
 const DashboardMenu: React.FC<DashboardMenuProps> = () => {
   const [hovered, setHovered] = useState(false);
   const [user] = useAuthState(auth);
-  const currentUser = useRecoilValue(loggedInUserState);
+  const currentUser = useRecoilValue(currentUserState);
 
   return (
     <Box width="15%" p={8}>
@@ -44,9 +44,7 @@ const DashboardMenu: React.FC<DashboardMenuProps> = () => {
             <LinkOverlay as={NextLink} href="#" />
             <Box>
               <Text ml={-1} fontSize={18} color="blackAlpha.900">
-                {currentUser.user?.creatorName ||
-                  user?.displayName ||
-                  user?.email}
+                {currentUser?.creatorName || user?.displayName || user?.email}
               </Text>
               <Text
                 mt={-1}

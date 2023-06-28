@@ -1,3 +1,4 @@
+import { currentUserState } from "@/atoms/userAtom";
 import useUser from "@/hooks/useUser";
 import {
   Box,
@@ -13,11 +14,13 @@ import {
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import React, { useEffect } from "react";
+import { useRecoilValue } from "recoil";
 
 type ProfileProps = {};
 
 const Profile: React.FC<ProfileProps> = () => {
-  const { loggedInUserStateValue, getLoggedInUser } = useUser();
+  const currentUser = useRecoilValue(currentUserState);
+  const { getLoggedInUser } = useUser();
 
   useEffect(() => {
     getLoggedInUser();
@@ -30,7 +33,7 @@ const Profile: React.FC<ProfileProps> = () => {
         <Link
           as={NextLink}
           color="blackAlpha.900"
-          href={`/${loggedInUserStateValue.user?.creatorSlug}`}
+          href={`/${currentUser?.creatorSlug}`}
           textAlign="center"
         >
           View your profile
@@ -42,16 +45,12 @@ const Profile: React.FC<ProfileProps> = () => {
           <Input
             type="text"
             name="creatorName"
-            value={loggedInUserStateValue.user?.creatorName}
+            value={currentUser?.creatorName}
           />
         </FormControl>
         <FormControl mb={4}>
           <FormLabel>Email address</FormLabel>
-          <Input
-            type="email"
-            name="email"
-            value={loggedInUserStateValue.user?.email}
-          />
+          <Input type="email" name="email" value={currentUser?.email} />
         </FormControl>
         <FormControl mb={4}>
           <FormLabel>Profile picture</FormLabel>
@@ -59,16 +58,16 @@ const Profile: React.FC<ProfileProps> = () => {
           <Image
             boxSize="200px"
             src={
-              loggedInUserStateValue.user?.photoURL ||
+              currentUser?.photoURL ||
               "https://react.semantic-ui.com/images/avatar/large/matthew.png"
             }
-            alt={loggedInUserStateValue.user?.creatorName}
+            alt={currentUser?.creatorName}
           />
         </FormControl>
         <FormControl mb={4}>
           <FormLabel>Biography</FormLabel>
           <Textarea
-            value={loggedInUserStateValue.user?.biography}
+            value={currentUser?.biography}
             placeholder="Biography"
             size="lg"
             rows={4}

@@ -1,22 +1,19 @@
 import { atom } from "recoil";
 
-export type LoggedInUser = {
+export type CurrentUser = {
   creatorName: string;
   creatorSlug: string;
   photoURL?: string;
   email: string;
   uid: string;
+  biography?: string;
 };
 
-interface LoggedInUserState {
-  user?: LoggedInUser | null;
-}
+type CurrentUserState = CurrentUser | null;
 
-const defaultLoggedInUserState: LoggedInUserState = {
-  user: null,
-};
+const defaultCurrentUserState: CurrentUserState = null;
 
-export const loggedInUserState = atom<LoggedInUserState>({
-  key: "userState",
-  default: defaultLoggedInUserState,
+export const currentUserState = atom<CurrentUserState>({
+  key: "currentUserState",
+  default: defaultCurrentUserState,
 });

@@ -1,22 +1,19 @@
 import { Mix } from "@/atoms/mixesAtom";
-import { auth, firestore } from "@/firebase/clientApp";
+import { firestore } from "@/firebase/clientApp";
 import useMixes from "@/hooks/useMixes";
-import useUser from "@/hooks/useUser";
-import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { Pathway_Extreme } from "next/font/google";
 import React, { useEffect } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 import Player from "../AudioPlayer/Player";
 import Footer from "../Footer/Footer";
 import Navbar from "../Navbar/Navbar";
+import useUser from "@/hooks/useUser";
 
 const font = Pathway_Extreme({ subsets: ["latin"] });
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { mixStateValue, setMixStateValue, onFavouriteMix, onDeleteMix } =
-    useMixes();
+  const { setMixStateValue } = useMixes();
   const { getLoggedInUser } = useUser();
-  const [user] = useAuthState(auth);
 
   useEffect(() => {
     const getLatestMix = async () => {
@@ -24,8 +21,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         // get latest mixes on initial load
         const mixesQuery = query(
           collection(firestore, "mixes"),
-          orderBy("createdAt", "desc"),
-          limit(4)
+          orderBy("createdAt", "desc")
         );
 
         const mixDocs = await getDocs(mixesQuery);

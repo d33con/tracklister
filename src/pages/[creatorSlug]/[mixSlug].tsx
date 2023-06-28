@@ -37,17 +37,17 @@ import formatDistanceToNow from "date-fns/formatDistanceToNow";
 
 type MixPageProps = {
   slug: string;
-  creator: string;
+  creatorSlug: string;
 };
 
-const MixPage: React.FC<MixPageProps> = ({ slug, creator }) => {
+const MixPage: React.FC<MixPageProps> = ({ slug, creatorSlug }) => {
   const [user] = useAuthState(auth);
   const [isLoading, setIsLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const { mixStateValue, setMixStateValue, onPlayMix, onFavouriteMix } =
     useMixes();
 
-  const { getCreator } = useCreator();
+  const { getCreatorFromSlug } = useCreator();
 
   useEffect(() => {
     const getSelectedMix = async () => {
@@ -78,9 +78,9 @@ const MixPage: React.FC<MixPageProps> = ({ slug, creator }) => {
     };
 
     getSelectedMix();
-    getCreator(creator);
+    getCreatorFromSlug(creatorSlug);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setMixStateValue, slug, creator]);
+  }, [setMixStateValue, slug, creatorSlug]);
 
   return (
     <Flex direction="column">
@@ -231,7 +231,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     return {
       props: {
         slug: context.query.mixSlug,
-        creator: context.query.creatorSlug,
+        creatorSlug: context.query.creatorSlug,
       },
     };
   } catch (error) {

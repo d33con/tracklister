@@ -1,4 +1,5 @@
 import { Creator, mixState } from "@/atoms/mixesAtom";
+import { uploadMixState } from "@/atoms/uploadMixAtom";
 import { firestore } from "@/firebase/clientApp";
 import {
   DocumentData,
@@ -13,10 +14,11 @@ import { useRecoilState } from "recoil";
 
 const useCreator = () => {
   const [mixStateValue, setMixStateValue] = useRecoilState(mixState);
+  const [uploadMix, setUploadMix] = useRecoilState(uploadMixState);
 
-  const getCreator = async (creator: string) => {
+  const getCreatorFromSlug = async (creatorSlug: string) => {
     try {
-      const creatorDocRef = doc(firestore, "users", creator);
+      const creatorDocRef = doc(firestore, "users", creatorSlug);
       const creatorDoc = await getDoc(creatorDocRef);
 
       if (creatorDoc.exists()) {
@@ -42,7 +44,8 @@ const useCreator = () => {
       userDocs.forEach((doc) => {
         users.push(doc.data());
       });
-      setMixStateValue((prevState) => ({
+
+      setUploadMix((prevState) => ({
         ...prevState,
         selectedMixCreator: users[0] as Creator,
       }));
@@ -52,7 +55,7 @@ const useCreator = () => {
   };
 
   return {
-    getCreator,
+    getCreatorFromSlug,
     setCreatorFromUserUid,
   };
 };

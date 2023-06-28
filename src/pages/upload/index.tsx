@@ -1,6 +1,7 @@
 import { Mix } from "@/atoms/mixesAtom";
 import { tracklistState } from "@/atoms/tracklistAtom";
 import { uploadMixState } from "@/atoms/uploadMixAtom";
+import { currentUserState } from "@/atoms/userAtom";
 import UploadLayout from "@/components/Layout/UploadLayout";
 import LoggedOutUploadPage from "@/components/LoggedOut/LoggedOutUploadPage";
 import NameFileToUploadCard from "@/components/Upload/NameFileToUploadCard";
@@ -8,7 +9,7 @@ import SelectFileToUploadCard from "@/components/Upload/SelectFileToUploadCard";
 import UploadSecondPage from "@/components/Upload/UploadSecondPage";
 import { auth, firestore, storage } from "@/firebase/clientApp";
 import bytesToMB from "@/helpers/bytesToMB";
-import useCreator from "@/hooks/useCreator";
+import useUser from "@/hooks/useUser";
 import { useToast } from "@chakra-ui/react";
 import {
   Timestamp,
@@ -39,14 +40,15 @@ const UploadIndex: React.FC = () => {
   >([]);
   const tracklist = useRecoilValue(tracklistState);
   const [uploadMix, setUploadMix] = useRecoilState(uploadMixState);
-  // GET THE CURRENT LOGGED IN USER FROM GLOBAL STATE
+  const currentUser = useRecoilValue(currentUserState);
+
+  const { getLoggedInUser } = useUser();
   const [user] = useAuthState(auth);
 
   const uploadTaskRef = useRef<UploadTask | null>(null);
   const uploadedAudioRef = useRef<HTMLAudioElement>(null);
   const toast = useToast();
   const router = useRouter();
-  const { setCreatorFromUserUid } = useCreator();
 
   // get the duration of the audio file selected
   useEffect(() => {
@@ -69,6 +71,10 @@ const UploadIndex: React.FC = () => {
       return () => URL.revokeObjectURL(objectURL);
     }
   }, [uploadMix.selectedAudioFile, setUploadMix]);
+
+  useEffect(() => {
+    getLoggedInUser();
+  }, []);
 
   const onSelectAudioFileToUpload = (
     evt: React.ChangeEvent<HTMLInputElement>
@@ -249,16 +255,13 @@ const UploadIndex: React.FC = () => {
     // check if mix genres exist
     handleMixGenreCreation();
 
-    // set the logged in user as creator
-    setCreatorFromUserUid(user!.uid);
-
     // create a new 'mix' object with the audio and name
     const newMix: Mix = {
       id: uuidv4(),
       createdAt: serverTimestamp() as Timestamp,
       creatorId: user?.uid,
-      creatorName: uploadMix.mix.creatorName,
-      creatorSlug: uploadMix.mix.creatorSlug,
+      creatorName: currentUser?.creatorName,
+      creatorSlug: currentUser?.creatorSlug,
       audioURL: uploadMix.mix.audioURL,
       filename: uploadMix.selectedAudioFile?.name,
       audioDuration: uploadMix.mix.audioDuration,
@@ -266,6 +269,7 @@ const UploadIndex: React.FC = () => {
       slug: uploadMix.mix.title.replace(/\s+/g, "-").toLowerCase(),
       description: uploadMix.mix.description,
       genres: mixGenres.map((genre) => genre.label),
+      favouritedByUsers: [],
       favouriteCount: 0,
       tracklist,
     };
@@ -298,8 +302,9 @@ const UploadIndex: React.FC = () => {
     setUploadMix((prevState) => ({
       ...prevState,
       isPublishing: false,
+      uploadStage: "selecting",
     }));
-    // redirect back to dashboard or to this mix's page
+    // redirect back to dashboard
     router.push("/dashboard/my-dashboard");
   };
 

@@ -1,4 +1,4 @@
-import { loggedInUserState } from "@/atoms/userAtom";
+import { currentUserState } from "@/atoms/userAtom";
 import { auth, firestore } from "@/firebase/clientApp";
 import {
   DocumentData,
@@ -11,8 +11,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { useRecoilState } from "recoil";
 
 const useUser = () => {
-  const [loggedInUserStateValue, setLoggedInUserStateValue] =
-    useRecoilState(loggedInUserState);
+  const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
   const [user] = useAuthState(auth);
 
   const getLoggedInUser = async () => {
@@ -28,14 +27,12 @@ const useUser = () => {
       userDocs.forEach((doc) => {
         users.push(doc.data());
       });
-      setLoggedInUserStateValue({
-        user: {
-          creatorName: users[0].creatorName,
-          uid: users[0].uid,
-          creatorSlug: users[0].creatorSlug,
-          email: users[0].email,
-          photoURL: users[0].photoURL,
-        },
+      setCurrentUser({
+        creatorName: users[0].creatorName,
+        uid: users[0].uid,
+        creatorSlug: users[0].creatorSlug,
+        email: users[0].email,
+        photoURL: users[0].photoURL,
       });
       return true;
     } catch (error) {}
@@ -43,8 +40,8 @@ const useUser = () => {
   };
 
   return {
-    loggedInUserStateValue,
-    setLoggedInUserStateValue,
+    currentUser,
+    setCurrentUser,
     getLoggedInUser,
   };
 };

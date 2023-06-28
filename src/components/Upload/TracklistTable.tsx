@@ -46,11 +46,12 @@ const TracklistTable = () => {
   };
 
   const addNewTrackRow = () => {
+    const lastTrackTime = tracklist.at(-1)!.trackTime;
     setTracklist((prevState) => [
       ...prevState,
       {
         id: uuidv4(),
-        trackTime: 0,
+        trackTime: lastTrackTime,
         trackName: "",
         label: "",
       },

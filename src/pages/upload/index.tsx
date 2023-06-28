@@ -1,4 +1,3 @@
-import { MixGenreState } from "@/atoms/mixGenresAtom";
 import { Mix } from "@/atoms/mixesAtom";
 import { tracklistState } from "@/atoms/tracklistAtom";
 import { uploadMixState } from "@/atoms/uploadMixAtom";
@@ -9,6 +8,7 @@ import SelectFileToUploadCard from "@/components/Upload/SelectFileToUploadCard";
 import UploadSecondPage from "@/components/Upload/UploadSecondPage";
 import { auth, firestore, storage } from "@/firebase/clientApp";
 import bytesToMB from "@/helpers/bytesToMB";
+import useCreator from "@/hooks/useCreator";
 import { useToast } from "@chakra-ui/react";
 import {
   Timestamp,
@@ -29,9 +29,9 @@ import {
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useRecoilValue, useRecoilState } from "recoil";
-import { v4 as uuidv4 } from "uuid";
 import { MultiValue } from "react-select/dist/declarations/src/types";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { v4 as uuidv4 } from "uuid";
 
 const UploadIndex: React.FC = () => {
   const [mixGenres, setMixGenres] = useState<
@@ -45,8 +45,8 @@ const UploadIndex: React.FC = () => {
   const uploadTaskRef = useRef<UploadTask | null>(null);
   const uploadedAudioRef = useRef<HTMLAudioElement>(null);
   const toast = useToast();
-
   const router = useRouter();
+  const { setCreatorFromUserUid } = useCreator();
 
   // get the duration of the audio file selected
   useEffect(() => {
@@ -249,11 +249,16 @@ const UploadIndex: React.FC = () => {
     // check if mix genres exist
     handleMixGenreCreation();
 
+    // set the logged in user as creator
+    setCreatorFromUserUid(user!.uid);
+
     // create a new 'mix' object with the audio and name
     const newMix: Mix = {
       id: uuidv4(),
       createdAt: serverTimestamp() as Timestamp,
       creatorId: user?.uid,
+      creatorName: uploadMix.mix.creatorName,
+      creatorSlug: uploadMix.mix.creatorSlug,
       audioURL: uploadMix.mix.audioURL,
       filename: uploadMix.selectedAudioFile?.name,
       audioDuration: uploadMix.mix.audioDuration,

@@ -4,8 +4,10 @@ import { Tracklist } from "./tracklistAtom";
 
 export type Mix = {
   id: string;
-  createdAt?: Timestamp;
+  createdAt: Timestamp;
   creatorId?: string;
+  creatorName?: string;
+  creatorSlug?: string;
   audioURL?: string;
   filename?: string;
   audioDuration?: number;

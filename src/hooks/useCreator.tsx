@@ -1,6 +1,14 @@
 import { Creator, mixState } from "@/atoms/mixesAtom";
 import { firestore } from "@/firebase/clientApp";
-import { doc, getDoc } from "firebase/firestore";
+import {
+  DocumentData,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import { useRecoilState } from "recoil";
 
 const useCreator = () => {
@@ -22,8 +30,30 @@ const useCreator = () => {
     }
   };
 
+  const setCreatorFromUserUid = async (userUid: string) => {
+    try {
+      const userQuery = query(
+        collection(firestore, "users"),
+        where("uid", "==", userUid)
+      );
+
+      const userDocs = await getDocs(userQuery);
+      let users = [] as Array<DocumentData>;
+      userDocs.forEach((doc) => {
+        users.push(doc.data());
+      });
+      setMixStateValue((prevState) => ({
+        ...prevState,
+        selectedMixCreator: users[0] as Creator,
+      }));
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
+
   return {
     getCreator,
+    setCreatorFromUserUid,
   };
 };
 

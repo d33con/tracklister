@@ -3,7 +3,18 @@ import NoUserMixes from "@/components/Dashboard/NoUserMixes";
 import MixItem from "@/components/Mixes/MixItem";
 import { auth, firestore } from "@/firebase/clientApp";
 import useMixes from "@/hooks/useMixes";
-import { Center, Flex, Heading, Spinner } from "@chakra-ui/react";
+import {
+  Box,
+  Card,
+  CardBody,
+  Center,
+  Flex,
+  Heading,
+  Icon,
+  Spinner,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import {
   collection,
   doc,
@@ -13,8 +24,10 @@ import {
   where,
 } from "firebase/firestore";
 import { GetServerSidePropsContext } from "next";
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { GoLocation } from "react-icons/go";
 
 type CreatorProfileProps = {
   creator: Creator;
@@ -75,21 +88,50 @@ const CreatorProfile: React.FC<CreatorProfileProps> = ({ creator }) => {
       ) : noMixes ? (
         <NoUserMixes />
       ) : (
-        <>
-          <Heading textAlign="left" mb={6}>
-            {`${creator.creatorName}'s Shows`}
-          </Heading>
-          {mixStateValue.mixes.map((mix) => (
-            <MixItem
-              key={mix.id}
-              mix={mix}
-              onFavouriteMix={onFavouriteMix}
-              onDeleteMix={onDeleteMix}
-              userIsCreator={user?.uid === mix.creatorId}
-              onPlayMix={onPlayMix}
-            />
-          ))}
-        </>
+        <Flex direction="row" justifyContent="start">
+          <Box width="15%">
+            <Card variant="elevated" maxW="md" p={8}>
+              <CardBody
+                display="flex"
+                justifyContent="center"
+                flexDirection="column"
+              >
+                <Image
+                  src={creator.photoURL || "/headshot.png"}
+                  alt={creator.creatorName}
+                  width={200}
+                  height={200}
+                  style={{ borderRadius: "50%", margin: "0 auto" }}
+                />
+                <Stack mt="6" spacing="3">
+                  <Heading size="lg" textAlign="center">
+                    {creator.creatorName}
+                  </Heading>
+                  <Text color="blue.600" fontSize="xl" textAlign="left">
+                    <Icon as={GoLocation} mr={1} boxSize="15px" />
+                    {creator.location}
+                  </Text>
+                  <Text textAlign="left">{creator.biography}</Text>
+                </Stack>
+              </CardBody>
+            </Card>
+          </Box>
+          <Flex direction="column" pl={16} width="80%">
+            <Heading textAlign="left" mb={8}>
+              Shows
+            </Heading>
+            {mixStateValue.mixes.map((mix) => (
+              <MixItem
+                key={mix.id}
+                mix={mix}
+                onFavouriteMix={onFavouriteMix}
+                onDeleteMix={onDeleteMix}
+                userIsCreator={user?.uid === mix.creatorId}
+                onPlayMix={onPlayMix}
+              />
+            ))}
+          </Flex>
+        </Flex>
       )}
     </Flex>
   );

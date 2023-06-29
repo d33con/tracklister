@@ -31,6 +31,7 @@ const defaultUploadMixState: UploadMixState = {
     id: "",
     title: "",
     slug: "",
+    description: "",
   },
 };
 

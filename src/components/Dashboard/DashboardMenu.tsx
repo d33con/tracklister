@@ -36,11 +36,7 @@ const DashboardMenu: React.FC<DashboardMenuProps> = () => {
           onMouseLeave={() => setHovered(false)}
         >
           <HStack spacing={1}>
-            {user?.photoURL ? (
-              <Avatar src={user.photoURL} size="md" />
-            ) : (
-              <Icon as={HiUserCircle} boxSize={12} />
-            )}
+            <Avatar src={user?.photoURL || "/headshot.png"} size="md" />
             <LinkOverlay as={NextLink} href="#" />
             <Box>
               <Text ml={-1} fontSize={18} color="blackAlpha.900">

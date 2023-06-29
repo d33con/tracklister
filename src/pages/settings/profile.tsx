@@ -57,10 +57,7 @@ const Profile: React.FC<ProfileProps> = () => {
           <Input type="file" name="photoURL" />
           <Image
             boxSize="200px"
-            src={
-              currentUser?.photoURL ||
-              "https://react.semantic-ui.com/images/avatar/large/matthew.png"
-            }
+            src={currentUser?.photoURL || "/headshot.png"}
             alt={currentUser?.creatorName}
           />
         </FormControl>
@@ -82,7 +79,6 @@ const Profile: React.FC<ProfileProps> = () => {
             color="whiteAlpha.900"
             _hover={{ bg: "blue.600" }}
             textTransform="uppercase"
-            // isDisabled={mixTitle.length === 0}
             type="submit"
           >
             Save profile settings

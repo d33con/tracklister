@@ -203,7 +203,10 @@ const MixPage: React.FC<MixPageProps> = ({ slug, creatorSlug }) => {
                     size="lg"
                     mr={4}
                     name={mixStateValue.selectedMixCreator?.creatorName}
-                    src={mixStateValue.selectedMixCreator?.photoURL}
+                    src={
+                      mixStateValue.selectedMixCreator?.photoURL ||
+                      "/headshot.png"
+                    }
                   />
                   <Text fontSize="18px">
                     {mixStateValue.selectedMixCreator?.creatorName}

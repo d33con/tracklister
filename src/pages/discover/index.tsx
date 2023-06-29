@@ -29,31 +29,33 @@ const DiscoverIndex: React.FC<DiscoverIndexProps> = () => {
   }, [mixGenres, setMixGenres]);
 
   return (
-    <Flex p={24} direction="column">
-      <Heading mb={8} textAlign="center" size="xl">
+    <Flex direction="column" p={16}>
+      <Heading mb={12} textAlign="center" size="xl">
         Discover Music Shows
       </Heading>
-      <SimpleGrid columns={4} spacing={4} p={12}>
-        {mixGenres.map((genre: MixGenre, idx: number) => (
-          <Link
-            as={NextLink}
-            href={`/discover/${genre.name}`}
-            key={genre.displayName}
-          >
-            <Button
-              height="150px"
-              width="250px"
-              backgroundColor={`${colors[idx]}.700`}
-              _hover={{ backgroundColor: `${colors[idx]}.900` }}
-              color="whiteAlpha.900"
-              fontSize="20px"
-              textTransform="uppercase"
+      <Flex width="50%" justifyContent="center" mx="auto">
+        <SimpleGrid columns={4} spacingX={8} spacingY={12}>
+          {mixGenres.map((genre: MixGenre, idx: number) => (
+            <Link
+              as={NextLink}
+              href={`/discover/${genre.name}`}
+              key={genre.displayName}
             >
-              {genre.displayName}
-            </Button>
-          </Link>
-        ))}
-      </SimpleGrid>
+              <Button
+                height="150px"
+                width="250px"
+                backgroundColor={`${colors[idx]}.700`}
+                _hover={{ backgroundColor: `${colors[idx]}.900` }}
+                color="whiteAlpha.900"
+                fontSize="20px"
+                textTransform="uppercase"
+              >
+                {genre.displayName}
+              </Button>
+            </Link>
+          ))}
+        </SimpleGrid>
+      </Flex>
     </Flex>
   );
 };

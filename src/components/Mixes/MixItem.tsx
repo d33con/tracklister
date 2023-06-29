@@ -131,16 +131,18 @@ const MixItem: React.FC<MixItemProps> = ({
           </Text>
         </Flex>
         <Flex direction="row" alignItems="center" mr={4}>
-          <Button
-            leftIcon={<AiOutlineHeart />}
-            color="blackAlpha.700"
-            variant="outline"
-            size="sm"
-            mr={2}
-            onClick={() => onFavouriteMix(mix, user)}
-          >
-            {mix.favouriteCount}
-          </Button>
+          {!userIsCreator && (
+            <Button
+              leftIcon={<AiOutlineHeart />}
+              color="blackAlpha.700"
+              variant="outline"
+              size="sm"
+              mr={2}
+              onClick={() => onFavouriteMix(mix, user as User)}
+            >
+              {mix.favouriteCount}
+            </Button>
+          )}
           {userIsCreator && (
             <>
               <Button

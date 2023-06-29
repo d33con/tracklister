@@ -32,7 +32,7 @@ import NextLink from "next/link";
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { BsPlayCircle, BsSoundwave, BsCalendar2Week } from "react-icons/bs";
-import { AiOutlineHeart } from "react-icons/ai";
+import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import { useRecoilValue } from "recoil";
 import { User } from "firebase/auth";
@@ -107,7 +107,7 @@ const MixPage: React.FC<MixPageProps> = ({ slug, creatorSlug }) => {
                     icon={<BsPlayCircle />}
                     onClick={() => onPlayMix(mixStateValue.selectedMix!)}
                   />
-                  <Heading>
+                  <Heading color="whiteAlpha.900">
                     {mixStateValue.selectedMixCreator?.creatorName} -{" "}
                     {mixStateValue.selectedMix?.title}
                   </Heading>
@@ -118,10 +118,38 @@ const MixPage: React.FC<MixPageProps> = ({ slug, creatorSlug }) => {
                   width="100%"
                 >
                   <Button
-                    leftIcon={<AiOutlineHeart />}
-                    color="whiteAlpha.900"
-                    _hover={{ color: "whiteAlpha.700" }}
-                    variant="outline"
+                    leftIcon={
+                      mixStateValue.selectedMix?.favouritedByUsers?.includes(
+                        user?.uid as string
+                      ) ? (
+                        <AiFillHeart />
+                      ) : (
+                        <AiOutlineHeart />
+                      )
+                    }
+                    color={
+                      mixStateValue.selectedMix?.favouritedByUsers?.includes(
+                        user?.uid as string
+                      )
+                        ? "blackAlpha.700"
+                        : "whiteAlpha.700"
+                    }
+                    backgroundColor={
+                      mixStateValue.selectedMix?.favouritedByUsers?.includes(
+                        user?.uid as string
+                      )
+                        ? "whiteAlpha.800"
+                        : "none"
+                    }
+                    _hover={{
+                      color:
+                        mixStateValue.selectedMix?.favouritedByUsers?.includes(
+                          user?.uid as string
+                        )
+                          ? "blackAlpha.600"
+                          : "whiteAlpha.600",
+                    }}
+                    variant={"outline"}
                     size="sm"
                     mr={2}
                     onClick={() =>

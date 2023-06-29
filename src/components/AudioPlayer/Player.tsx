@@ -13,7 +13,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
-import { AiOutlineHeart } from "react-icons/ai";
+import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { BiVolumeFull, BiVolumeMute } from "react-icons/bi";
 import {
   BsFillPersonFill,
@@ -24,6 +24,10 @@ import {
 } from "react-icons/bs";
 import { useRecoilValue } from "recoil";
 import NextLink from "next/link";
+import useMixes from "@/hooks/useMixes";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "@/firebase/clientApp";
+import { User } from "firebase/auth";
 
 type PlayerProps = {};
 
@@ -37,6 +41,8 @@ const Player: React.FC<PlayerProps> = () => {
   const [audioMuted, setAudioMuted] = useState(false);
   const playingAudioRef = useRef<HTMLAudioElement>(null);
   const audio = playingAudioRef?.current;
+  const { onFavouriteMix } = useMixes();
+  const [user] = useAuthState(auth);
 
   const toggleAudio = () => {
     setAudioPlaying((prevState) => !prevState);
@@ -170,7 +176,15 @@ const Player: React.FC<PlayerProps> = () => {
         </Flex>
         <Flex direction="row" alignItems="center">
           <IconButton
-            icon={<AiOutlineHeart />}
+            icon={
+              currentlyPlayingMix?.favouritedByUsers?.includes(
+                user?.uid as string
+              ) ? (
+                <AiFillHeart />
+              ) : (
+                <AiOutlineHeart />
+              )
+            }
             aria-label="Favourite mix"
             color="whiteAlpha.900"
             variant="link"
@@ -178,6 +192,7 @@ const Player: React.FC<PlayerProps> = () => {
             _active={{
               color: "whiteAlpha.900",
             }}
+            onClick={() => onFavouriteMix(currentlyPlayingMix!, user as User)}
           />
           <Link as={NextLink} href={`/${currentlyPlayingMix?.creatorSlug}`}>
             <IconButton

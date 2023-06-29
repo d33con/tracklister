@@ -2,7 +2,18 @@ import { Mix, mixState } from "@/atoms/mixesAtom";
 import { currentUserState } from "@/atoms/userAtom";
 import { firestore, storage } from "@/firebase/clientApp";
 import { User } from "firebase/auth";
-import { deleteDoc, doc, increment, updateDoc } from "firebase/firestore";
+import {
+  addDoc,
+  arrayRemove,
+  arrayUnion,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  increment,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
 import { useRecoilState, useRecoilValue } from "recoil";
 import useUser from "./useUser";
@@ -16,37 +27,61 @@ const useMixes = () => {
     // if user not logged in show login modal
     try {
       if (user) {
-        // const { favouritedByUsers } = mixStateValue;
-        getLoggedInUser();
-        const hasAlreadyFavourited = mix.favouritedByUsers?.includes(
-          currentUser!.creatorSlug
+        await getLoggedInUser();
+
+        const mixDocRef = doc(firestore, "mixes", mix.id);
+
+        const mixDocRefSnap = await getDoc(mixDocRef);
+
+        const currentMix = mixDocRefSnap.data();
+
+        let updatedMix = { ...currentMix };
+
+        const hasAlreadyFavourited = currentMix?.favouritedByUsers.includes(
+          user.uid
         );
 
-        const updatedMix = { ...mix };
-        const updatedMixes = [...mixStateValue.mixes];
-        // const updatedFavouritedUsers = [...mixStateValue.favouritedByUsers];
-        const mixDocRef = doc(firestore, "mixes", mix.id);
         // user hasn't already favourited mix
         if (!hasAlreadyFavourited) {
-          // update mix's favouriteCount
-          await updateDoc(mixDocRef, {
+          // update mix's favouriteCount and add user to favouritedBy array
+          updateDoc(mixDocRef, {
             favouriteCount: increment(1),
-            // favouritedByUsers: arrayUnion(currentUser.user?.creatorSlug),
+            favouritedByUsers: arrayUnion(user.uid),
           });
           // create new favouriteMixes doc on user collection
-
-          // update mixes state
+          await setDoc(
+            doc(
+              firestore,
+              "users",
+              `${currentUser?.creatorSlug}/favouriteMixes/${currentMix?.id}`
+            ),
+            { id: currentMix?.id }
+          );
+        } else {
+          // user has already favourited mix
+          // decrement the count and remove the user
+          updateDoc(mixDocRef, {
+            favouriteCount: increment(-1),
+            favouritedByUsers: arrayRemove(user.uid),
+          });
+          // delete the item from user's favouriteMixes collection
+          const usersFavouriteMixesDoc = doc(
+            firestore,
+            `users/${currentUser?.creatorSlug}/favouriteMixes/`,
+            mix.id
+          );
+          await deleteDoc(usersFavouriteMixesDoc);
         }
-        // user has already favourited mix
-        await updateDoc(mixDocRef, {
-          favouriteCount: increment(-1),
-          // favouritedByUsers: arrayRemove(currentUser.user?.creatorSlug),
-        });
-      }
+        // get updated mix doc from db
+        const updatedMixRef = await getDoc(mixDocRef);
+        updatedMix = { ...updatedMixRef.data() };
 
-      // update mix's favouriteCount
-      // remove mix from user's favouriteMixes doc
-      // update mixes state
+        // update mixes state
+        setMixStateValue((prevState) => ({
+          ...prevState,
+          selectedMix: updatedMix as Mix,
+        }));
+      }
     } catch (error: any) {
       console.log(error.message);
     }

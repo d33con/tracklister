@@ -14,10 +14,12 @@ type GenrePageProps = {
 const GenrePage: React.FC<GenrePageProps> = ({ mixGenre }) => {
   return (
     <Flex p={24} direction="column">
-      <Heading mb={8} textAlign="center" size="xl">
-        Listen to {mixGenre.displayName} shows
-      </Heading>
-      {!mixGenre ? <NotFound /> : <GenreMixes mixGenre={mixGenre} />}
+      <Flex direction="row" width="50%" justifyContent="center" mx="auto">
+        <Heading mb={8} textAlign="center" size="xl">
+          Listen to {mixGenre.displayName} shows
+        </Heading>
+        {!mixGenre ? <NotFound /> : <GenreMixes mixGenre={mixGenre} />}
+      </Flex>
     </Flex>
   );
 };

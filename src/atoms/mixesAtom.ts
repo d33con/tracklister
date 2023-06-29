@@ -25,6 +25,8 @@ export type Creator = {
   creatorName: string;
   creatorSlug: string;
   photoURL: string;
+  biography?: string;
+  location?: string;
   followerCount?: number;
 };
 

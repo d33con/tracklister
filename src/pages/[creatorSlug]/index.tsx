@@ -89,8 +89,8 @@ const CreatorProfile: React.FC<CreatorProfileProps> = ({ creator }) => {
         <NoUserMixes />
       ) : (
         <Flex direction="row" justifyContent="start">
-          <Box width="15%">
-            <Card variant="elevated" maxW="md" p={8}>
+          <Box>
+            <Card variant="elevated" width="sm" p={8}>
               <CardBody
                 display="flex"
                 justifyContent="center"
@@ -116,7 +116,7 @@ const CreatorProfile: React.FC<CreatorProfileProps> = ({ creator }) => {
               </CardBody>
             </Card>
           </Box>
-          <Flex direction="column" pl={16} width="80%">
+          <Flex direction="column" ml={16} w="66%">
             <Heading textAlign="left" mb={8}>
               Shows
             </Heading>

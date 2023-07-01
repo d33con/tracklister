@@ -7,6 +7,7 @@ export type CurrentUser = {
   email: string;
   uid: string;
   biography?: string;
+  location?: string;
 };
 
 type CurrentUserState = CurrentUser | null;

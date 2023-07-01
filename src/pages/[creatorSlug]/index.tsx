@@ -108,8 +108,12 @@ const CreatorProfile: React.FC<CreatorProfileProps> = ({ creator }) => {
                     {creator.creatorName}
                   </Heading>
                   <Text color="blue.600" fontSize="xl" textAlign="left">
-                    <Icon as={GoLocation} mr={1} boxSize="15px" />
-                    {creator.location}
+                    {creator.location && (
+                      <>
+                        <Icon as={GoLocation} mr={1} boxSize="15px" />
+                        {creator.location}
+                      </>
+                    )}
                   </Text>
                   <Text textAlign="left">{creator.biography}</Text>
                 </Stack>

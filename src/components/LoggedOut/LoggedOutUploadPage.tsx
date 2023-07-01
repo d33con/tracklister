@@ -5,7 +5,7 @@ import { useSetRecoilState } from "recoil";
 const LoggedOutUploadPage = () => {
   const setAuthModalState = useSetRecoilState(authModalState);
   return (
-    <Flex flexDirection="column" bg="blue.300" py={12}>
+    <Flex flexDirection="column" bg="blue.400" py={12}>
       <Center>
         <Box width="33%">
           <Heading textAlign="center" color="whiteAlpha.900" mb={12}>
@@ -21,7 +21,7 @@ const LoggedOutUploadPage = () => {
             Join our global community for audio culture
           </Heading>
           <Text textAlign="center" color="whiteAlpha.900" mb={12}>
-            Mixcloud is the platform for uniting people around audio culture.
+            Tracklister is the platform for uniting people around audio culture.
             This is where people come to listen deeply across every genre, taste
             and scene.
           </Text>

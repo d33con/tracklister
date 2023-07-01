@@ -2,7 +2,7 @@ import { MixGenre } from "@/atoms/mixGenresAtom";
 import GenreMixes from "@/components/Discover/GenreMixes";
 import NotFound from "@/components/Discover/NotFound";
 import { firestore } from "@/firebase/clientApp";
-import { Flex, Heading } from "@chakra-ui/react";
+import { Box, Center, Flex, Heading } from "@chakra-ui/react";
 import { doc, getDoc } from "firebase/firestore";
 import { GetServerSidePropsContext } from "next";
 import React from "react";
@@ -13,13 +13,21 @@ type GenrePageProps = {
 
 const GenrePage: React.FC<GenrePageProps> = ({ mixGenre }) => {
   return (
-    <Flex p={24} direction="column">
-      <Flex direction="row" width="50%" justifyContent="center" mx="auto">
-        <Heading mb={8} textAlign="center" size="xl">
-          Listen to {mixGenre.displayName} shows
-        </Heading>
-        {!mixGenre ? <NotFound /> : <GenreMixes mixGenre={mixGenre} />}
-      </Flex>
+    <Flex direction="column">
+      <Heading
+        py={12}
+        textAlign="center"
+        size="xl"
+        bg="blue.900"
+        color="whiteAlpha.900"
+      >
+        Listen to {mixGenre.displayName} shows
+      </Heading>
+      <Center>
+        <Box width="66%">
+          {!mixGenre ? <NotFound /> : <GenreMixes mixGenre={mixGenre} />}
+        </Box>
+      </Center>
     </Flex>
   );
 };

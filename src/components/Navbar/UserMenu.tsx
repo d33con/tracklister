@@ -1,6 +1,5 @@
 import { currentUserState } from "@/atoms/userAtom";
 import { auth } from "@/firebase/clientApp";
-import useUser from "@/hooks/useUser";
 import {
   Avatar,
   Link,
@@ -10,22 +9,16 @@ import {
   MenuList,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
-import { useEffect } from "react";
 import { useSignOut } from "react-firebase-hooks/auth";
 import { useRecoilValue } from "recoil";
 
 const UserMenu = () => {
   const [signOut, loading, error] = useSignOut(auth);
   const currentUser = useRecoilValue(currentUserState);
-  const { getLoggedInUser } = useUser();
 
   const handleSignOut = () => {
     signOut();
   };
-
-  useEffect(() => {
-    getLoggedInUser();
-  }, []);
 
   const avatarSize = "36px";
 
@@ -41,7 +34,7 @@ const UserMenu = () => {
           <Avatar
             width={avatarSize}
             height={avatarSize}
-            src="https://react.semantic-ui.com/images/avatar/large/matthew.png"
+            src={currentUser?.photoURL || "/headshot.png"}
           />
         }
       />

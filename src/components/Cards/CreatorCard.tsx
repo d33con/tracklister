@@ -12,14 +12,11 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 
-const CreatorCard: React.FC = () => {
+const CreatorCard = () => {
   return (
     <Card maxW="sm" p={6}>
       <CardHeader textAlign="center" mb={4}>
-        <Avatar
-          src="https://react.semantic-ui.com/images/avatar/large/matthew.png"
-          size="xl"
-        />
+        <Avatar src="/headshot.png" size="xl" />
       </CardHeader>
       <CardBody>
         <Heading size="lg" textAlign="center" mb={4}>

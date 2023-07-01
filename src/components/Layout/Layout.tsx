@@ -7,13 +7,11 @@ import React, { useEffect } from "react";
 import Player from "../AudioPlayer/Player";
 import Footer from "../Footer/Footer";
 import Navbar from "../Navbar/Navbar";
-import useUser from "@/hooks/useUser";
 
 const font = Pathway_Extreme({ subsets: ["latin"] });
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { setMixStateValue } = useMixes();
-  const { getLoggedInUser } = useUser();
 
   useEffect(() => {
     const getLatestMix = async () => {
@@ -37,10 +35,6 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     };
     getLatestMix();
   }, [setMixStateValue]);
-
-  useEffect(() => {
-    getLoggedInUser();
-  }, []);
 
   return (
     <div className={font.className}>

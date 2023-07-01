@@ -1,7 +1,6 @@
 import { Mix } from "@/atoms/mixesAtom";
 import { tracklistState } from "@/atoms/tracklistAtom";
 import { uploadMixState } from "@/atoms/uploadMixAtom";
-import { currentUserState } from "@/atoms/userAtom";
 import UploadLayout from "@/components/Layout/UploadLayout";
 import LoggedOutUploadPage from "@/components/LoggedOut/LoggedOutUploadPage";
 import NameFileToUploadCard from "@/components/Upload/NameFileToUploadCard";
@@ -40,9 +39,7 @@ const UploadIndex: React.FC = () => {
   >([]);
   const tracklist = useRecoilValue(tracklistState);
   const [uploadMix, setUploadMix] = useRecoilState(uploadMixState);
-  const currentUser = useRecoilValue(currentUserState);
-
-  const { getLoggedInUser } = useUser();
+  const { currentUser, getLoggedInUser } = useUser();
   const [user] = useAuthState(auth);
 
   const uploadTaskRef = useRef<UploadTask | null>(null);
@@ -74,7 +71,7 @@ const UploadIndex: React.FC = () => {
 
   useEffect(() => {
     getLoggedInUser();
-  }, []);
+  }, [getLoggedInUser]);
 
   const onSelectAudioFileToUpload = (
     evt: React.ChangeEvent<HTMLInputElement>
@@ -201,7 +198,6 @@ const UploadIndex: React.FC = () => {
           duration: 3000,
           isClosable: true,
         });
-        // or redirect?
       })
       .then(() => {
         setUploadMix((prevState) => ({
@@ -304,6 +300,15 @@ const UploadIndex: React.FC = () => {
       isPublishing: false,
       uploadStage: "selecting",
     }));
+
+    toast({
+      title: "Mix uploaded.",
+      description: "Redirecting to your dashboard.",
+      status: "success",
+      position: "top",
+      duration: 3000,
+      isClosable: true,
+    });
     // redirect back to dashboard
     router.push("/dashboard/my-dashboard");
   };

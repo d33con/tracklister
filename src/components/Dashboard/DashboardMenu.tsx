@@ -1,5 +1,5 @@
-import { currentUserState } from "@/atoms/userAtom";
 import { auth } from "@/firebase/clientApp";
+import useUser from "@/hooks/useUser";
 import {
   Avatar,
   Box,
@@ -13,20 +13,20 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { AiOutlinePlaySquare } from "react-icons/ai";
 import { BsPersonLinesFill } from "react-icons/bs";
-import { HiUserCircle } from "react-icons/hi";
 import { MdOutlineDashboard } from "react-icons/md";
-import { useRecoilValue } from "recoil";
 
-type DashboardMenuProps = {};
-
-const DashboardMenu: React.FC<DashboardMenuProps> = () => {
+const DashboardMenu = () => {
   const [hovered, setHovered] = useState(false);
   const [user] = useAuthState(auth);
-  const currentUser = useRecoilValue(currentUserState);
+  const { currentUser, getLoggedInUser } = useUser();
+
+  useEffect(() => {
+    getLoggedInUser();
+  }, [getLoggedInUser]);
 
   return (
     <Box width="15%" p={8}>
@@ -36,8 +36,11 @@ const DashboardMenu: React.FC<DashboardMenuProps> = () => {
           onMouseLeave={() => setHovered(false)}
         >
           <HStack spacing={1}>
-            <Avatar src={user?.photoURL || "/headshot.png"} size="md" />
-            <LinkOverlay as={NextLink} href="#" />
+            <Avatar
+              src={currentUser?.photoURL || user?.photoURL || "/headshot.png"}
+              size="md"
+            />
+            <LinkOverlay as={NextLink} href={`/${currentUser?.creatorSlug}`} />
             <Box>
               <Text ml={-1} fontSize={18} color="blackAlpha.900">
                 {currentUser?.creatorName || user?.displayName || user?.email}

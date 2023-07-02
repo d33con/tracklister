@@ -7,6 +7,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
+import { useCallback } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useRecoilState } from "recoil";
 
@@ -14,9 +15,8 @@ const useUser = () => {
   const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
   const [user] = useAuthState(auth);
 
-  const getLoggedInUser = async () => {
+  const getLoggedInUser = useCallback(async () => {
     try {
-      // maybe refactor to intially store users using their uid as db collection id and do a doc(firestore, "users", user.uid) here
       const userQuery = query(
         collection(firestore, "users"),
         where("uid", "==", user?.uid)
@@ -37,7 +37,7 @@ const useUser = () => {
       return true;
     } catch (error) {}
     return false;
-  };
+  }, [user?.uid, setCurrentUser]);
 
   return {
     currentUser,

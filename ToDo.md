@@ -1,15 +1,13 @@
-- Audio player
-- Creator name
-- Creator photo
+- Audio player - autoplay, queue
 - ~~Adding genres~~
-- Individual mix pages
+- Individual mix pages - audio waveforem
 - Comment on mixes
 - ~~Adding tracklist~~
 - Editing mixes
 - ~~Deleting mixes~~
-- Profile page
-- Edit profile
-- Favouriting
+- ~~Profile page~~
+- Edit user profile
+- Favouriting - on page and on player - favourited mixes page in dashboard
 - ~~Genre filters~~
 - ~~Genre pages~~
 - Search

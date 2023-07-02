@@ -95,7 +95,7 @@ const MixPage: React.FC<MixPageProps> = ({ slug, creatorSlug }) => {
       ) : (
         <Flex direction="column">
           <Flex direction="column" p={24} backgroundColor="blackAlpha.700">
-            <Flex direction="row" alignItems="center">
+            <Flex direction="row" alignItems="center" px={24}>
               <Flex direction="column">
                 <Flex direction="row" alignItems="center" mb={8}>
                   <IconButton
@@ -192,7 +192,7 @@ const MixPage: React.FC<MixPageProps> = ({ slug, creatorSlug }) => {
               )}
             </Flex>
           </Flex>
-          <Flex p={24} direction="column" mt={-6}>
+          <Flex p={24} direction="column">
             <Card variant="elevated" width="100%">
               <Link
                 as={NextLink}

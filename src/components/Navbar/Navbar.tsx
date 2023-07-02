@@ -22,10 +22,8 @@ const Navbar: React.FC = () => {
   return (
     <Flex
       bg="blue.900"
-      pt={2}
-      pb={2}
-      pl={10}
-      pr={10}
+      py={2}
+      px={48}
       minWidth="max-content"
       alignItems="center"
       gap={4}

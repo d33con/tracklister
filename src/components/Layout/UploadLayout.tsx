@@ -10,8 +10,8 @@ const UploadLayout: React.FC<{ children: React.ReactNode }> = ({
         bg="blue.900"
         color="whiteAlpha.900"
         justifyContent="center"
-        pt={20}
-        pb={40}
+        py={20}
+        px={48}
       >
         <Heading size="xl">Upload</Heading>
       </Flex>

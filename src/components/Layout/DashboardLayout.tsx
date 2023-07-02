@@ -5,7 +5,7 @@ const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   return (
-    <HStack spacing={6} pt={8} pb={8} align="start">
+    <HStack spacing={6} py={8} px={48} align="start">
       <DashboardMenu />
       <Flex direction="column" m={10} p={10} width="100%">
         {children}

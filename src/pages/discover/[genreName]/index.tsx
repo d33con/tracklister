@@ -21,7 +21,7 @@ const GenrePage: React.FC<GenrePageProps> = ({ mixGenre }) => {
         bg="blue.900"
         color="whiteAlpha.900"
       >
-        Listen to {mixGenre.displayName} shows
+        Listen to {mixGenre.label} shows
       </Heading>
       <Center>
         <Box width="66%">

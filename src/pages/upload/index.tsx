@@ -234,8 +234,8 @@ const UploadIndex: React.FC = () => {
 
         // create the mixGenre
         await setDoc(mixGenresDocRef, {
-          name: kebabCaseGenre,
-          displayName: genre.label,
+          value: kebabCaseGenre,
+          label: genre.label,
         });
       });
     }

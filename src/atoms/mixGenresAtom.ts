@@ -1,13 +1,13 @@
 import { atom } from "recoil";
 
 export type MixGenre = {
-  name: string;
-  displayName: string;
+  value: string;
+  label: string;
 };
 
 export type MixGenreState = Array<{
-  label: string;
   value: string;
+  label: string;
 }>;
 
 const defaultMixGenreState: MixGenreState = [

@@ -32,7 +32,7 @@ const GenreMixes: React.FC<GenreMixesProps> = ({ mixGenre }) => {
         // get genre filtered mixes
         const genreMixes = query(
           collection(firestore, "mixes"),
-          where("genres", "array-contains", mixGenre.displayName)
+          where("genres", "array-contains", mixGenre.label)
         );
 
         const mixDocs = await getDocs(genreMixes);
@@ -53,7 +53,7 @@ const GenreMixes: React.FC<GenreMixesProps> = ({ mixGenre }) => {
       setIsLoading(false);
     };
     getMixes();
-  }, [setMixStateValue, mixGenre.displayName]);
+  }, [setMixStateValue, mixGenre.label]);
 
   return (
     <Flex direction="column" m={10} p={10}>

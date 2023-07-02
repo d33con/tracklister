@@ -1,14 +1,12 @@
 import { MixGenre } from "@/atoms/mixGenresAtom";
 import { firestore } from "@/firebase/clientApp";
 import { colors } from "@/helpers/chakraColors";
-import { Button, Flex, Heading, Link, SimpleGrid } from "@chakra-ui/react";
+import { Button, Flex, Heading, Link, Wrap, WrapItem } from "@chakra-ui/react";
 import { collection, getDocs, query } from "firebase/firestore";
 import NextLink from "next/link";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-type DiscoverIndexProps = {};
-
-const DiscoverIndex: React.FC<DiscoverIndexProps> = () => {
+const DiscoverIndex = () => {
   const [mixGenres, setMixGenres] = useState([]);
 
   useEffect(() => {
@@ -26,35 +24,42 @@ const DiscoverIndex: React.FC<DiscoverIndexProps> = () => {
       }
     };
     getGenres();
-  }, [mixGenres, setMixGenres]);
+  }, []);
 
   return (
-    <Flex direction="column" p={16}>
-      <Heading mb={12} textAlign="center" size="xl">
-        Discover Music Shows
+    <Flex direction="column">
+      <Heading bg="blue.900" color="pink.200" textAlign="center" py={12}>
+        Discover audio culture
       </Heading>
-      <Flex width="50%" justifyContent="center" mx="auto">
-        <SimpleGrid columns={4} spacingX={8} spacingY={12}>
+      <Flex
+        direction="column"
+        width="50%"
+        justifyContent="center"
+        mx="auto"
+        mb={12}
+      >
+        <Heading color="blackAlpha.900" textAlign="center" py={12}>
+          Discover music shows
+        </Heading>
+        <Wrap spacingX="40px" spacingY="50px" justify="center">
           {mixGenres.map((genre: MixGenre, idx: number) => (
-            <Link
-              as={NextLink}
-              href={`/discover/${genre.name}`}
-              key={genre.displayName}
-            >
-              <Button
-                height="150px"
-                width="250px"
-                backgroundColor={`${colors[idx]}.700`}
-                _hover={{ backgroundColor: `${colors[idx]}.900` }}
-                color="whiteAlpha.900"
-                fontSize="20px"
-                textTransform="uppercase"
-              >
-                {genre.displayName}
-              </Button>
-            </Link>
+            <WrapItem key={genre.label}>
+              <Link as={NextLink} href={`/discover/${genre.value}`}>
+                <Button
+                  width="225px"
+                  height="130px"
+                  backgroundColor={`${colors[idx]}.800`}
+                  _hover={{ backgroundColor: `${colors[idx]}.900` }}
+                  color={`${colors[idx - 1]}.200`}
+                  fontSize="20px"
+                  textTransform="uppercase"
+                >
+                  {genre.label}
+                </Button>
+              </Link>
+            </WrapItem>
           ))}
-        </SimpleGrid>
+        </Wrap>
       </Flex>
     </Flex>
   );

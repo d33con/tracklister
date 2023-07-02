@@ -1,8 +1,10 @@
 import { uploadMixState } from "@/atoms/uploadMixAtom";
-import { genres } from "@/helpers/genreTags";
+import { firestore } from "@/firebase/clientApp";
 import { Box, Flex, Textarea } from "@chakra-ui/react";
-import React from "react";
-import Select, { MultiValue } from "react-select";
+import { collection, getDocs, query } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
+import { MultiValue } from "react-select";
+import CreatableSelect from "react-select/creatable";
 import { useRecoilState } from "recoil";
 
 type MixTagsAndDescriptionProps = {
@@ -15,6 +17,22 @@ const MixTagsAndDescription: React.FC<MixTagsAndDescriptionProps> = ({
   setMixGenres,
 }) => {
   const [uploadMix, setUploadMix] = useRecoilState(uploadMixState);
+  const [mixGenreOptions, setMixGenreOptions] = useState<
+    Array<{ value: string; label: string }>
+  >([]);
+
+  useEffect(() => {
+    const loadGenreOptions = async () => {
+      const mixGenresQuery = query(collection(firestore, "mixGenres"));
+
+      const mixGenresDocs = await getDocs(mixGenresQuery);
+
+      const options = mixGenresDocs.docs.map((doc) => ({ ...doc.data() }));
+
+      setMixGenreOptions(options as Array<{ value: string; label: string }>);
+    };
+    loadGenreOptions();
+  }, [setMixGenreOptions]);
 
   return (
     <Flex
@@ -26,15 +44,13 @@ const MixTagsAndDescription: React.FC<MixTagsAndDescriptionProps> = ({
       pl={12}
     >
       <Box mb={4}>
-        <Select
+        <CreatableSelect
           isMulti
-          name="genres"
-          options={genres}
+          options={mixGenreOptions}
+          onChange={setMixGenres}
           className="basic-multi-select"
           classNamePrefix="select"
-          isSearchable
           placeholder="Genres / tags. Select from list or create your own"
-          onChange={setMixGenres}
         />
       </Box>
       <Textarea

@@ -22,12 +22,14 @@ export type Mix = {
 };
 
 export type Creator = {
-  creatorName: string;
-  creatorSlug: string;
-  photoURL: string;
-  biography?: string;
-  location?: string;
-  followerCount?: number;
+  uid: string;
+  creatorName: string | undefined;
+  creatorSlug: string | undefined;
+  photoURL: string | undefined;
+  email: string | undefined;
+  biography?: string | undefined;
+  location?: string | undefined;
+  website?: string | undefined;
 };
 
 interface MixState {

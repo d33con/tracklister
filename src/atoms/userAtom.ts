@@ -1,13 +1,14 @@
 import { atom } from "recoil";
 
 export type CurrentUser = {
+  uid: string;
   creatorName: string;
   creatorSlug: string;
   photoURL?: string;
   email: string;
-  uid: string;
   biography?: string;
   location?: string;
+  website?: string;
 };
 
 type CurrentUserState = CurrentUser | null;

@@ -28,11 +28,14 @@ const useUser = () => {
         users.push(doc.data());
       });
       setCurrentUser({
-        creatorName: users[0].creatorName,
         uid: users[0].uid,
+        creatorName: users[0].creatorName,
         creatorSlug: users[0].creatorSlug,
-        email: users[0].email,
         photoURL: users[0].photoURL,
+        email: users[0].email,
+        biography: users[0].biography,
+        location: users[0].location,
+        website: users[0].website,
       });
       return true;
     } catch (error) {}

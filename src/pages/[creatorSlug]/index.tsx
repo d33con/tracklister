@@ -117,12 +117,14 @@ const CreatorProfile: React.FC<CreatorProfileProps> = ({ creator }) => {
                     )}
                   </Text>
                   <Text textAlign="left">{creator.biography}</Text>
-                  <Link href={`https://${creator.website}`} isExternal>
-                    <Text textAlign="left">
-                      <Icon as={GoLink} mr={2} boxSize="15px" />
-                      {creator.website}
-                    </Text>
-                  </Link>
+                  {creator.website && (
+                    <Link href={`https://${creator.website}`} isExternal>
+                      <Text textAlign="left">
+                        <Icon as={GoLink} mr={2} boxSize="15px" />
+                        {creator.website}
+                      </Text>
+                    </Link>
+                  )}
                 </Stack>
               </CardBody>
             </Card>

@@ -11,6 +11,8 @@ import {
   Flex,
   Heading,
   Icon,
+  Image,
+  Link,
   Spinner,
   Stack,
   Text,
@@ -24,10 +26,9 @@ import {
   where,
 } from "firebase/firestore";
 import { GetServerSidePropsContext } from "next";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { GoLocation } from "react-icons/go";
+import { GoLocation, GoLink } from "react-icons/go";
 
 type CreatorProfileProps = {
   creator: Creator;
@@ -116,6 +117,12 @@ const CreatorProfile: React.FC<CreatorProfileProps> = ({ creator }) => {
                     )}
                   </Text>
                   <Text textAlign="left">{creator.biography}</Text>
+                  <Link href={`https://${creator.website}`} isExternal>
+                    <Text textAlign="left">
+                      <Icon as={GoLink} mr={2} boxSize="15px" />
+                      {creator.website}
+                    </Text>
+                  </Link>
                 </Stack>
               </CardBody>
             </Card>

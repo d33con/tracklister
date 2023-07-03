@@ -5,7 +5,6 @@ import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { Pathway_Extreme } from "next/font/google";
 import React, { useEffect } from "react";
 import Player from "../AudioPlayer/Player";
-import Footer from "../Footer/Footer";
 import Navbar from "../Navbar/Navbar";
 
 const font = Pathway_Extreme({ subsets: ["latin"] });
@@ -41,7 +40,6 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <Navbar />
       <main>{children}</main>
       <Player />
-      <Footer />
     </div>
   );
 };

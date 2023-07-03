@@ -1,35 +1,124 @@
-import { currentUserState } from "@/atoms/userAtom";
+import { firestore, storage } from "@/firebase/clientApp";
 import useUser from "@/hooks/useUser";
 import {
   Box,
   Button,
+  Divider,
   Flex,
   FormControl,
   FormLabel,
   Heading,
   Image,
   Input,
+  InputGroup,
+  InputLeftAddon,
   Link,
+  Stack,
   Textarea,
+  useToast,
 } from "@chakra-ui/react";
+import { doc, updateDoc } from "firebase/firestore";
+import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import NextLink from "next/link";
-import React, { useEffect } from "react";
-import { useRecoilValue } from "recoil";
+import React, { useEffect, useRef, useState } from "react";
 
 type ProfileProps = {};
 
 const Profile: React.FC<ProfileProps> = () => {
-  const currentUser = useRecoilValue(currentUserState);
-  const { getLoggedInUser } = useUser();
+  const { getLoggedInUser, currentUser } = useUser();
+  const [imageToUpload, setImageToUpload] = useState("");
+  const [profileForm, setProfileForm] = useState({ ...currentUser });
+  const toast = useToast();
+  const selectedImageRef = useRef<HTMLInputElement>(null);
+
+  const onSelectImageToUpload = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    const fileReader = new FileReader();
+
+    if (evt.target.files?.[0]) {
+      fileReader.readAsDataURL(evt.target.files[0]);
+    }
+
+    fileReader.onload = (readerEvent) => {
+      if (readerEvent.target?.result) {
+        setImageToUpload(readerEvent.target?.result as string);
+      }
+    };
+  };
+
+  const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    setProfileForm((prevState) => ({
+      ...prevState,
+      [evt.target.name]: evt.target.value,
+    }));
+  };
+
+  const handleBiographyChange = (
+    evt: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    setProfileForm((prevState) => ({
+      ...prevState,
+      biography: evt.target.value,
+    }));
+  };
+
+  const handleSubmit = async (evt: React.FormEvent<HTMLFormElement>) => {
+    evt.preventDefault();
+    try {
+      const userDocRef = doc(
+        firestore,
+        "users",
+        currentUser?.creatorSlug as string
+      );
+
+      // if there is an image get a ref to store the mix's image in the mixes/image collection
+      if (imageToUpload) {
+        const profileImageRef = ref(
+          storage,
+          `users/${currentUser?.uid}/images/${currentUser?.creatorSlug}`
+        );
+        await uploadString(profileImageRef, imageToUpload, "data_url");
+        const profileImageDownloadURL = await getDownloadURL(profileImageRef);
+        // update the mix doc ref and add the download URL
+        await updateDoc(userDocRef, {
+          photoURL: profileImageDownloadURL,
+        });
+      }
+      await updateDoc(
+        userDocRef,
+        {
+          location: profileForm.location,
+          biography: profileForm.biography,
+          website: profileForm.website,
+        },
+        { merge: true }
+      );
+      toast({
+        title: "Profile updated.",
+        status: "success",
+        position: "top",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error: any) {
+      // handle error
+      console.log(error.message);
+    }
+  };
 
   useEffect(() => {
     getLoggedInUser();
   }, []);
 
   return (
-    <Flex px={24} my={10} alignItems="center" direction="column">
+    <Flex
+      px={24}
+      my={10}
+      alignItems="center"
+      justifyContent="center"
+      direction="column"
+    >
       <Heading mb={8}>Your profile settings</Heading>
-      <Box bg="blackAlpha.300" p={3} mb={6}>
+      <Box bg="blackAlpha.300" p={3} mb={8}>
         <Link
           as={NextLink}
           color="blackAlpha.900"
@@ -39,52 +128,99 @@ const Profile: React.FC<ProfileProps> = () => {
           View your profile
         </Link>
       </Box>
-      <form onSubmit={() => {}}>
-        <FormControl mb={4}>
-          <FormLabel>Creator name</FormLabel>
-          <Input
-            type="text"
-            name="creatorName"
-            value={currentUser?.creatorName}
-          />
-        </FormControl>
-        <FormControl mb={4}>
-          <FormLabel>Email address</FormLabel>
-          <Input type="email" name="email" value={currentUser?.email} />
-        </FormControl>
-        <FormControl mb={4}>
-          <FormLabel>Profile picture</FormLabel>
-          <Input type="file" name="photoURL" />
-          <Image
-            boxSize="200px"
-            src={currentUser?.photoURL || "/headshot.png"}
-            alt={currentUser?.creatorName}
-          />
-        </FormControl>
-        <FormControl mb={4}>
-          <FormLabel>Biography</FormLabel>
-          <Textarea
-            value={currentUser?.biography}
-            placeholder="Biography"
-            size="lg"
-            rows={4}
-          />
-        </FormControl>
-        <Box>
-          <Button
-            width="100%"
-            size="lg"
-            ml={4}
-            backgroundColor="blue.500"
-            color="whiteAlpha.900"
-            _hover={{ bg: "blue.600" }}
-            textTransform="uppercase"
-            type="submit"
-          >
-            Save profile settings
-          </Button>
-        </Box>
-      </form>
+      <Stack>
+        <form onSubmit={handleSubmit}>
+          <FormControl mb={4}>
+            <FormLabel fontWeight="bold">Creator name</FormLabel>
+            <Input
+              type="text"
+              name="creatorName"
+              value={profileForm.creatorName}
+              placeholder="Creator name"
+              onChange={handleChange}
+            />
+          </FormControl>
+          <Divider mb={4} />
+          <FormControl mb={4}>
+            <FormLabel fontWeight="bold">Biography</FormLabel>
+            <Textarea
+              name="biography"
+              value={profileForm.biography}
+              placeholder="Biography"
+              size="lg"
+              rows={4}
+              onChange={handleBiographyChange}
+            />
+          </FormControl>
+          <Divider mb={4} />
+          <Divider mb={4} />
+          <FormControl mb={4}>
+            <FormLabel fontWeight="bold">Website</FormLabel>
+            <InputGroup>
+              {/* eslint-disable-next-line react/no-children-prop */}
+              <InputLeftAddon children="https://" />
+              <Input
+                name="website"
+                type="text"
+                value={profileForm.website}
+                placeholder="Website"
+                onChange={handleChange}
+              />
+            </InputGroup>
+          </FormControl>
+          <Divider mb={4} />
+          <FormControl mb={4}>
+            <FormLabel fontWeight="bold">Location</FormLabel>
+            <Input
+              type="text"
+              name="location"
+              value={profileForm.location}
+              placeholder="Location"
+              onChange={handleChange}
+            />
+          </FormControl>
+          <FormControl mb={4}>
+            <FormLabel fontWeight="bold">Profile picture</FormLabel>
+            <Stack direction="row">
+              <Button
+                size="lg"
+                onClick={() => selectedImageRef.current?.click()}
+              >
+                Choose file
+              </Button>
+              <input
+                type="file"
+                ref={selectedImageRef}
+                accept="image/*"
+                onChange={onSelectImageToUpload}
+                hidden
+              />{" "}
+              {(imageToUpload || profileForm.photoURL) && (
+                <Image
+                  mt={2}
+                  boxSize="200px"
+                  src={imageToUpload || profileForm.photoURL || "/headshot.png"}
+                  alt={profileForm.creatorName}
+                  textAlign="center"
+                />
+              )}
+            </Stack>
+          </FormControl>
+          <Divider mb={4} />
+          <Box textAlign="center" mt={4}>
+            <Button
+              size="lg"
+              backgroundColor="blue.500"
+              color="whiteAlpha.900"
+              _hover={{ bg: "blue.600" }}
+              textTransform="uppercase"
+              type="submit"
+            >
+              Save profile settings
+            </Button>
+          </Box>
+        </form>
+      </Stack>
     </Flex>
   );
 };

@@ -23,13 +23,13 @@ export type Mix = {
 
 export type Creator = {
   uid: string;
-  creatorName: string | undefined;
-  creatorSlug: string | undefined;
-  photoURL: string | undefined;
-  email: string | undefined;
-  biography?: string | undefined;
-  location?: string | undefined;
-  website?: string | undefined;
+  creatorName: string;
+  creatorSlug: string;
+  photoURL?: string;
+  email: string;
+  biography?: string;
+  location?: string;
+  website?: string;
 };
 
 interface MixState {

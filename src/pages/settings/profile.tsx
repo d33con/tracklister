@@ -86,9 +86,9 @@ const Profile: React.FC<ProfileProps> = () => {
       await updateDoc(
         userDocRef,
         {
-          location: profileForm.location,
-          biography: profileForm.biography,
-          website: profileForm.website,
+          location: profileForm.location || "",
+          biography: profileForm.biography || "",
+          website: profileForm.website || "",
         },
         { merge: true }
       );

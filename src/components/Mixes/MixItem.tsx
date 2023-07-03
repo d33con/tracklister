@@ -145,15 +145,21 @@ const MixItem: React.FC<MixItemProps> = ({
           )}
           {userIsCreator && (
             <>
-              <Button
-                leftIcon={<RiEditBoxLine />}
-                color="blackAlpha.700"
-                variant="outline"
-                size="sm"
+              <Link
+                as={NextLink}
+                href={`/${mix.creatorSlug}/${mix.slug}/edit`}
                 mr={2}
               >
-                Edit
-              </Button>
+                <Button
+                  leftIcon={<RiEditBoxLine />}
+                  color="blackAlpha.700"
+                  variant="outline"
+                  size="sm"
+                  mr={2}
+                >
+                  Edit
+                </Button>
+              </Link>
               <Button
                 leftIcon={<RiDeleteBin7Line />}
                 color="blackAlpha.700"

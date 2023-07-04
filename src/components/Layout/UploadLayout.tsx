@@ -13,7 +13,9 @@ const UploadLayout: React.FC<{ children: React.ReactNode }> = ({
         py={20}
         px={48}
       >
-        <Heading size="xl">Upload</Heading>
+        <Heading size="xl" mb={20}>
+          Upload
+        </Heading>
       </Flex>
       <Flex justifyContent="center" marginTop="-80px" pb={4}>
         {children}

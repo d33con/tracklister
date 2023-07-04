@@ -1,6 +1,6 @@
 import { uploadMixState } from "@/atoms/uploadMixAtom";
 import { Box, Button, Flex, Image } from "@chakra-ui/react";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useRecoilState } from "recoil";
 
 const MixUploadImage = () => {
@@ -23,6 +23,14 @@ const MixUploadImage = () => {
       }
     };
   };
+
+  useEffect(() => {
+    const currentImage = uploadMix.mix.imageURL;
+    setUploadMix((prevState) => ({
+      ...prevState,
+      selectedImageFile: currentImage,
+    }));
+  }, [setUploadMix, uploadMix.mix.imageURL]);
 
   return (
     <Flex

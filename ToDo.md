@@ -3,10 +3,10 @@
 - Individual mix pages - audio waveforem
 - Comment on mixes
 - ~~Adding tracklist~~
-- Editing mixes
+- ~~Editing mixes~~
 - ~~Deleting mixes~~
 - ~~Profile page~~
-- Edit user profile
+- ~~Edit user profile~~
 - Favouriting - on page and on player - favourited mixes page in dashboard
 - ~~Genre filters~~
 - ~~Genre pages~~

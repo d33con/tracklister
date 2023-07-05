@@ -13,7 +13,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { AiOutlinePlaySquare } from "react-icons/ai";
 import { BsPersonLinesFill } from "react-icons/bs";
@@ -22,11 +22,7 @@ import { MdOutlineDashboard } from "react-icons/md";
 const DashboardMenu = () => {
   const [hovered, setHovered] = useState(false);
   const [user] = useAuthState(auth);
-  const { currentUser, getLoggedInUser } = useUser();
-
-  useEffect(() => {
-    getLoggedInUser();
-  }, [getLoggedInUser]);
+  const { currentUser } = useUser();
 
   return (
     <Box width="15%" p={8}>

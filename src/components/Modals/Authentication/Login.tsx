@@ -1,6 +1,7 @@
 import { authModalState } from "@/atoms/authModalAtom";
 import { auth } from "@/firebase/clientApp";
 import { FIREBASE_ERRORS } from "@/firebase/errors";
+import useUser from "@/hooks/useUser";
 import {
   Alert,
   AlertDescription,
@@ -13,25 +14,23 @@ import {
   Stack,
   useToast,
 } from "@chakra-ui/react";
-import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { useSetRecoilState } from "recoil";
 
 const Login: React.FC = () => {
   const setAuthModalState = useSetRecoilState(authModalState);
+  const { getLoggedInUser } = useUser();
 
   const [loginForm, setLoginForm] = useState({
     email: "",
     password: "",
   });
-
   const { email, password } = loginForm;
 
   const [signInWithEmailAndPassword, user, loading, error] =
     useSignInWithEmailAndPassword(auth);
 
-  const router = useRouter();
   const toast = useToast();
 
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,9 +68,8 @@ const Login: React.FC = () => {
   };
 
   useEffect(() => {
-    router.reload;
-    // eslint-disable-next-line
-  }, [user]);
+    getLoggedInUser();
+  }, [getLoggedInUser]);
 
   return (
     <Stack>

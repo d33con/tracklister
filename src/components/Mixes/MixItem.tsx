@@ -1,6 +1,7 @@
 import { Mix } from "@/atoms/mixesAtom";
 import { auth } from "@/firebase/clientApp";
 import { convertDuration } from "@/helpers/convertDuration";
+import useMixes from "@/hooks/useMixes";
 import {
   Box,
   Button,
@@ -14,41 +15,35 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
-import { User } from "firebase/auth";
 import NextLink from "next/link";
 import React, { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { AiOutlineHeart } from "react-icons/ai";
-import { BsCaretRightFill, BsPlayCircle, BsSoundwave } from "react-icons/bs";
+import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
+import {
+  BsCaretRightFill,
+  BsPauseCircle,
+  BsPlayCircle,
+  BsSoundwave,
+} from "react-icons/bs";
 import { RiDeleteBin7Line, RiEditBoxLine } from "react-icons/ri";
 
 type MixItemProps = {
   mix: Mix;
-  userIsCreator: boolean;
-  userFavourited?: boolean;
-  onFavouriteMix: (mix: Mix, user: User) => void;
-  onDeleteMix: (mix: Mix, user: User) => Promise<boolean>;
-  onPlayMix: (mix: Mix) => void;
 };
 
-const MixItem: React.FC<MixItemProps> = ({
-  mix,
-  userIsCreator,
-  userFavourited,
-  onFavouriteMix,
-  onDeleteMix,
-  onPlayMix,
-}) => {
-  // TODO : allow playing and pausing in main window
-  // const { mixStateValue } = useMixes();
+const MixItem: React.FC<MixItemProps> = ({ mix }) => {
   const toast = useToast();
   const [user] = useAuthState(auth);
   const [deletingMix, setDeletingMix] = useState(false);
+  const { onFavouriteMix, onPlayMix, onPauseMix, mixStateValue, onDeleteMix } =
+    useMixes();
+
+  const userIsCreator = user?.uid === mix.creatorId;
 
   const handleDeleteMix = async () => {
     try {
       setDeletingMix(true);
-      const success = await onDeleteMix(mix, user as User);
+      const success = await onDeleteMix(mix);
       if (!success) {
         throw new Error("Failed to delete mix");
       }
@@ -90,7 +85,8 @@ const MixItem: React.FC<MixItemProps> = ({
       )}
       <Flex direction="column" width="100%">
         <Flex direction="row" mb={8}>
-          {/* {mixStateValue.currentlyPlayingMix?.id === mix.id ? (
+          {mixStateValue.currentlyPlayingMix?.id === mix.id &&
+          mixStateValue.audioPlaying ? (
             <IconButton
               variant="link"
               aria-label="Pause audio"
@@ -98,19 +94,19 @@ const MixItem: React.FC<MixItemProps> = ({
               color="blackAlpha.900"
               mr={4}
               icon={<BsPauseCircle />}
-              // onClick={() => onPauseMix()}
+              onClick={onPauseMix}
             />
-          ) : ( */}
-          <IconButton
-            variant="link"
-            aria-label="Play audio"
-            fontSize="50px"
-            color="black"
-            mr={8}
-            icon={<BsPlayCircle />}
-            onClick={() => onPlayMix(mix)}
-          />
-          {/* )} */}
+          ) : (
+            <IconButton
+              variant="link"
+              aria-label="Play audio"
+              fontSize="50px"
+              color="black"
+              mr={4}
+              icon={<BsPlayCircle />}
+              onClick={() => onPlayMix(mix)}
+            />
+          )}
           <Flex textAlign="left" direction="column">
             <Link as={NextLink} href={`/${mix.creatorSlug}/${mix.slug}`} mr={6}>
               <Text fontSize="18px" fontWeight="bold">
@@ -131,25 +127,41 @@ const MixItem: React.FC<MixItemProps> = ({
           </Text>
         </Flex>
         <Flex direction="row" alignItems="center" mr={4}>
-          {!userIsCreator && (
+          {mix.favouritedByUsers?.includes(user?.uid as string) ? (
+            <Button
+              leftIcon={<AiFillHeart />}
+              color="purple.500"
+              borderColor="purple.500"
+              backgroundColor="whiteAlpha.800"
+              _hover={{
+                color: "purple.600",
+              }}
+              variant="outline"
+              size="sm"
+              mr={8}
+              onClick={() => onFavouriteMix(mix as Mix)}
+            >
+              {mix.favouriteCount}
+            </Button>
+          ) : (
             <Button
               leftIcon={<AiOutlineHeart />}
               color="blackAlpha.700"
-              variant="outline"
+              backgroundColor="none"
+              _hover={{
+                color: "blackAlpha.900",
+              }}
+              variant={"outline"}
               size="sm"
-              mr={2}
-              onClick={() => onFavouriteMix(mix, user as User)}
+              mr={8}
+              onClick={() => onFavouriteMix(mix as Mix)}
             >
               {mix.favouriteCount}
             </Button>
           )}
           {userIsCreator && (
             <>
-              <Link
-                as={NextLink}
-                href={`/${mix.creatorSlug}/${mix.slug}/edit`}
-                mr={2}
-              >
+              <Link as={NextLink} href={`/${mix.creatorSlug}/${mix.slug}/edit`}>
                 <Button
                   leftIcon={<RiEditBoxLine />}
                   color="blackAlpha.700"
@@ -181,7 +193,7 @@ const MixItem: React.FC<MixItemProps> = ({
             mr={1}
           />
           <Text mr={4} color="blackAlpha.700" fontSize="14px">
-            25
+            {mix.playCount}
           </Text>
           <Text mr={4} color="blackAlpha.700" fontSize="14px">
             {formatDistanceToNow(mix.createdAt.toDate())} ago

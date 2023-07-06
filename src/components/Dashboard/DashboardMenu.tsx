@@ -15,7 +15,7 @@ import {
 import NextLink from "next/link";
 import { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { AiOutlinePlaySquare } from "react-icons/ai";
+import { AiOutlinePlaySquare, AiOutlineHeart } from "react-icons/ai";
 import { BsPersonLinesFill } from "react-icons/bs";
 import { MdOutlineDashboard } from "react-icons/md";
 
@@ -25,7 +25,7 @@ const DashboardMenu = () => {
   const { currentUser } = useUser();
 
   return (
-    <Box width="15%" p={8}>
+    <Box width="20%" p={8}>
       <VStack spacing={4} align="stretch">
         <LinkBox
           onMouseEnter={() => setHovered(true)}
@@ -101,6 +101,17 @@ const DashboardMenu = () => {
             verticalAlign="bottom"
           />
           New shows
+        </Link>
+        <Link
+          as={NextLink}
+          color="blackAlpha.700"
+          _hover={{ color: "blackAlpha.900 " }}
+          href="/dashboard/favourites"
+          textAlign="left"
+          textTransform="uppercase"
+        >
+          <Icon as={AiOutlineHeart} boxSize={6} mr={4} verticalAlign="bottom" />
+          Favourites
         </Link>
       </VStack>
     </Box>

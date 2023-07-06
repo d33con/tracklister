@@ -13,13 +13,7 @@ type NewUploadsProps = {};
 const NewUploads: React.FC<NewUploadsProps> = () => {
   const [user] = useAuthState(auth);
   const [isLoading, setIsLoading] = useState(false);
-  const {
-    mixStateValue,
-    setMixStateValue,
-    onFavouriteMix,
-    onDeleteMix,
-    onPlayMix,
-  } = useMixes();
+  const { mixStateValue, setMixStateValue } = useMixes();
 
   useEffect(() => {
     const getMixes = async () => {
@@ -61,14 +55,7 @@ const NewUploads: React.FC<NewUploadsProps> = () => {
             New Uploads
           </Heading>
           {mixStateValue.mixes.map((mix) => (
-            <MixItem
-              key={mix.id}
-              mix={mix}
-              onFavouriteMix={onFavouriteMix}
-              onDeleteMix={onDeleteMix}
-              userIsCreator={user?.uid === mix.creatorId}
-              onPlayMix={onPlayMix}
-            />
+            <MixItem key={mix.id} mix={mix} />
           ))}
         </>
       )}

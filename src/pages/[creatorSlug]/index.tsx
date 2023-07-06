@@ -1,7 +1,7 @@
 import { Creator, Mix } from "@/atoms/mixesAtom";
 import NoUserMixes from "@/components/Dashboard/NoUserMixes";
 import MixItem from "@/components/Mixes/MixItem";
-import { auth, firestore } from "@/firebase/clientApp";
+import { firestore } from "@/firebase/clientApp";
 import useMixes from "@/hooks/useMixes";
 import {
   Box,
@@ -27,24 +27,16 @@ import {
 } from "firebase/firestore";
 import { GetServerSidePropsContext } from "next";
 import React, { useEffect, useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { GoLocation, GoLink } from "react-icons/go";
+import { GoLink, GoLocation } from "react-icons/go";
 
 type CreatorProfileProps = {
   creator: Creator;
 };
 
 const CreatorProfile: React.FC<CreatorProfileProps> = ({ creator }) => {
-  const [user] = useAuthState(auth);
   const [isLoading, setIsLoading] = useState(false);
   const [noMixes, setNoMixes] = useState(false);
-  const {
-    mixStateValue,
-    setMixStateValue,
-    onFavouriteMix,
-    onDeleteMix,
-    onPlayMix,
-  } = useMixes();
+  const { mixStateValue, setMixStateValue } = useMixes();
 
   useEffect(() => {
     const getMixes = async () => {
@@ -134,14 +126,7 @@ const CreatorProfile: React.FC<CreatorProfileProps> = ({ creator }) => {
               Shows
             </Heading>
             {mixStateValue.mixes.map((mix) => (
-              <MixItem
-                key={mix.id}
-                mix={mix}
-                onFavouriteMix={onFavouriteMix}
-                onDeleteMix={onDeleteMix}
-                userIsCreator={user?.uid === mix.creatorId}
-                onPlayMix={onPlayMix}
-              />
+              <MixItem key={mix.id} mix={mix} />
             ))}
           </Flex>
         </Flex>

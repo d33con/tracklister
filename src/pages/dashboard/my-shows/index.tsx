@@ -15,13 +15,7 @@ const MyShows: React.FC<MyShowsProps> = () => {
   const [user] = useAuthState(auth);
   const [isLoading, setIsLoading] = useState(false);
   const [noMixes, setNoMixes] = useState(false);
-  const {
-    mixStateValue,
-    setMixStateValue,
-    onFavouriteMix,
-    onDeleteMix,
-    onPlayMix,
-  } = useMixes();
+  const { mixStateValue, setMixStateValue } = useMixes();
 
   useEffect(() => {
     const getMixes = async () => {
@@ -68,14 +62,7 @@ const MyShows: React.FC<MyShowsProps> = () => {
             My Shows
           </Heading>
           {mixStateValue.mixes.map((mix) => (
-            <MixItem
-              key={mix.id}
-              mix={mix}
-              onFavouriteMix={onFavouriteMix}
-              onDeleteMix={onDeleteMix}
-              userIsCreator={user?.uid === mix.creatorId}
-              onPlayMix={onPlayMix}
-            />
+            <MixItem key={mix.id} mix={mix} />
           ))}
         </>
       )}

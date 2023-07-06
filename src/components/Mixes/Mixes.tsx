@@ -1,24 +1,16 @@
 import { Mix } from "@/atoms/mixesAtom";
-import { auth, firestore } from "@/firebase/clientApp";
+import { firestore } from "@/firebase/clientApp";
 import useMixes from "@/hooks/useMixes";
+import { Center, Flex, Spinner } from "@chakra-ui/react";
 import { collection, getDocs, query } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import MixItem from "./MixItem";
-import { Center, Flex, Spinner } from "@chakra-ui/react";
-import { useAuthState } from "react-firebase-hooks/auth";
 
 type MixesProps = {};
 
 const Mixes: React.FC<MixesProps> = () => {
-  const [user] = useAuthState(auth);
   const [isLoading, setIsLoading] = useState(false);
-  const {
-    mixStateValue,
-    setMixStateValue,
-    onFavouriteMix,
-    onDeleteMix,
-    onPlayMix,
-  } = useMixes();
+  const { mixStateValue, setMixStateValue } = useMixes();
 
   useEffect(() => {
     const getMixes = async () => {
@@ -51,14 +43,7 @@ const Mixes: React.FC<MixesProps> = () => {
       ) : (
         <>
           {mixStateValue.mixes.map((mix) => (
-            <MixItem
-              key={mix.id}
-              mix={mix}
-              onFavouriteMix={onFavouriteMix}
-              onDeleteMix={onDeleteMix}
-              userIsCreator={user?.uid === mix.creatorId}
-              onPlayMix={onPlayMix}
-            />
+            <MixItem key={mix.id} mix={mix} />
           ))}
         </>
       )}

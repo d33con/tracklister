@@ -267,6 +267,7 @@ const UploadIndex: React.FC = () => {
       genres: mixGenres.map((genre) => genre.label),
       favouritedByUsers: [],
       favouriteCount: 0,
+      playCount: 0,
       tracklist,
     };
 

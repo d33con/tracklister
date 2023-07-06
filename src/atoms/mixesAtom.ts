@@ -19,6 +19,7 @@ export type Mix = {
   favouritedByUsers?: Array<string>;
   genres?: Array<string>;
   tracklist?: Tracklist;
+  playCount: number;
 };
 
 export type Creator = {
@@ -37,6 +38,8 @@ interface MixState {
   selectedMix: Mix | null;
   selectedMixCreator: Creator | null;
   currentlyPlayingMix: Mix | null;
+  audioPlaying: boolean;
+  imageURL: string;
 }
 
 const defaultMixState: MixState = {
@@ -44,6 +47,8 @@ const defaultMixState: MixState = {
   selectedMix: null,
   selectedMixCreator: null,
   currentlyPlayingMix: null,
+  audioPlaying: false,
+  imageURL: "",
 };
 
 export const mixState = atom<MixState>({

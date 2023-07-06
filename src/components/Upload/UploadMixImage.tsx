@@ -19,6 +19,7 @@ const MixUploadImage = () => {
         setUploadMix((prevState) => ({
           ...prevState,
           selectedImageFile: readerEvent.target?.result as string,
+          newImageSelected: true,
         }));
       }
     };
@@ -29,6 +30,7 @@ const MixUploadImage = () => {
     setUploadMix((prevState) => ({
       ...prevState,
       selectedImageFile: currentImage,
+      newImageSelected: false,
     }));
   }, [setUploadMix, uploadMix.mix.imageURL]);
 

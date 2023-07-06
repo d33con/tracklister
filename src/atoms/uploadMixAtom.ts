@@ -7,6 +7,7 @@ export interface UploadMixState {
   selectedAudioFile: File | null;
   selectedAudioFileLoading: boolean;
   selectedImageFile?: string;
+  newImageSelected?: boolean;
   isPublishing: boolean;
   uploadProgress: {
     uploadPercent: number;

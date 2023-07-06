@@ -204,15 +204,16 @@ const EditMix: React.FC<EditMixProps> = ({ slug }) => {
       const mixDocRef = doc(firestore, "mixes", uploadMix.mix.id);
 
       // upload the new image
-      let mixImageDownloadURL;
-      if (uploadMix.selectedImageFile && uploadMix.mix.audioURL) {
+      let mixImageDownloadURL = "";
+      if (uploadMix.newImageSelected) {
+        console.log("new img");
         const mixImageRef = ref(
           storage,
           `mixes/${user?.uid}/images/${uploadMix.mix.id}`
         );
         await uploadString(
           mixImageRef,
-          uploadMix.selectedImageFile,
+          uploadMix.selectedImageFile as string,
           "data_url"
         );
         mixImageDownloadURL = await getDownloadURL(mixImageRef);
@@ -224,7 +225,7 @@ const EditMix: React.FC<EditMixProps> = ({ slug }) => {
         slug: uploadMix.mix.title.replace(/\s+/g, "-").toLowerCase(),
         description: uploadMix.mix.description,
         genres: selectedGenres.map((genre) => genre.label),
-        imageURL: mixImageDownloadURL,
+        imageURL: mixImageDownloadURL || uploadMix.mix.imageURL,
         tracklist,
       };
 

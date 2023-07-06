@@ -22,6 +22,7 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
+  ModalFooter,
   ModalHeader,
   ModalOverlay,
   Spacer,
@@ -134,7 +135,7 @@ const DiscogsModal = () => {
   }, [modalState.searchValue, setModalState]);
 
   return (
-    <Modal onClose={handleModalClose} isOpen={modalState.open} size="4xl">
+    <Modal onClose={handleModalClose} isOpen={modalState.open} size="full">
       <ModalOverlay />
       <ModalContent p={8}>
         <ModalCloseButton />
@@ -245,6 +246,11 @@ const DiscogsModal = () => {
             ))}
           </Flex>
         </ModalBody>
+        <ModalFooter>
+          <Button onClick={handleModalClose} colorScheme="red">
+            Cancel
+          </Button>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );

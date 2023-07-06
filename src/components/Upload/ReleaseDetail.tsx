@@ -28,7 +28,7 @@ const ReleaseDetail: React.FC<ReleaseDetailProps> = ({
               })
             : singleArtist;
         return (
-          <Flex direction="row" key={track.position}>
+          <Flex direction="row" key={track.position} mb={2}>
             <Box mr={4}>
               {track.position} . {artists} - {track.title}
             </Box>

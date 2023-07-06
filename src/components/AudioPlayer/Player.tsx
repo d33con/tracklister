@@ -41,11 +41,22 @@ const Player: React.FC<PlayerProps> = () => {
   const [audioMuted, setAudioMuted] = useState(false);
   const playingAudioRef = useRef<HTMLAudioElement>(null);
   const audio = playingAudioRef?.current;
-  const { onFavouriteMix } = useMixes();
+  const {
+    onFavouriteMix,
+    onPlayMix,
+    mixStateValue,
+    setMixStateValue,
+    onPauseMix,
+  } = useMixes();
   const [user] = useAuthState(auth);
 
   const toggleAudio = () => {
-    setAudioPlaying((prevState) => !prevState);
+    // setAudioPlaying((prevState) => !prevState);
+    // onPlayMix(currentlyPlayingMix);
+    setMixStateValue((prevState) => ({
+      ...prevState,
+      audioPlaying: !prevState.audioPlaying,
+    }));
     audio?.addEventListener("timeupdate", () => {
       const currentTime = Math.floor(audio.currentTime);
       setCurrentTime(currentTime);
@@ -66,16 +77,17 @@ const Player: React.FC<PlayerProps> = () => {
     audio?.addEventListener("loadedmetadata", () => {
       setRemainingTime(audio.duration);
     });
-    audio?.addEventListener("canplay", () => {
-      audio?.play();
-      setAudioPlaying(true);
-    });
+    // audio?.addEventListener("canplay", () => {
+    //   audio?.play();
+    //   setAudioPlaying(true);
+    // });
     audio?.addEventListener("ended", () => {
       setAudioPlaying(false);
       setCurrentTime(0);
       setRemainingTime(audio.duration);
     });
-    if (audioPlaying) {
+    if (mixStateValue.audioPlaying) {
+      console.log("playing");
       audio?.play();
       audio?.addEventListener("timeupdate", (e) => {
         const currentTime = Math.floor(audio.currentTime);
@@ -85,7 +97,7 @@ const Player: React.FC<PlayerProps> = () => {
     } else {
       audio?.pause();
     }
-  }, [audio, audioPlaying]);
+  }, [audio, mixStateValue.audioPlaying]);
 
   useEffect(() => {
     if (audio) {
@@ -119,7 +131,7 @@ const Player: React.FC<PlayerProps> = () => {
         position="fixed"
         bottom="0"
       >
-        {audioPlaying ? (
+        {mixStateValue.audioPlaying ? (
           <IconButton
             variant="link"
             aria-label="Pause audio"
@@ -127,7 +139,7 @@ const Player: React.FC<PlayerProps> = () => {
             color="blackAlpha.900"
             mr={4}
             icon={<BsPauseCircle />}
-            onClick={toggleAudio}
+            onClick={onPauseMix}
           />
         ) : (
           <IconButton
@@ -137,7 +149,7 @@ const Player: React.FC<PlayerProps> = () => {
             color="blackAlpha.900"
             mr={4}
             icon={<BsPlayCircle />}
-            onClick={toggleAudio}
+            onClick={() => onPlayMix(currentlyPlayingMix!)}
           />
         )}
         {currentlyPlayingMix?.imageURL ? (
@@ -192,7 +204,7 @@ const Player: React.FC<PlayerProps> = () => {
             _active={{
               color: "whiteAlpha.900",
             }}
-            onClick={() => onFavouriteMix(currentlyPlayingMix!, user as User)}
+            onClick={() => onFavouriteMix(currentlyPlayingMix!)}
           />
           <Link as={NextLink} href={`/${currentlyPlayingMix?.creatorSlug}`}>
             <IconButton

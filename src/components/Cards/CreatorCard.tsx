@@ -1,6 +1,6 @@
+import { Creator } from "@/atoms/mixesAtom";
 import {
   Avatar,
-  Badge,
   Button,
   Card,
   CardBody,
@@ -8,38 +8,42 @@ import {
   CardHeader,
   Flex,
   Heading,
+  Icon,
   Text,
 } from "@chakra-ui/react";
+import NextLink from "next/link";
 import React from "react";
+import { GoLocation } from "react-icons/go";
 
-const CreatorCard = () => {
+type CreatorCardProps = {
+  creator: Creator;
+};
+
+const CreatorCard: React.FC<CreatorCardProps> = ({ creator }) => {
   return (
     <Card maxW="sm" p={6}>
       <CardHeader textAlign="center" mb={4}>
-        <Avatar src="/headshot.png" size="xl" />
+        <Avatar src={creator.photoURL || "/headshot.png"} size="xl" />
       </CardHeader>
       <CardBody>
         <Heading size="lg" textAlign="center" mb={4}>
-          Matthew
+          {creator.creatorName}
         </Heading>
-        <Text textAlign="center" mb={3}>
-          2,015 followers
-        </Text>
-        <Flex justifyContent="center" mb={4}>
-          <Badge variant="outline" mr={2} colorScheme="gray">
-            DnB
-          </Badge>
-          <Badge variant="outline" mr={2} colorScheme="gray">
-            Oldskool
-          </Badge>
-          <Badge variant="outline" colorScheme="gray">
-            Techno
-          </Badge>
+        <Flex justifyContent="center">
+          <Text color="blue.600" fontSize="xl" textAlign="left">
+            {creator.location && (
+              <>
+                <Icon as={GoLocation} mr={1} boxSize="15px" />
+                {creator.location}
+              </>
+            )}
+          </Text>
         </Flex>
       </CardBody>
       <CardFooter justify="center">
         <Button
-          as="a"
+          as={NextLink}
+          href={`/${creator.creatorSlug}`}
           backgroundColor="blackAlpha.800"
           color="whiteAlpha.900"
           _hover={{ bg: "blackAlpha.900" }}

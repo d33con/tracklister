@@ -1,18 +1,22 @@
-import { currentUserState } from "@/atoms/userAtom";
 import LoggedOutHomepage from "@/components/LoggedOut/LoggedOutHomepage";
 import Mixes from "@/components/Mixes/Mixes";
 import { auth } from "@/firebase/clientApp";
+import useUser from "@/hooks/useUser";
 import { Flex, Heading, Text } from "@chakra-ui/react";
+import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useRecoilValue } from "recoil";
 
 export default function Home() {
   const [user, loading, error] = useAuthState(auth);
-  const currentUser = useRecoilValue(currentUserState);
+  const { currentUser, getLoggedInUser } = useUser();
+
+  useEffect(() => {
+    getLoggedInUser();
+  }, [getLoggedInUser]);
 
   return (
     <>
-      <Flex direction="column" justifyContent="center">
+      <Flex direction="column" justifyContent="center" px={48}>
         {user ? (
           <>
             <Text
@@ -21,20 +25,17 @@ export default function Home() {
               pb={8}
               pt={8}
               backgroundColor="green.200"
+              mx={-48}
             >
               Hello, {currentUser?.creatorName}
             </Text>
-            <Heading pl={10} pr={10} mt={4}>
-              Latest Mixes
-            </Heading>
+            <Heading mt={4}>Latest Mixes</Heading>
             <Mixes />
           </>
         ) : (
           <>
             <LoggedOutHomepage />
-            <Heading pl={10} pr={10} mt={4}>
-              Latest Mixes
-            </Heading>
+            <Heading mt={4}>Latest Mixes</Heading>
             <Mixes />
           </>
         )}

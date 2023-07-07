@@ -1,7 +1,7 @@
 import { MixGenre } from "@/atoms/mixGenresAtom";
 import { firestore } from "@/firebase/clientApp";
 import { colors } from "@/helpers/chakraColors";
-import { Button, Flex, Heading, Link, Wrap, WrapItem } from "@chakra-ui/react";
+import { Button, Flex, Heading, Wrap, WrapItem } from "@chakra-ui/react";
 import { collection, getDocs, query } from "firebase/firestore";
 import NextLink from "next/link";
 import { useEffect, useState } from "react";
@@ -44,19 +44,19 @@ const DiscoverIndex = () => {
         <Wrap spacingX="40px" spacingY="50px" justify="center">
           {mixGenres.map((genre: MixGenre, idx: number) => (
             <WrapItem key={genre.label}>
-              <Link as={NextLink} href={`/discover/${genre.value}`}>
-                <Button
-                  width="225px"
-                  height="130px"
-                  backgroundColor={`${colors[idx]}.800`}
-                  _hover={{ backgroundColor: `${colors[idx]}.900` }}
-                  color={`${colors[idx - 1]}.200`}
-                  fontSize="20px"
-                  textTransform="uppercase"
-                >
-                  {genre.label}
-                </Button>
-              </Link>
+              <Button
+                as={NextLink}
+                href={`/discover/${genre.value}`}
+                width="225px"
+                height="130px"
+                backgroundColor={`${colors[idx]}.800`}
+                _hover={{ backgroundColor: `${colors[idx]}.900` }}
+                color={`${colors[idx - 1]}.200`}
+                fontSize="20px"
+                textTransform="uppercase"
+              >
+                {genre.label}
+              </Button>
             </WrapItem>
           ))}
         </Wrap>

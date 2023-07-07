@@ -1,19 +1,22 @@
 import { mixState } from "@/atoms/mixesAtom";
+import { auth } from "@/firebase/clientApp";
 import { convertPlayerDuration } from "@/helpers/convertDuration";
+import useMixes from "@/hooks/useMixes";
 import {
   Flex,
   Icon,
   IconButton,
   Image,
-  Link,
   Slider,
   SliderFilledTrack,
   SliderThumb,
   SliderTrack,
   Text,
 } from "@chakra-ui/react";
+import NextLink from "next/link";
 import React, { useEffect, useRef, useState } from "react";
-import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { BiVolumeFull, BiVolumeMute } from "react-icons/bi";
 import {
   BsFillPersonFill,
@@ -23,15 +26,8 @@ import {
   BsSoundwave,
 } from "react-icons/bs";
 import { useRecoilValue } from "recoil";
-import NextLink from "next/link";
-import useMixes from "@/hooks/useMixes";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "@/firebase/clientApp";
-import { User } from "firebase/auth";
 
-type PlayerProps = {};
-
-const Player: React.FC<PlayerProps> = () => {
+const Player = () => {
   const { currentlyPlayingMix } = useRecoilValue(mixState);
   const [audioPlaying, setAudioPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -168,23 +164,24 @@ const Player: React.FC<PlayerProps> = () => {
           alignItems="start"
           width="400px"
         >
-          <Link
+          <Text
             as={NextLink}
             href={`/${currentlyPlayingMix?.creatorSlug}/${currentlyPlayingMix?.slug}`}
+            color="whiteAlpha.900"
+            fontSize="14px"
+            noOfLines={1}
           >
-            <Text color="whiteAlpha.900" fontSize="14px" noOfLines={1}>
-              {currentlyPlayingMix?.title}
-            </Text>
-          </Link>
-          <Link
+            {currentlyPlayingMix?.title}
+          </Text>
+          <Text
             as={NextLink}
             href={`/${currentlyPlayingMix?.creatorSlug}`}
             mr={6}
+            color="whiteAlpha.900"
+            fontSize="11px"
           >
-            <Text color="whiteAlpha.900" fontSize="11px">
-              by {currentlyPlayingMix?.creatorName}
-            </Text>
-          </Link>
+            by {currentlyPlayingMix?.creatorName}
+          </Text>
         </Flex>
         <Flex direction="row" alignItems="center">
           <IconButton
@@ -206,35 +203,32 @@ const Player: React.FC<PlayerProps> = () => {
             }}
             onClick={() => onFavouriteMix(currentlyPlayingMix!)}
           />
-          <Link as={NextLink} href={`/${currentlyPlayingMix?.creatorSlug}`}>
-            <IconButton
-              icon={<BsFillPersonFill />}
-              aria-label="View creator profile"
-              color="whiteAlpha.900"
-              variant="link"
-              size="lg"
-              mt={1}
-              _active={{
-                color: "whiteAlpha.900",
-              }}
-            />
-          </Link>
-          <Link
+          <IconButton
+            as={NextLink}
+            href={`/${currentlyPlayingMix?.creatorSlug}`}
+            icon={<BsFillPersonFill />}
+            aria-label="View creator profile"
+            color="whiteAlpha.900"
+            variant="link"
+            size="lg"
+            mt={1}
+            _active={{
+              color: "whiteAlpha.900",
+            }}
+          />
+          <IconButton
             as={NextLink}
             href={`/${currentlyPlayingMix?.creatorSlug}/${currentlyPlayingMix?.slug}`}
-          >
-            <IconButton
-              icon={<BsListUl />}
-              aria-label="View tracklist"
-              color="whiteAlpha.900"
-              variant="link"
-              size="lg"
-              mt={1}
-              _active={{
-                color: "whiteAlpha.900",
-              }}
-            />
-          </Link>
+            icon={<BsListUl />}
+            aria-label="View tracklist"
+            color="whiteAlpha.900"
+            variant="link"
+            size="lg"
+            mt={1}
+            _active={{
+              color: "whiteAlpha.900",
+            }}
+          />
         </Flex>
         <Flex direction="row" ml={8} width="100%">
           <Text color="whiteAlpha.900" fontSize="12px" mr={4} width="50px">

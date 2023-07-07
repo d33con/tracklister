@@ -1,4 +1,4 @@
-import { Button, Center, Heading, Icon, Link } from "@chakra-ui/react";
+import { Button, Center, Heading, Icon } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { BsPlusCircle, BsSoundwave } from "react-icons/bs";
 
@@ -12,20 +12,20 @@ const NotFound = () => {
         Sorry there are no shows with that genre or tag
       </Heading>
       <Center>
-        <Link as={NextLink} href="/upload">
-          <Button
-            height="100px"
-            width="300px"
-            backgroundColor="blue.500"
-            _hover={{ backgroundColor: "blue.600" }}
-            color="whiteAlpha.900"
-            fontSize="20px"
-            textTransform="uppercase"
-            leftIcon={<BsPlusCircle size="20px" />}
-          >
-            Upload one now
-          </Button>
-        </Link>
+        <Button
+          as={NextLink}
+          href="/upload"
+          height="100px"
+          width="300px"
+          backgroundColor="blue.500"
+          _hover={{ backgroundColor: "blue.600" }}
+          color="whiteAlpha.900"
+          fontSize="20px"
+          textTransform="uppercase"
+          leftIcon={<BsPlusCircle size="20px" />}
+        >
+          Upload one now
+        </Button>
       </Center>
     </>
   );

@@ -1,4 +1,4 @@
-import { Center, Heading, Icon, Link } from "@chakra-ui/react";
+import { Center, Heading, Icon } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { BsSoundwave } from "react-icons/bs";
 
@@ -12,16 +12,16 @@ const PageNotFound = () => {
         Page Not Found
       </Heading>
       <Center>
-        <Link as={NextLink} href="/">
-          <Heading
-            mb={8}
-            textAlign="center"
-            size="xl"
-            textDecoration="underline"
-          >
-            Go home
-          </Heading>
-        </Link>
+        <Heading
+          as={NextLink}
+          href="/"
+          mb={8}
+          textAlign="center"
+          size="xl"
+          textDecoration="underline"
+        >
+          Go home
+        </Heading>
       </Center>
     </>
   );

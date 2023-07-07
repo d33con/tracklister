@@ -15,7 +15,6 @@ import {
   Icon,
   IconButton,
   Image,
-  Link,
   Spacer,
   Spinner,
   Table,
@@ -217,20 +216,17 @@ const MixPage: React.FC<MixPageProps> = ({ slug, creatorSlug }) => {
                     currentUser?.uid ===
                       mixStateValue.selectedMix?.creatorId && (
                       <>
-                        <Link
+                        <Button
                           as={NextLink}
                           href={`/${mixStateValue.selectedMix?.creatorSlug}/${mixStateValue.selectedMix?.slug}/edit`}
+                          leftIcon={<RiEditBoxLine />}
+                          color="blackAlpha.900"
+                          variant="outline"
+                          size="sm"
+                          mr={2}
                         >
-                          <Button
-                            leftIcon={<RiEditBoxLine />}
-                            color="blackAlpha.900"
-                            variant="outline"
-                            size="sm"
-                            mr={2}
-                          >
-                            Edit
-                          </Button>
-                        </Link>
+                          Edit
+                        </Button>
                         <Button
                           leftIcon={<RiDeleteBin7Line />}
                           color="blackAlpha.900"
@@ -278,42 +274,39 @@ const MixPage: React.FC<MixPageProps> = ({ slug, creatorSlug }) => {
           </Flex>
           <Flex p={24} direction="column">
             <Card variant="elevated" width="100%">
-              <Link
+              <CardBody
+                display="flex"
+                flexDir="row"
                 as={NextLink}
                 href={`/${mixStateValue.selectedMixCreator?.creatorSlug}`}
               >
-                <CardBody display="flex" flexDir="row">
-                  <Avatar
-                    size="lg"
-                    mr={4}
-                    name={mixStateValue.selectedMixCreator?.creatorName}
-                    src={
-                      mixStateValue.selectedMixCreator?.photoURL ||
-                      "/headshot.png"
-                    }
-                  />
-                  <Text fontSize="18px">
-                    {mixStateValue.selectedMixCreator?.creatorName}
-                  </Text>
-                </CardBody>
-              </Link>
+                <Avatar
+                  size="lg"
+                  mr={4}
+                  name={mixStateValue.selectedMixCreator?.creatorName}
+                  src={
+                    mixStateValue.selectedMixCreator?.photoURL ||
+                    "/headshot.png"
+                  }
+                />
+                <Text fontSize="18px">
+                  {mixStateValue.selectedMixCreator?.creatorName}
+                </Text>
+              </CardBody>
             </Card>
             <Flex justifyContent="start" my={12}>
               {mixStateValue.selectedMix?.genres?.map((genre) => (
-                <Link
+                <Button
                   as={NextLink}
                   href={`/discover/${genre.toLowerCase().replace(/\W/g, "")}`}
                   key={genre}
+                  variant="outline"
+                  colorScheme="gray"
+                  borderRadius={16}
+                  mr={4}
                 >
-                  <Button
-                    variant="outline"
-                    colorScheme="gray"
-                    borderRadius={16}
-                    mr={4}
-                  >
-                    {genre}
-                  </Button>
-                </Link>
+                  {genre}
+                </Button>
               ))}
             </Flex>
             <Text mb={8} color="blackAlpha.800">

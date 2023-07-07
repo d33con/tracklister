@@ -108,15 +108,24 @@ const MixItem: React.FC<MixItemProps> = ({ mix }) => {
             />
           )}
           <Flex textAlign="left" direction="column">
-            <Link as={NextLink} href={`/${mix.creatorSlug}/${mix.slug}`} mr={6}>
-              <Text fontSize="18px" fontWeight="bold">
-                {mix.title}
-              </Text>
-            </Link>
+            <Text
+              fontSize="18px"
+              fontWeight="bold"
+              as={NextLink}
+              href={`/${mix.creatorSlug}/${mix.slug}`}
+              mr={6}
+            >
+              {mix.title}
+            </Text>
             {userIsCreator ? null : (
-              <Link as={NextLink} href={`/${mix.creatorSlug}/`} mr={6}>
-                <Text fontSize="16px">{mix.creatorName}</Text>
-              </Link>
+              <Text
+                fontSize="16px"
+                as={NextLink}
+                href={`/${mix.creatorSlug}/`}
+                mr={6}
+              >
+                {mix.creatorName}
+              </Text>
             )}
           </Flex>
         </Flex>
@@ -161,17 +170,17 @@ const MixItem: React.FC<MixItemProps> = ({ mix }) => {
           )}
           {userIsCreator && (
             <>
-              <Link as={NextLink} href={`/${mix.creatorSlug}/${mix.slug}/edit`}>
-                <Button
-                  leftIcon={<RiEditBoxLine />}
-                  color="blackAlpha.700"
-                  variant="outline"
-                  size="sm"
-                  mr={2}
-                >
-                  Edit
-                </Button>
-              </Link>
+              <Button
+                as={NextLink}
+                href={`/${mix.creatorSlug}/${mix.slug}/edit`}
+                leftIcon={<RiEditBoxLine />}
+                color="blackAlpha.700"
+                variant="outline"
+                size="sm"
+                mr={2}
+              >
+                Edit
+              </Button>
               <Button
                 leftIcon={<RiDeleteBin7Line />}
                 color="blackAlpha.700"

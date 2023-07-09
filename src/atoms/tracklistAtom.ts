@@ -1,5 +1,4 @@
 import { atom } from "recoil";
-import { v4 as uuidv4 } from "uuid";
 
 export type Tracklist = Array<{
   id: string;
@@ -8,14 +7,7 @@ export type Tracklist = Array<{
   label: string;
 }>;
 
-const defaultTracklistState: Tracklist = [
-  {
-    id: uuidv4(),
-    trackTime: 0,
-    trackName: "",
-    label: "",
-  },
-];
+const defaultTracklistState: Tracklist = [];
 
 export const tracklistState = atom<Tracklist>({
   key: "tracklistState",

@@ -109,8 +109,9 @@ const MixItem: React.FC<MixItemProps> = ({ mix }) => {
           )}
           <Flex textAlign="left" direction="column">
             <Text
-              fontSize="18px"
-              fontWeight="bold"
+              fontSize="20px"
+              color="blackAlpha.900"
+              _hover={{ color: "blackAlpha.700" }}
               as={NextLink}
               href={`/${mix.creatorSlug}/${mix.slug}`}
               mr={6}
@@ -118,14 +119,19 @@ const MixItem: React.FC<MixItemProps> = ({ mix }) => {
               {mix.title}
             </Text>
             {userIsCreator ? null : (
-              <Text
-                fontSize="16px"
-                as={NextLink}
-                href={`/${mix.creatorSlug}/`}
-                mr={6}
-              >
-                {mix.creatorName}
-              </Text>
+              <Flex>
+                <Text mr={1}>by</Text>
+                <Text
+                  fontSize="16px"
+                  color="blackAlpha.700"
+                  _hover={{ color: "blackAlpha.900" }}
+                  as={NextLink}
+                  href={`/${mix.creatorSlug}/`}
+                  mr={6}
+                >
+                  {mix.creatorName}
+                </Text>
+              </Flex>
             )}
           </Flex>
         </Flex>

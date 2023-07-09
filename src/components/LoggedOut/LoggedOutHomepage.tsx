@@ -1,7 +1,10 @@
 import { Center, HStack, Spinner } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import CreatorCard from "../Cards/CreatorCard";
-import { homepageUsersState } from "@/atoms/homepageUsersAtom";
+import {
+  HomepageUsersState,
+  homepageUsersState,
+} from "@/atoms/homepageUsersAtom";
 import { firestore } from "@/firebase/clientApp";
 import { query, collection, getDocs, limit } from "firebase/firestore";
 import { useRecoilState } from "recoil";
@@ -25,7 +28,7 @@ const LoggedOutHomepage = () => {
 
         creators.sort((a, b) => b.lastLoginAt - a.lastLoginAt);
 
-        setHomepageUsers(creators);
+        setHomepageUsers(creators as HomepageUsersState);
       } catch (error: any) {
         console.log(error.message);
       }

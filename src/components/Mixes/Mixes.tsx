@@ -6,9 +6,7 @@ import { collection, getDocs, query } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import MixItem from "./MixItem";
 
-type MixesProps = {};
-
-const Mixes: React.FC<MixesProps> = () => {
+const Mixes = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { mixStateValue, setMixStateValue } = useMixes();
 

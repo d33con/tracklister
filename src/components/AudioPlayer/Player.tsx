@@ -1,6 +1,6 @@
 import { mixState } from "@/atoms/mixesAtom";
 import { auth } from "@/firebase/clientApp";
-import { convertPlayerDuration } from "@/helpers/convertDuration";
+import { convertDuration } from "@/helpers/convertDuration";
 import useMixes from "@/hooks/useMixes";
 import {
   Flex,
@@ -232,7 +232,7 @@ const Player = () => {
         </Flex>
         <Flex direction="row" ml={8} width="100%">
           <Text color="whiteAlpha.900" fontSize="12px" mr={4} width="50px">
-            {convertPlayerDuration(currentTime)}
+            {convertDuration(currentTime)}
           </Text>
           <Slider
             aria-label="Audio seek track"
@@ -250,7 +250,7 @@ const Player = () => {
             <SliderThumb />
           </Slider>
           <Text color="whiteAlpha.900" fontSize="12px" ml={4} width="50px">
-            {remainingTime ? convertPlayerDuration(remainingTime) : "--:--"}
+            {remainingTime ? convertDuration(remainingTime) : "--:--"}
           </Text>
         </Flex>
         <Flex direction="row" alignItems="center">

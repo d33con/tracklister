@@ -16,7 +16,7 @@ import React, { useState } from "react";
 import { useSendPasswordResetEmail } from "react-firebase-hooks/auth";
 import { useSetRecoilState } from "recoil";
 
-const ResetPassword: React.FC = () => {
+const ResetPassword = () => {
   const [email, setEmail] = useState("");
   const [success, setSuccess] = useState(false);
   const setAuthModalState = useSetRecoilState(authModalState);

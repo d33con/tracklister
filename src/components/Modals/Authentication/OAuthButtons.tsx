@@ -16,7 +16,7 @@ import React, { useEffect } from "react";
 import { useSignInWithGoogle } from "react-firebase-hooks/auth";
 import { FaGoogle } from "react-icons/fa";
 
-const OAuthButtons: React.FC = () => {
+const OAuthButtons = () => {
   const [signInWithGoogle, userCredentials, loading, error] =
     useSignInWithGoogle(auth);
 

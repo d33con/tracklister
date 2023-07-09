@@ -33,7 +33,7 @@ import { MultiValue } from "react-select/dist/declarations/src/types";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { v4 as uuidv4 } from "uuid";
 
-const UploadIndex: React.FC = () => {
+const UploadIndex = () => {
   const [mixGenres, setMixGenres] = useState<
     MultiValue<{ value: string; label: string }>
   >([]);

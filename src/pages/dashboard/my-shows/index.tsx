@@ -9,9 +9,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import DashboardLayout from "../../../components/Layout/DashboardLayout";
 import NoUserMixes from "@/components/Dashboard/NoUserMixes";
 
-type MyShowsProps = {};
-
-const MyShows: React.FC<MyShowsProps> = () => {
+const MyShows = () => {
   const [user] = useAuthState(auth);
   const [isLoading, setIsLoading] = useState(false);
   const [noMixes, setNoMixes] = useState(false);

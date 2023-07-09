@@ -18,7 +18,7 @@ import React, { useEffect, useState } from "react";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { useSetRecoilState } from "recoil";
 
-const Login: React.FC = () => {
+const Login = () => {
   const setAuthModalState = useSetRecoilState(authModalState);
   const { getLoggedInUser } = useUser();
 

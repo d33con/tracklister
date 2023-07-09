@@ -15,7 +15,7 @@ import { BsSoundwave } from "react-icons/bs";
 import Authentication from "./Authentication";
 import SearchInput from "./SearchInput";
 
-const Navbar: React.FC = () => {
+const Navbar = () => {
   const [searchFocused, setSearchFocused] = useState(false);
   const [user] = useAuthState(auth);
 

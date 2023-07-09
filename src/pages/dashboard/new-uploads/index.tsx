@@ -8,9 +8,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 
-type NewUploadsProps = {};
-
-const NewUploads: React.FC<NewUploadsProps> = () => {
+const NewUploads = () => {
   const [user] = useAuthState(auth);
   const [isLoading, setIsLoading] = useState(false);
   const { mixStateValue, setMixStateValue } = useMixes();

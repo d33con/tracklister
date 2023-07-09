@@ -7,7 +7,7 @@
 - ~~Deleting mixes~~
 - ~~Profile page~~
 - ~~Edit user profile~~
-- Favouriting - on page and on player - favourited mixes page in dashboard
+- ~~Favouriting~~
 - ~~Genre filters~~
 - ~~Genre pages~~
 - Search

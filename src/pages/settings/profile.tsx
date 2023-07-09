@@ -22,9 +22,7 @@ import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import NextLink from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 
-type ProfileProps = {};
-
-const Profile: React.FC<ProfileProps> = () => {
+const Profile = () => {
   const { getLoggedInUser, currentUser } = useUser();
   const [imageToUpload, setImageToUpload] = useState("");
   const [profileForm, setProfileForm] = useState({ ...currentUser });

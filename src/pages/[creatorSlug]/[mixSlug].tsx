@@ -40,6 +40,7 @@ import {
   BsPauseCircle,
   BsPlayCircle,
   BsSoundwave,
+  BsCaretRightFill,
 } from "react-icons/bs";
 import { RiDeleteBin7Line, RiEditBoxLine } from "react-icons/ri";
 
@@ -243,6 +244,15 @@ const MixPage: React.FC<MixPageProps> = ({ slug, creatorSlug }) => {
                   <Spacer />
                   <Flex alignItems="center">
                     <Icon
+                      as={BsCaretRightFill}
+                      color="whiteAlpha.900"
+                      verticalAlign="bottom"
+                      mr={1}
+                    />
+                    <Text mr={4} color="whiteAlpha.900" fontSize="14px">
+                      {mixStateValue.selectedMix?.playCount}
+                    </Text>
+                    <Icon
                       as={BsCalendar2Week}
                       mr={3}
                       boxSize="20px"
@@ -313,34 +323,38 @@ const MixPage: React.FC<MixPageProps> = ({ slug, creatorSlug }) => {
               {mixStateValue.selectedMix?.description}
             </Text>
             <Heading mb={8}>Tracklist</Heading>
-            <TableContainer>
-              <Table variant="simple">
-                <Thead>
-                  <Tr>
-                    <Th>Time</Th>
-                    <Th>Track</Th>
-                    <Th>Label</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {mixStateValue.selectedMix?.tracklist?.map((track) => {
-                    const minutes = Math.floor(track.trackTime / 60);
-                    let seconds = track.trackTime % 60;
-                    const secondsString =
-                      seconds < 10 ? `0${seconds}` : `${seconds}`;
-                    return (
-                      <Tr key={track.id}>
-                        <Td>
-                          {minutes}:{secondsString}
-                        </Td>
-                        <Td>{track.trackName}</Td>
-                        <Td>{track.label}</Td>
-                      </Tr>
-                    );
-                  })}
-                </Tbody>
-              </Table>
-            </TableContainer>
+            {mixStateValue.selectedMix?.tracklist?.length ? (
+              <TableContainer>
+                <Table variant="simple">
+                  <Thead>
+                    <Tr>
+                      <Th>Time</Th>
+                      <Th>Track</Th>
+                      <Th>Label</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {mixStateValue.selectedMix?.tracklist?.map((track) => {
+                      const minutes = Math.floor(track.trackTime / 60);
+                      let seconds = track.trackTime % 60;
+                      const secondsString =
+                        seconds < 10 ? `0${seconds}` : `${seconds}`;
+                      return (
+                        <Tr key={track.id}>
+                          <Td>
+                            {minutes}:{secondsString}
+                          </Td>
+                          <Td>{track.trackName}</Td>
+                          <Td>{track.label}</Td>
+                        </Tr>
+                      );
+                    })}
+                  </Tbody>
+                </Table>
+              </TableContainer>
+            ) : (
+              <Text color="blackAlpha.800">No tracklist added</Text>
+            )}
           </Flex>
         </Flex>
       )}

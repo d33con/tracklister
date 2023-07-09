@@ -11,13 +11,15 @@ export default function Home() {
   const { currentUser, getLoggedInUser } = useUser();
 
   useEffect(() => {
-    getLoggedInUser();
-  }, [getLoggedInUser]);
+    if (user && !loading) {
+      getLoggedInUser();
+    }
+  }, [user, loading, getLoggedInUser]);
 
   return (
     <>
       <Flex direction="column" justifyContent="center" px={48}>
-        {user ? (
+        {currentUser ? (
           <>
             <Text
               textAlign="center"

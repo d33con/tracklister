@@ -5,7 +5,7 @@ import AuthButtons from "./AuthButtons";
 import UserMenu from "./UserMenu";
 
 type AuthenticationProps = {
-  user?: User;
+  user: User | null | undefined;
 };
 
 const Authentication: React.FC<AuthenticationProps> = ({ user }) => {

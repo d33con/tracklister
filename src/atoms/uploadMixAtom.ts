@@ -33,6 +33,7 @@ const defaultUploadMixState: UploadMixState = {
     title: "",
     slug: "",
     description: "",
+    playCount: 0,
   },
 };
 

@@ -17,8 +17,9 @@ import {
   Textarea,
   useToast,
 } from "@chakra-ui/react";
-import { doc, updateDoc } from "firebase/firestore";
+import { FieldPath, doc, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
+import { get } from "http";
 import NextLink from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -81,15 +82,11 @@ const Profile = () => {
           photoURL: profileImageDownloadURL,
         });
       }
-      await updateDoc(
-        userDocRef,
-        {
-          location: profileForm.location || "",
-          biography: profileForm.biography || "",
-          website: profileForm.website || "",
-        },
-        { merge: true }
-      );
+      await updateDoc(userDocRef, {
+        location: profileForm.location || "",
+        biography: profileForm.biography || "",
+        website: profileForm.website || "",
+      });
       toast({
         title: "Profile updated.",
         status: "success",
@@ -105,7 +102,7 @@ const Profile = () => {
 
   useEffect(() => {
     getLoggedInUser();
-  }, []);
+  }, [getLoggedInUser]);
 
   return (
     <Flex

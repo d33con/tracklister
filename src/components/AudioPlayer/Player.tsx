@@ -83,7 +83,6 @@ const Player = () => {
       setRemainingTime(audio.duration);
     });
     if (mixStateValue.audioPlaying) {
-      console.log("playing");
       audio?.play();
       audio?.addEventListener("timeupdate", (e) => {
         const currentTime = Math.floor(audio.currentTime);
@@ -243,6 +242,7 @@ const Player = () => {
             size="sm"
             pr={2}
             onChange={handleProgressChange}
+            focusThumbOnChange={false}
           >
             <SliderTrack>
               <SliderFilledTrack />

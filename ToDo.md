@@ -11,3 +11,4 @@
 - ~~Genre filters~~
 - ~~Genre pages~~
 - Search
+- getLoggedInUser

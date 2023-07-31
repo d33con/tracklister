@@ -17,9 +17,8 @@ import {
   Textarea,
   useToast,
 } from "@chakra-ui/react";
-import { FieldPath, doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
-import { get } from "http";
 import NextLink from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -107,7 +106,7 @@ const Profile = () => {
   return (
     <Flex
       px={24}
-      my={10}
+      my={16}
       alignItems="center"
       justifyContent="center"
       direction="column"

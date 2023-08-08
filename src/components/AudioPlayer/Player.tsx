@@ -1,4 +1,4 @@
-import { mixState } from "@/atoms/mixesAtom";
+import { Mix, mixState } from "@/atoms/mixesAtom";
 import { auth } from "@/firebase/clientApp";
 import { convertDuration } from "@/helpers/convertDuration";
 import useMixes from "@/hooks/useMixes";
@@ -200,7 +200,7 @@ const Player = () => {
             _active={{
               color: "whiteAlpha.900",
             }}
-            onClick={() => onFavouriteMix(currentlyPlayingMix!)}
+            onClick={() => onFavouriteMix(currentlyPlayingMix as Mix)}
           />
           <IconButton
             as={NextLink}

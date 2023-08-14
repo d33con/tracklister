@@ -19,7 +19,7 @@ export default function Home() {
   return (
     <>
       <Flex direction="column" justifyContent="center" px={48}>
-        {currentUser ? (
+        {user ? (
           <>
             <Text
               textAlign="center"

@@ -21,7 +21,7 @@ type CreatorCardProps = {
 
 const CreatorCard: React.FC<CreatorCardProps> = ({ creator }) => {
   return (
-    <Card maxW="sm" p={6}>
+    <Card minW="xs" p={6}>
       <CardHeader textAlign="center" mb={4}>
         <Avatar src={creator.photoURL || "/headshot.png"} size="xl" />
       </CardHeader>
@@ -30,7 +30,12 @@ const CreatorCard: React.FC<CreatorCardProps> = ({ creator }) => {
           {creator.creatorName}
         </Heading>
         <Flex justifyContent="center">
-          <Text color="blue.600" fontSize="xl" textAlign="left">
+          <Text
+            color="blue.600"
+            fontSize="xl"
+            textAlign="left"
+            minHeight="36px"
+          >
             {creator.location && (
               <>
                 <Icon as={GoLocation} mr={1} boxSize="15px" />

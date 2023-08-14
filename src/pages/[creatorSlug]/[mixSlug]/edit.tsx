@@ -1,6 +1,7 @@
 import { Mix } from "@/atoms/mixesAtom";
 import { tracklistState } from "@/atoms/tracklistAtom";
 import { uploadMixState } from "@/atoms/uploadMixAtom";
+import PageNotFound from "@/components/Error/PageNotFound";
 import DiscogsModal from "@/components/Modals/Discogs/DiscogsModal";
 import TracklistTable from "@/components/Upload/TracklistTable";
 import UploadMixImage from "@/components/Upload/UploadMixImage";
@@ -251,7 +252,7 @@ const EditMix: React.FC<EditMixProps> = ({ slug }) => {
     router.push("/dashboard/my-shows");
   };
 
-  return (
+  return user?.uid === uploadMix.mix.creatorId ? (
     <Flex width="100%" flexDirection="column" py={12} px={48}>
       <form onSubmit={saveMix}>
         <HStack mb={6}>
@@ -374,6 +375,8 @@ const EditMix: React.FC<EditMixProps> = ({ slug }) => {
         </Button>
       </Box>
     </Flex>
+  ) : (
+    <PageNotFound />
   );
 };
 

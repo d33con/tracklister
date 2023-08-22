@@ -46,19 +46,6 @@ const Player = () => {
   } = useMixes();
   const [user] = useAuthState(auth);
 
-  const toggleAudio = () => {
-    // setAudioPlaying((prevState) => !prevState);
-    // onPlayMix(currentlyPlayingMix);
-    setMixStateValue((prevState) => ({
-      ...prevState,
-      audioPlaying: !prevState.audioPlaying,
-    }));
-    audio?.addEventListener("timeupdate", () => {
-      const currentTime = Math.floor(audio.currentTime);
-      setCurrentTime(currentTime);
-    });
-  };
-
   const handleProgressChange = (value: number) => {
     setCurrentTime(value);
     audio!.currentTime = value;
@@ -73,10 +60,6 @@ const Player = () => {
     audio?.addEventListener("loadedmetadata", () => {
       setRemainingTime(audio.duration);
     });
-    // audio?.addEventListener("canplay", () => {
-    //   audio?.play();
-    //   setAudioPlaying(true);
-    // });
     audio?.addEventListener("ended", () => {
       setAudioPlaying(false);
       setCurrentTime(0);

@@ -36,10 +36,10 @@ const Navbar = () => {
           </Heading>
         </Flex>
       </Link>
-      <SearchInput
+      {/* <SearchInput
         searchFocused={searchFocused}
         setSearchFocused={setSearchFocused}
-      />
+      /> */}
       {searchFocused && (
         <CloseButton
           color="whiteAlpha.900"

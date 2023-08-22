@@ -59,7 +59,7 @@ const MixItem: React.FC<MixItemProps> = ({ mix }) => {
     } catch (error: any) {
       // fail toast
       toast({
-        title: "Your mix could not be deletd.",
+        title: "Your mix could not be deleted.",
         description: "Please try again.",
         status: "error",
         position: "top",

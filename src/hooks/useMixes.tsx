@@ -77,15 +77,10 @@ const useMixes = () => {
         await deleteDoc(usersFavouriteMixesDoc);
       }
       // get updated mix doc from db
-      // REFACTOR
       const updatedMixRef = await getDoc(mixDocRef);
       const updatedMix = { ...updatedMixRef.data() };
 
       // update mixes state
-      setMixStateValue((prevState) => ({
-        ...prevState,
-        selectedMix: updatedMix as Mix,
-      }));
       if (
         mixStateValue.currentlyPlayingMix?.id === mixStateValue.selectedMix?.id
       ) {
@@ -98,6 +93,15 @@ const useMixes = () => {
             favouriteCount: updatedMix.favouriteCount,
             favouritedByUsers: updatedMix.favouritedByUsers,
           } as Mix,
+          mixes: prevState.mixes.map((mix) =>
+            mix.id === updatedMix.id
+              ? {
+                  ...mix,
+                  favouriteCount: updatedMix.favouriteCount,
+                  favouritedByUsers: updatedMix.favouritedByUsers,
+                }
+              : mix
+          ),
         }));
       } else {
         setMixStateValue((prevState) => ({

@@ -25,10 +25,8 @@ import {
   BsPlayCircle,
   BsSoundwave,
 } from "react-icons/bs";
-import { useRecoilValue } from "recoil";
 
 const Player = () => {
-  const { currentlyPlayingMix } = useRecoilValue(mixState);
   const [audioPlaying, setAudioPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [remainingTime, setRemainingTime] = useState(0);
@@ -75,7 +73,7 @@ const Player = () => {
     } else {
       audio?.pause();
     }
-  }, [audio, mixStateValue.audioPlaying]);
+  }, [audio, mixStateValue.audioPlaying, mixStateValue.currentlyPlayingMix]);
 
   useEffect(() => {
     if (audio) {
@@ -94,7 +92,7 @@ const Player = () => {
   return (
     <section>
       <audio
-        src={currentlyPlayingMix?.audioURL}
+        src={mixStateValue.currentlyPlayingMix?.audioURL}
         ref={playingAudioRef}
         muted={audioMuted}
       />
@@ -127,13 +125,13 @@ const Player = () => {
             color="blackAlpha.900"
             mr={4}
             icon={<BsPlayCircle />}
-            onClick={() => onPlayMix(currentlyPlayingMix!)}
+            onClick={() => onPlayMix(mixStateValue.currentlyPlayingMix!)}
           />
         )}
-        {currentlyPlayingMix?.imageURL ? (
+        {mixStateValue.currentlyPlayingMix?.imageURL ? (
           <Image
-            src={currentlyPlayingMix?.imageURL}
-            alt={currentlyPlayingMix?.title}
+            src={mixStateValue.currentlyPlayingMix?.imageURL}
+            alt={mixStateValue.currentlyPlayingMix?.title}
             boxSize="40px"
             mr={4}
           />
@@ -148,27 +146,27 @@ const Player = () => {
         >
           <Text
             as={NextLink}
-            href={`/${currentlyPlayingMix?.creatorSlug}/${currentlyPlayingMix?.slug}`}
+            href={`/${mixStateValue.currentlyPlayingMix?.creatorSlug}/${mixStateValue.currentlyPlayingMix?.slug}`}
             color="whiteAlpha.900"
             fontSize="14px"
             noOfLines={1}
           >
-            {currentlyPlayingMix?.title}
+            {mixStateValue.currentlyPlayingMix?.title}
           </Text>
           <Text
             as={NextLink}
-            href={`/${currentlyPlayingMix?.creatorSlug}`}
+            href={`/${mixStateValue.currentlyPlayingMix?.creatorSlug}`}
             mr={6}
             color="whiteAlpha.900"
             fontSize="11px"
           >
-            by {currentlyPlayingMix?.creatorName}
+            by {mixStateValue.currentlyPlayingMix?.creatorName}
           </Text>
         </Flex>
         <Flex direction="row" alignItems="center">
           <IconButton
             icon={
-              currentlyPlayingMix?.favouritedByUsers?.includes(
+              mixStateValue.currentlyPlayingMix?.favouritedByUsers?.includes(
                 user?.uid as string
               ) ? (
                 <AiFillHeart />
@@ -183,11 +181,13 @@ const Player = () => {
             _active={{
               color: "whiteAlpha.900",
             }}
-            onClick={() => onFavouriteMix(currentlyPlayingMix as Mix)}
+            onClick={() =>
+              onFavouriteMix(mixStateValue.currentlyPlayingMix as Mix)
+            }
           />
           <IconButton
             as={NextLink}
-            href={`/${currentlyPlayingMix?.creatorSlug}`}
+            href={`/${mixStateValue.currentlyPlayingMix?.creatorSlug}`}
             icon={<BsFillPersonFill />}
             aria-label="View creator profile"
             color="whiteAlpha.900"
@@ -200,7 +200,7 @@ const Player = () => {
           />
           <IconButton
             as={NextLink}
-            href={`/${currentlyPlayingMix?.creatorSlug}/${currentlyPlayingMix?.slug}`}
+            href={`/${mixStateValue.currentlyPlayingMix?.creatorSlug}/${mixStateValue.currentlyPlayingMix?.slug}`}
             icon={<BsListUl />}
             aria-label="View tracklist"
             color="whiteAlpha.900"

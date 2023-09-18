@@ -33,7 +33,7 @@ const DiscoverIndex = () => {
       </Heading>
       <Flex
         direction="column"
-        width="50%"
+        width="75%"
         justifyContent="center"
         mx="auto"
         mb={12}

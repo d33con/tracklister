@@ -1,6 +1,5 @@
-- Audio player - autoplay, queue
+- Audio player - queue
 - ~~Adding genres~~
-- Individual mix pages - audio waveforem
 - Comment on mixes
 - ~~Adding tracklist~~
 - ~~Editing mixes~~
@@ -12,3 +11,8 @@
 - ~~Genre pages~~
 - Search
 - getLoggedInUser
+
+Issues
+
+no success toast shown when changing profile image on settings page
+not always recognising who logged in user is

@@ -226,7 +226,7 @@ const EditMix: React.FC<EditMixProps> = ({ slug }) => {
         slug: uploadMix.mix.title.replace(/\s+/g, "-").toLowerCase(),
         description: uploadMix.mix.description,
         genres: selectedGenres.map((genre) => genre.label),
-        imageURL: mixImageDownloadURL || uploadMix.mix.imageURL,
+        imageURL: mixImageDownloadURL || uploadMix.mix.imageURL || "",
         tracklist,
       };
 

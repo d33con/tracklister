@@ -1,6 +1,7 @@
 import { DiscogsModalState, discogsModalState } from "@/atoms/discogsModalAtom";
 import { tracklistState } from "@/atoms/tracklistAtom";
 import ReleaseDetail from "@/components/Upload/ReleaseDetail";
+import useDebounce from "@/hooks/useDebounce";
 import {
   ChevronDownIcon,
   ChevronUpIcon,
@@ -104,6 +105,8 @@ const DiscogsModal = () => {
     }
   };
 
+  const searchQuery = useDebounce(modalState.searchValue, 500);
+
   useEffect(() => {
     const getSearchSuggestions = async (value: string) => {
       try {
@@ -130,9 +133,8 @@ const DiscogsModal = () => {
         console.log(error.message);
       }
     };
-    modalState.searchValue.length > 3 &&
-      getSearchSuggestions(modalState.searchValue);
-  }, [modalState.searchValue, setModalState]);
+    searchQuery && getSearchSuggestions(searchQuery);
+  }, [setModalState, searchQuery]);
 
   return (
     <Modal onClose={handleModalClose} isOpen={modalState.open} size="full">

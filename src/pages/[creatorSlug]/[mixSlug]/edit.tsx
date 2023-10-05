@@ -158,7 +158,7 @@ const EditMix: React.FC<EditMixProps> = ({ slug }) => {
     } catch (error: any) {
       // fail toast
       toast({
-        title: "Your mix could not be deletd.",
+        title: "Your mix could not be deleted.",
         description: "Please try again.",
         status: "error",
         position: "top",
@@ -253,7 +253,7 @@ const EditMix: React.FC<EditMixProps> = ({ slug }) => {
   };
 
   return user?.uid === uploadMix.mix.creatorId ? (
-    <Flex width="100%" flexDirection="column" py={12} px={48}>
+    <Flex width="100%" flexDirection="column" py={24} px={48}>
       <form onSubmit={saveMix}>
         <HStack mb={6}>
           <Heading textAlign="left">Editing {uploadMix.mix.title}</Heading>

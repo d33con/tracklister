@@ -1,7 +1,7 @@
 import { Mix } from "@/atoms/mixesAtom";
 import { firestore } from "@/firebase/clientApp";
 import useMixes from "@/hooks/useMixes";
-import { Center, Flex, Spinner } from "@chakra-ui/react";
+import { Center, Flex, Heading, Spinner } from "@chakra-ui/react";
 import { collection, getDocs, query } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import MixItem from "./MixItem";
@@ -33,19 +33,22 @@ const Mixes = () => {
   }, [setMixStateValue]);
 
   return (
-    <Flex direction="column" m={10} p={10}>
-      {isLoading ? (
-        <Center>
-          <Spinner />
-        </Center>
-      ) : (
-        <>
-          {mixStateValue.mixes.map((mix) => (
-            <MixItem key={mix.id} mix={mix} />
-          ))}
-        </>
-      )}
-    </Flex>
+    <>
+      <Heading mt={4}>Latest Mixes</Heading>
+      <Flex direction="column" m={10} p={10}>
+        {isLoading ? (
+          <Center>
+            <Spinner />
+          </Center>
+        ) : (
+          <>
+            {mixStateValue.mixes.map((mix) => (
+              <MixItem key={mix.id} mix={mix} />
+            ))}
+          </>
+        )}
+      </Flex>
+    </>
   );
 };
 export default Mixes;

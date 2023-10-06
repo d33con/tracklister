@@ -1,8 +1,8 @@
 import LoggedOutHomepage from "@/components/LoggedOut/LoggedOutHomepage";
-import Mixes from "@/components/Mixes/Mixes";
+import LatestMixes from "@/components/Mixes/LatestMixes";
 import { auth } from "@/firebase/clientApp";
 import useUser from "@/hooks/useUser";
-import { Flex, Heading, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 
@@ -31,14 +31,12 @@ export default function Home() {
             >
               Hello, {currentUser?.creatorName}
             </Text>
-            <Heading mt={4}>Latest Mixes</Heading>
-            <Mixes />
+            <LatestMixes />
           </>
         ) : (
           <>
             <LoggedOutHomepage />
-            <Heading mt={4}>Latest Mixes</Heading>
-            <Mixes />
+            <LatestMixes />
           </>
         )}
       </Flex>

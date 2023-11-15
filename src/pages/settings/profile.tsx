@@ -1,3 +1,4 @@
+import { CurrentUser } from "@/atoms/userAtom";
 import { firestore, storage } from "@/firebase/clientApp";
 import useUser from "@/hooks/useUser";
 import {
@@ -23,7 +24,7 @@ import NextLink from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 
 const Profile = () => {
-  const { getLoggedInUser, currentUser } = useUser();
+  const { getLoggedInUser, currentUser, setCurrentUser } = useUser();
   const [imageToUpload, setImageToUpload] = useState("");
   const [profileForm, setProfileForm] = useState({ ...currentUser });
   const toast = useToast();
@@ -50,6 +51,14 @@ const Profile = () => {
     }));
   };
 
+  const handleRemoveImage = () => {
+    setImageToUpload("");
+    setProfileForm((prevState) => ({
+      ...prevState,
+      photoURL: "",
+    }));
+  };
+
   const handleBiographyChange = (
     evt: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
@@ -68,18 +77,37 @@ const Profile = () => {
         currentUser?.creatorSlug as string
       );
 
-      // if there is an image get a ref to store the mix's image in the mixes/image collection
+      const profileImageRef = ref(
+        storage,
+        `users/${currentUser?.uid}/images/${currentUser?.creatorSlug}`
+      );
       if (imageToUpload) {
-        const profileImageRef = ref(
-          storage,
-          `users/${currentUser?.uid}/images/${currentUser?.creatorSlug}`
-        );
+        // if there is an image get a ref to store the mix's image in the mixes/image collection
         await uploadString(profileImageRef, imageToUpload, "data_url");
         const profileImageDownloadURL = await getDownloadURL(profileImageRef);
         // update the mix doc ref and add the download URL
         await updateDoc(userDocRef, {
           photoURL: profileImageDownloadURL,
         });
+        setCurrentUser(
+          (prevState) =>
+            ({
+              ...prevState,
+              photoURL: profileImageDownloadURL,
+            } as CurrentUser)
+        );
+      } else {
+        // no image or current image removed
+        await updateDoc(userDocRef, {
+          photoURL: "",
+        });
+        setCurrentUser(
+          (prevState) =>
+            ({
+              ...prevState,
+              photoURL: "",
+            } as CurrentUser)
+        );
       }
       await updateDoc(userDocRef, {
         location: profileForm.location || "",
@@ -176,12 +204,25 @@ const Profile = () => {
           <FormControl mb={4}>
             <FormLabel fontWeight="bold">Profile picture</FormLabel>
             <Stack direction="row">
-              <Button
-                size="lg"
-                onClick={() => selectedImageRef.current?.click()}
-              >
-                Choose file
-              </Button>
+              <Stack direction="column">
+                <Button
+                  size="lg"
+                  onClick={() => selectedImageRef.current?.click()}
+                >
+                  Choose file
+                </Button>
+                {(imageToUpload || profileForm.photoURL) && (
+                  <Button
+                    onClick={handleRemoveImage}
+                    variant="ghost"
+                    textTransform="uppercase"
+                    color="red.700"
+                    size="lg"
+                  >
+                    Remove image
+                  </Button>
+                )}
+              </Stack>
               <input
                 type="file"
                 ref={selectedImageRef}

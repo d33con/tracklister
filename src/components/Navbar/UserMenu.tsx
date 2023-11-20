@@ -9,15 +9,18 @@ import {
   MenuList,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
+import { useRouter } from "next/router";
 import { useSignOut } from "react-firebase-hooks/auth";
 import { useRecoilValue } from "recoil";
 
 const UserMenu = () => {
   const [signOut, loading, error] = useSignOut(auth);
   const currentUser = useRecoilValue(currentUserState);
+  const router = useRouter();
 
-  const handleSignOut = () => {
-    signOut();
+  const handleSignOut = async () => {
+    await signOut();
+    router.push("/");
   };
 
   const avatarSize = "36px";

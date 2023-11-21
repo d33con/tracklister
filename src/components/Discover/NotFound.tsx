@@ -1,5 +1,5 @@
-import { Button, Center, Heading, Icon } from "@chakra-ui/react";
-import NextLink from "next/link";
+import { Button, Center, Heading, Icon, Text } from "@chakra-ui/react";
+import { default as Link, default as NextLink } from "next/link";
 import { BsPlusCircle, BsSoundwave } from "react-icons/bs";
 
 const NotFound = () => {
@@ -26,6 +26,11 @@ const NotFound = () => {
         >
           Upload one now
         </Button>
+      </Center>
+      <Center>
+        <Text mt={8}>
+          <Link href="/discover">Browse categories</Link>
+        </Text>
       </Center>
     </>
   );

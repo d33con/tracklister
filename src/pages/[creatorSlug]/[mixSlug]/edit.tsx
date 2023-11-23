@@ -15,6 +15,7 @@ import {
   AccordionPanel,
   Box,
   Button,
+  Center,
   Flex,
   FormControl,
   FormLabel,
@@ -22,6 +23,7 @@ import {
   Heading,
   Input,
   Spacer,
+  Spinner,
   Textarea,
   useToast,
 } from "@chakra-ui/react";
@@ -252,6 +254,10 @@ const EditMix: React.FC<EditMixProps> = ({ slug }) => {
     router.push("/dashboard/my-shows");
   };
 
+  if (!user) {
+    return <PageNotFound />;
+  }
+
   return user?.uid === uploadMix.mix.creatorId ? (
     <Flex width="100%" flexDirection="column" py={24} px={48}>
       <form onSubmit={saveMix}>
@@ -376,7 +382,9 @@ const EditMix: React.FC<EditMixProps> = ({ slug }) => {
       </Box>
     </Flex>
   ) : (
-    <PageNotFound />
+    <Center mt={16}>
+      <Spinner />
+    </Center>
   );
 };
 

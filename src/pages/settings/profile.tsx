@@ -82,7 +82,7 @@ const Profile = () => {
         `users/${currentUser?.uid}/images/${currentUser?.creatorSlug}`
       );
       if (imageToUpload) {
-        // if there is an image get a ref to store the mix's image in the mixes/image collection
+        // if there is an image get a ref to store the mix's image in the users/image collection
         await uploadString(profileImageRef, imageToUpload, "data_url");
         const profileImageDownloadURL = await getDownloadURL(profileImageRef);
         // update the mix doc ref and add the download URL
@@ -96,7 +96,7 @@ const Profile = () => {
               photoURL: profileImageDownloadURL,
             } as CurrentUser)
         );
-      } else {
+      } else if (!profileForm.photoURL && !imageToUpload) {
         // no image or current image removed
         await updateDoc(userDocRef, {
           photoURL: "",
@@ -175,7 +175,6 @@ const Profile = () => {
             />
           </FormControl>
           <Divider mb={4} />
-          <Divider mb={4} />
           <FormControl mb={4}>
             <FormLabel fontWeight="bold">Website</FormLabel>
             <InputGroup>
@@ -201,6 +200,7 @@ const Profile = () => {
               onChange={handleChange}
             />
           </FormControl>
+          <Divider mb={4} />
           <FormControl mb={4}>
             <FormLabel fontWeight="bold">Profile picture</FormLabel>
             <Stack direction="row">

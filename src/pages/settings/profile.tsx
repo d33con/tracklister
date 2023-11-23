@@ -1,4 +1,5 @@
 import { CurrentUser } from "@/atoms/userAtom";
+import PageNotFound from "@/components/Error/PageNotFound";
 import { firestore, storage } from "@/firebase/clientApp";
 import useUser from "@/hooks/useUser";
 import {
@@ -130,6 +131,10 @@ const Profile = () => {
   useEffect(() => {
     getLoggedInUser();
   }, [getLoggedInUser]);
+
+  if (!currentUser) {
+    return <PageNotFound />;
+  }
 
   return (
     <Flex

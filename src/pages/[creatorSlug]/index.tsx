@@ -121,7 +121,11 @@ const CreatorProfile: React.FC<CreatorProfileProps> = ({ creator }) => {
               </CardBody>
             </Card>
           </Box>
-          <Flex direction="column" ml={16} w="75%">
+          <Flex
+            direction="column"
+            ml={{ base: 0, lg: 16 }}
+            w={{ base: "100%", lg: "75%" }}
+          >
             <Heading textAlign="left" mb={8}>
               Shows
             </Heading>

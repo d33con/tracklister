@@ -1,13 +1,13 @@
-import { Center, HStack, Spinner } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
-import CreatorCard from "../Cards/CreatorCard";
 import {
   HomepageUsersState,
   homepageUsersState,
 } from "@/atoms/homepageUsersAtom";
 import { firestore } from "@/firebase/clientApp";
-import { query, collection, getDocs, limit } from "firebase/firestore";
+import { Center, Flex, Spinner } from "@chakra-ui/react";
+import { collection, getDocs, limit, query } from "firebase/firestore";
+import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
+import CreatorCard from "../Cards/CreatorCard";
 
 const LoggedOutHomepage = () => {
   const [homepageUsers, setHomepageUsers] = useRecoilState(homepageUsersState);
@@ -18,7 +18,7 @@ const LoggedOutHomepage = () => {
       setIsLoading(true);
       try {
         // get last 3 logged in users
-        const usersQuery = query(collection(firestore, "users"), limit(3));
+        const usersQuery = query(collection(firestore, "users"), limit(4));
 
         const userDocs = await getDocs(usersQuery);
 
@@ -38,7 +38,14 @@ const LoggedOutHomepage = () => {
   }, [setHomepageUsers]);
 
   return (
-    <HStack bg="blue.400" spacing={6} justifyContent="center" py={12} mx={-48}>
+    <Flex
+      bg="blue.400"
+      gap={6}
+      justifyContent="center"
+      flexWrap="wrap"
+      py={12}
+      mx={-48}
+    >
       {isLoading ? (
         <Center>
           <Spinner />
@@ -48,7 +55,7 @@ const LoggedOutHomepage = () => {
           <CreatorCard key={creator.uid} creator={creator} />
         ))
       )}
-    </HStack>
+    </Flex>
   );
 };
 

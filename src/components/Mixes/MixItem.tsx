@@ -207,10 +207,18 @@ const MixItem: React.FC<MixItemProps> = ({ mix }) => {
             verticalAlign="bottom"
             mr={1}
           />
-          <Text mr={4} color="blackAlpha.700" fontSize="14px">
+          <Text
+            mr={4}
+            color="blackAlpha.700"
+            fontSize={{ base: "12px", lg: "14px" }}
+          >
             {mix.playCount}
           </Text>
-          <Text mr={4} color="blackAlpha.700" fontSize="14px">
+          <Text
+            mr={4}
+            color="blackAlpha.700"
+            fontSize={{ base: "12px", lg: "14px" }}
+          >
             {formatDistanceToNow(mix.createdAt.toDate())} ago
           </Text>
           {mix.genres?.map((genre) => (
@@ -219,7 +227,7 @@ const MixItem: React.FC<MixItemProps> = ({ mix }) => {
               href={`/discover/${genre.toLowerCase().replace(/\W/g, "")}`}
               key={genre}
               color="blackAlpha.800"
-              fontSize="14px"
+              fontSize={{ base: "12px", lg: "14px" }}
               mr={2}
             >
               {`#${genre}`}

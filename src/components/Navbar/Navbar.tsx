@@ -23,7 +23,7 @@ const Navbar = () => {
     <Flex
       bg="blue.900"
       py={2}
-      px={48}
+      px={{ base: 16, lg: 48 }}
       minWidth="max-content"
       alignItems="center"
       gap={4}
@@ -48,7 +48,7 @@ const Navbar = () => {
       )}
       <Spacer />
       <Box display={searchFocused ? "none" : "flex"} alignItems="center">
-        <Box mr={{ base: 0, md: 10 }}>
+        <Box mr={{ base: 6, lg: 12 }}>
           <Link as={NextLink} color="whiteAlpha.900" href="/discover" mr={6}>
             Categories
           </Link>

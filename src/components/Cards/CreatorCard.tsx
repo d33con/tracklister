@@ -21,7 +21,7 @@ type CreatorCardProps = {
 
 const CreatorCard: React.FC<CreatorCardProps> = ({ creator }) => {
   return (
-    <Card minW="xs" p={6}>
+    <Card minW="sm" p={6}>
       <CardHeader textAlign="center" mb={4}>
         <Avatar src={creator.photoURL || "/headshot.png"} size="xl" />
       </CardHeader>

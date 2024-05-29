@@ -24,7 +24,7 @@ const GenrePage: React.FC<GenrePageProps> = ({ mixGenre }) => {
         Listen to {mixGenre.label} shows
       </Heading>
       <Center>
-        <Box width="75%">
+        <Box width={{ base: "100%", lg: "75%" }}>
           {!mixGenre ? <NotFound /> : <GenreMixes mixGenre={mixGenre} />}
         </Box>
       </Center>

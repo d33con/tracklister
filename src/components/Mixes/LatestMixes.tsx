@@ -35,7 +35,7 @@ const Mixes = () => {
   return (
     <>
       <Heading mt={4}>Latest Mixes</Heading>
-      <Flex direction="column" m={10} p={10}>
+      <Flex direction="column" my={10}>
         {isLoading ? (
           <Center>
             <Spinner />

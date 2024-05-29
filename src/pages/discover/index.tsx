@@ -49,9 +49,19 @@ const DiscoverIndex = () => {
                 href={`/discover/${genre.value}`}
                 width="225px"
                 height="130px"
-                backgroundColor={`${colors[idx]}.800`}
-                _hover={{ backgroundColor: `${colors[idx]}.900` }}
-                color={`${colors[idx - 1]}.200`}
+                backgroundColor={`${
+                  colors[idx <= colors.length ? idx : idx - colors.length]
+                }.800`}
+                _hover={{
+                  backgroundColor: `${
+                    colors[idx <= colors.length ? idx : idx - colors.length]
+                  }.900`,
+                }}
+                color={`${
+                  colors[
+                    idx <= colors.length ? idx - 1 : idx - 1 - colors.length
+                  ]
+                }.200`}
                 fontSize="20px"
                 textTransform="uppercase"
               >

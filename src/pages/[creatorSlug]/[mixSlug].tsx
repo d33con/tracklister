@@ -1,5 +1,6 @@
 import { Mix } from "@/atoms/mixesAtom";
 import PageNotFound from "@/components/Error/PageNotFound";
+import MixTracklist from "@/components/Mix/MixTracklist";
 import { auth, firestore } from "@/firebase/clientApp";
 import useCreator from "@/hooks/useCreator";
 import useMixes from "@/hooks/useMixes";
@@ -17,14 +18,7 @@ import {
   Image,
   Spacer,
   Spinner,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
   Text,
-  Th,
-  Thead,
-  Tr,
   useToast,
 } from "@chakra-ui/react";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
@@ -37,10 +31,10 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import {
   BsCalendar2Week,
+  BsCaretRightFill,
   BsPauseCircle,
   BsPlayCircle,
   BsSoundwave,
-  BsCaretRightFill,
 } from "react-icons/bs";
 import { RiDeleteBin7Line, RiEditBoxLine } from "react-icons/ri";
 
@@ -322,39 +316,7 @@ const MixPage: React.FC<MixPageProps> = ({ slug, creatorSlug }) => {
             <Text mb={8} color="blackAlpha.800">
               {mixStateValue.selectedMix?.description}
             </Text>
-            <Heading mb={8}>Tracklist</Heading>
-            {mixStateValue.selectedMix?.tracklist?.length ? (
-              <TableContainer>
-                <Table variant="simple">
-                  <Thead>
-                    <Tr>
-                      <Th>Time</Th>
-                      <Th>Track</Th>
-                      <Th>Label</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {mixStateValue.selectedMix?.tracklist?.map((track) => {
-                      const minutes = Math.floor(track.trackTime / 60);
-                      let seconds = track.trackTime % 60;
-                      const secondsString =
-                        seconds < 10 ? `0${seconds}` : `${seconds}`;
-                      return (
-                        <Tr key={track.id}>
-                          <Td>
-                            {minutes}:{secondsString}
-                          </Td>
-                          <Td>{track.trackName}</Td>
-                          <Td>{track.label}</Td>
-                        </Tr>
-                      );
-                    })}
-                  </Tbody>
-                </Table>
-              </TableContainer>
-            ) : (
-              <Text color="blackAlpha.800">No tracklist added</Text>
-            )}
+            <MixTracklist tracklist={mixStateValue.selectedMix?.tracklist} />
           </Flex>
         </Flex>
       )}

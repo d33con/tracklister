@@ -1,6 +1,6 @@
 - Audio player - queue
 - ~~Adding genres~~
-- Comment on mixes
+- ~~Comment on mixes~~
 - ~~Adding tracklist~~
 - ~~Editing mixes~~
 - ~~Deleting mixes~~
@@ -14,5 +14,7 @@
 
 Issues
 
-no success toast shown when changing profile image on settings page
-not always recognising who logged in user is
+use const currentUser = useRecoilValue(currentUserState);
+instead of const [user] = useAuthState(auth);
+if it re-renders component for authorising routes
+add page or form for Google login users to add a creator name when signing up

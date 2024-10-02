@@ -1,5 +1,6 @@
 import { mixState } from "@/atoms/mixesAtom";
-import useMixes from "@/hooks/useMixes";
+import useComments from "@/hooks/useComments";
+import useUser from "@/hooks/useUser";
 import { Avatar, Flex, IconButton, Stack, Text } from "@chakra-ui/react";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import toDate from "date-fns/toDate";
@@ -9,7 +10,8 @@ import { useRecoilValue } from "recoil";
 
 const MixComments = () => {
   const { selectedMix } = useRecoilValue(mixState);
-  const { currentUser, onDeleteMixComment } = useMixes();
+  const { currentUser } = useUser();
+  const { onDeleteMixComment } = useComments();
 
   return (
     <Stack>

@@ -1,5 +1,5 @@
 import { mixState } from "@/atoms/mixesAtom";
-import useMixes from "@/hooks/useMixes";
+import useComments from "@/hooks/useComments";
 import useUser from "@/hooks/useUser";
 import {
   Box,
@@ -17,7 +17,7 @@ const AddCommentForm = () => {
   const [comment, setComment] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { selectedMix } = useRecoilValue(mixState);
-  const { onAddMixComment } = useMixes();
+  const { onAddMixComment } = useComments();
   const toast = useToast();
   const { currentUser } = useUser();
 

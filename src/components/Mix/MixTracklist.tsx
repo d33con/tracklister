@@ -1,26 +1,24 @@
-import { Tracklist } from "@/atoms/tracklistAtom";
+import { mixState } from "@/atoms/mixesAtom";
 import {
-  TableContainer,
+  Heading,
   Table,
-  Text,
-  Thead,
-  Tr,
-  Th,
+  TableContainer,
   Tbody,
   Td,
-  Heading,
+  Text,
+  Th,
+  Thead,
+  Tr,
 } from "@chakra-ui/react";
-import React from "react";
+import { useRecoilValue } from "recoil";
 
-type MixTracklistProps = {
-  tracklist: Tracklist | undefined;
-};
+const MixTracklist = () => {
+  const { selectedMix } = useRecoilValue(mixState);
 
-const MixTracklist: React.FC<MixTracklistProps> = ({ tracklist }) => {
   return (
     <>
       <Heading mb={8}>Tracklist</Heading>
-      {tracklist?.length ? (
+      {selectedMix?.tracklist?.length ? (
         <TableContainer>
           <Table variant="simple">
             <Thead>
@@ -31,7 +29,7 @@ const MixTracklist: React.FC<MixTracklistProps> = ({ tracklist }) => {
               </Tr>
             </Thead>
             <Tbody>
-              {tracklist?.map((track) => {
+              {selectedMix.tracklist?.map((track) => {
                 const minutes = Math.floor(track.trackTime / 60);
                 let seconds = track.trackTime % 60;
                 const secondsString =

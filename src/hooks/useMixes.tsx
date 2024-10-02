@@ -1,5 +1,5 @@
 import { authModalState } from "@/atoms/authModalAtom";
-import { Mix, mixState } from "@/atoms/mixesAtom";
+import { Comments, Mix, mixState } from "@/atoms/mixesAtom";
 import { auth, firestore, storage } from "@/firebase/clientApp";
 import {
   arrayRemove,
@@ -14,6 +14,7 @@ import {
 import { deleteObject, ref } from "firebase/storage";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useRecoilState, useSetRecoilState } from "recoil";
+import { v4 as uuidv4 } from "uuid";
 import useUser from "./useUser";
 
 const useMixes = () => {
@@ -177,6 +178,69 @@ const useMixes = () => {
     }));
   };
 
+  const onAddMixComment = async (mixId: string, comment: string) => {
+    // if user not logged in show login modal
+    if (!user) {
+      setAuthModalState({
+        open: true,
+        view: "login",
+      });
+      return;
+    }
+
+    try {
+      await getLoggedInUser();
+
+      const mixDocRef = doc(firestore, "mixes", mixId);
+
+      await updateDoc(mixDocRef, {
+        comments: arrayUnion({
+          createdAt: Date.now(),
+          id: uuidv4(),
+          text: comment,
+          user: {
+            userId: currentUser?.uid,
+            creatorName: currentUser?.creatorName,
+            creatorSlug: currentUser?.creatorSlug,
+            photoURL: currentUser?.photoURL,
+          },
+        }),
+      });
+
+      // get updated mix doc from db
+      const updatedMixRef = await getDoc(mixDocRef);
+      const updatedMix = { ...updatedMixRef.data() };
+
+      // update mixes state
+      setMixStateValue((prevState) => ({
+        ...prevState,
+        selectedMix: updatedMix as Mix,
+      }));
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
+
+  const onDeleteMixComment = async (mixId: string, comment: Comments) => {
+    try {
+      const mixDocRef = doc(firestore, "mixes", mixId);
+
+      updateDoc(mixDocRef, {
+        comments: arrayRemove(comment),
+      });
+
+      const updatedMixRef = await getDoc(mixDocRef);
+      const updatedMix = { ...updatedMixRef.data() };
+
+      setMixStateValue((prevState) => ({
+        ...prevState,
+        selectedMix: updatedMix as Mix,
+      }));
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
+
   return {
     mixStateValue,
     setMixStateValue,
@@ -184,6 +248,9 @@ const useMixes = () => {
     onDeleteMix,
     onPlayMix,
     onPauseMix,
+    onAddMixComment,
+    onDeleteMixComment,
+    currentUser,
   };
 };
 export default useMixes;

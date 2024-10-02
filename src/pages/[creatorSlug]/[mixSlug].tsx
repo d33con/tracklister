@@ -1,5 +1,7 @@
 import { Mix } from "@/atoms/mixesAtom";
 import PageNotFound from "@/components/Error/PageNotFound";
+import AddCommentForm from "@/components/Mix/AddCommentForm";
+import MixComments from "@/components/Mix/MixComments";
 import MixTracklist from "@/components/Mix/MixTracklist";
 import { auth, firestore } from "@/firebase/clientApp";
 import useCreator from "@/hooks/useCreator";
@@ -316,7 +318,9 @@ const MixPage: React.FC<MixPageProps> = ({ slug, creatorSlug }) => {
             <Text mb={8} color="blackAlpha.800">
               {mixStateValue.selectedMix?.description}
             </Text>
-            <MixTracklist tracklist={mixStateValue.selectedMix?.tracklist} />
+            <MixTracklist />
+            <AddCommentForm />
+            <MixComments />
           </Flex>
         </Flex>
       )}

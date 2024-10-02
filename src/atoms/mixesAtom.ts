@@ -2,6 +2,18 @@ import { Timestamp } from "firebase/firestore";
 import { atom } from "recoil";
 import { Tracklist } from "./tracklistAtom";
 
+export type Comments = {
+  createdAt: number;
+  id: string;
+  text: string;
+  user: {
+    userId: string;
+    creatorName: string;
+    creatorSlug: string;
+    photoURL?: string;
+  };
+};
+
 export type Mix = {
   id: string;
   createdAt: Timestamp;
@@ -20,6 +32,7 @@ export type Mix = {
   genres?: Array<string>;
   tracklist?: Tracklist;
   playCount: number;
+  comments?: Comments[];
 };
 
 export type Creator = {

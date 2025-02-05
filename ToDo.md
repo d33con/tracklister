@@ -14,7 +14,4 @@
 
 Issues
 
-use const currentUser = useRecoilValue(currentUserState);
-instead of const [user] = useAuthState(auth);
-if it re-renders component for authorising routes
 add page or form for Google login users to add a creator name when signing up

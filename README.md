@@ -12,4 +12,4 @@ Working demo at [https://tracklister.vercel.app/](https://tracklister.vercel.app
 
 Demo account - user: djdemo@email.com, password: password
 
-Built in Typescript using Next.js, React, Recoil, Firebase, ChakraUI and Discogs API hosted on Vercel
+Built in Typescript using Next.js, React, Jotai, Firebase, ChakraUI and Discogs API hosted on Vercel

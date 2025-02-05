@@ -1,8 +1,8 @@
 import { discogsModalState } from "@/atoms/discogsModalAtom";
 import { AddIcon } from "@chakra-ui/icons";
 import { Box, Button, Flex } from "@chakra-ui/react";
+import { useAtomValue } from "jotai";
 import React from "react";
-import { useRecoilValue } from "recoil";
 import { v4 } from "uuid";
 
 type ReleaseDetailProps = {
@@ -12,7 +12,7 @@ type ReleaseDetailProps = {
 const ReleaseDetail: React.FC<ReleaseDetailProps> = ({
   addDiscogsDetailsToTracklist,
 }) => {
-  const { individualTrackDetails } = useRecoilValue(discogsModalState);
+  const { individualTrackDetails } = useAtomValue(discogsModalState);
 
   return (
     <Flex direction="column" key={v4()}>

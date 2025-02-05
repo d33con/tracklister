@@ -10,13 +10,13 @@ import {
   Stack,
   useToast,
 } from "@chakra-ui/react";
+import { useAtomValue } from "jotai";
 import React, { useState } from "react";
-import { useRecoilValue } from "recoil";
 
 const AddCommentForm = () => {
   const [comment, setComment] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { selectedMix } = useRecoilValue(mixState);
+  const { selectedMix } = useAtomValue(mixState);
   const { onAddMixComment } = useComments();
   const toast = useToast();
   const { currentUser } = useUser();

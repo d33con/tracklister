@@ -5,12 +5,12 @@ import {
 import { firestore } from "@/firebase/clientApp";
 import { Center, Flex, Spinner } from "@chakra-ui/react";
 import { collection, getDocs, limit, query } from "firebase/firestore";
+import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
 import CreatorCard from "../Cards/CreatorCard";
 
 const LoggedOutHomepage = () => {
-  const [homepageUsers, setHomepageUsers] = useRecoilState(homepageUsersState);
+  const [homepageUsers, setHomepageUsers] = useAtom(homepageUsersState);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {

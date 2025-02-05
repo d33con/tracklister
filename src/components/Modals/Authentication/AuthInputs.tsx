@@ -1,11 +1,10 @@
-import React from "react";
 import { authModalState } from "@/atoms/authModalAtom";
-import { useRecoilValue } from "recoil";
+import { useAtomValue } from "jotai";
 import Login from "./Login";
 import SignUp from "./SignUp";
 
 const AuthInputs = () => {
-  const modalState = useRecoilValue(authModalState);
+  const modalState = useAtomValue(authModalState);
 
   return (
     <>

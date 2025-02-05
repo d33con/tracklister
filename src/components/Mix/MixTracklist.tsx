@@ -10,10 +10,10 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { useRecoilValue } from "recoil";
+import { useAtomValue } from "jotai";
 
 const MixTracklist = () => {
-  const { selectedMix } = useRecoilValue(mixState);
+  const { selectedMix } = useAtomValue(mixState);
 
   return (
     <>

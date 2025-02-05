@@ -1,3 +1,4 @@
+import { uploadMixState } from "@/atoms/uploadMixAtom";
 import {
   Accordion,
   AccordionButton,
@@ -15,14 +16,13 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
+import { useAtomValue } from "jotai";
 import React from "react";
 import { MultiValue } from "react-select/dist/declarations/src/types";
 import DiscogsModal from "../Modals/Discogs/DiscogsModal";
 import MixTagsAndDescription from "./MixTagsAndDescription";
 import TracklistTable from "./TracklistTable";
 import UploadMixImage from "./UploadMixImage";
-import { useRecoilState } from "recoil";
-import { uploadMixState } from "@/atoms/uploadMixAtom";
 
 type UploadSecondPageProps = {
   selectedFile: File | null;
@@ -39,7 +39,7 @@ const UploadSecondPage: React.FC<UploadSecondPageProps> = ({
   publishMix,
   setMixGenres,
 }) => {
-  const [uploadMix, setUploadMix] = useRecoilState(uploadMixState);
+  const uploadMix = useAtomValue(uploadMixState);
 
   return (
     <Flex width="100%" flexDirection="column" p={12}>

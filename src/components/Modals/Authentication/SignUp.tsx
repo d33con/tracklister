@@ -14,12 +14,12 @@ import {
 } from "@chakra-ui/react";
 import { User } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
+import { useSetAtom } from "jotai";
 import React, { useEffect, useState } from "react";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
-import { useSetRecoilState } from "recoil";
 
 const SignUp = () => {
-  const setAuthModalState = useSetRecoilState(authModalState);
+  const setAuthModalState = useSetAtom(authModalState);
   const [signUpForm, setSignUpForm] = useState({
     email: "",
     password: "",

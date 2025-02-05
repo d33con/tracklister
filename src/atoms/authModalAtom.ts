@@ -1,4 +1,4 @@
-import { atom } from "recoil";
+import { atom } from "jotai";
 
 export interface AuthModalState {
   open: boolean;
@@ -10,7 +10,4 @@ const defaultModalState: AuthModalState = {
   view: "login",
 };
 
-export const authModalState = atom<AuthModalState>({
-  key: "authModalState",
-  default: defaultModalState,
-});
+export const authModalState = atom<AuthModalState>(defaultModalState);

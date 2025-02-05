@@ -10,11 +10,11 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { useRecoilState } from "recoil";
+import { useSetAtom } from "jotai";
 
 const useCreator = () => {
-  const [mixStateValue, setMixStateValue] = useRecoilState(mixState);
-  const [uploadMix, setUploadMix] = useRecoilState(uploadMixState);
+  const setMixStateValue = useSetAtom(mixState);
+  const setUploadMix = useSetAtom(uploadMixState);
 
   const getCreatorFromSlug = async (creatorSlug: string) => {
     try {

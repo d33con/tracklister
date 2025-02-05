@@ -1,9 +1,9 @@
 import { authModalState } from "@/atoms/authModalAtom";
 import { Box, Button, Center, Flex, Heading, Text } from "@chakra-ui/react";
-import { useSetRecoilState } from "recoil";
+import { useSetAtom } from "jotai";
 
 const LoggedOutUploadPage = () => {
-  const setAuthModalState = useSetRecoilState(authModalState);
+  const setAuthModalState = useSetAtom(authModalState);
   return (
     <Flex flexDirection="column" bg="blue.400" py={12}>
       <Center>

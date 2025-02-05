@@ -2,10 +2,10 @@ import { uploadMixState } from "@/atoms/uploadMixAtom";
 import { firestore } from "@/firebase/clientApp";
 import { Box, Flex, Textarea } from "@chakra-ui/react";
 import { collection, getDocs, query } from "firebase/firestore";
+import { useAtom } from "jotai";
 import React, { useEffect, useState } from "react";
 import { MultiValue } from "react-select";
 import CreatableSelect from "react-select/creatable";
-import { useRecoilState } from "recoil";
 
 type MixTagsAndDescriptionProps = {
   setMixGenres: (
@@ -16,7 +16,7 @@ type MixTagsAndDescriptionProps = {
 const MixTagsAndDescription: React.FC<MixTagsAndDescriptionProps> = ({
   setMixGenres,
 }) => {
-  const [uploadMix, setUploadMix] = useRecoilState(uploadMixState);
+  const [uploadMix, setUploadMix] = useAtom(uploadMixState);
   const [mixGenreOptions, setMixGenreOptions] = useState<
     Array<{ value: string; label: string }>
   >([]);

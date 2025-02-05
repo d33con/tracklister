@@ -1,10 +1,10 @@
 import { uploadMixState } from "@/atoms/uploadMixAtom";
 import { Box, Button, Flex, Image } from "@chakra-ui/react";
+import { useAtom } from "jotai";
 import React, { useEffect, useRef } from "react";
-import { useRecoilState } from "recoil";
 
 const MixUploadImage = () => {
-  const [uploadMix, setUploadMix] = useRecoilState(uploadMixState);
+  const [uploadMix, setUploadMix] = useAtom(uploadMixState);
   const selectedImageRef = useRef<HTMLInputElement>(null);
 
   const onSelectImageToUpload = (evt: React.ChangeEvent<HTMLInputElement>) => {

@@ -1,4 +1,4 @@
-import { atom } from "recoil";
+import { atom } from "jotai";
 
 export interface DiscogsModalState {
   open: boolean;
@@ -39,7 +39,4 @@ const defaultModalState: DiscogsModalState = {
   individualTrackDetails: null,
 };
 
-export const discogsModalState = atom<DiscogsModalState>({
-  key: "discogsModalState",
-  default: defaultModalState,
-});
+export const discogsModalState = atom<DiscogsModalState>(defaultModalState);

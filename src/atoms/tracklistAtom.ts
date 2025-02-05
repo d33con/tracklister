@@ -1,4 +1,4 @@
-import { atom } from "recoil";
+import { atom } from "jotai";
 
 export type Tracklist = Array<{
   id: string;
@@ -9,7 +9,4 @@ export type Tracklist = Array<{
 
 const defaultTracklistState: Tracklist = [];
 
-export const tracklistState = atom<Tracklist>({
-  key: "tracklistState",
-  default: defaultTracklistState,
-});
+export const tracklistState = atom<Tracklist>(defaultTracklistState);

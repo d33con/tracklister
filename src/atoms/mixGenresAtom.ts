@@ -1,4 +1,4 @@
-import { atom } from "recoil";
+import { atom } from "jotai";
 
 export type MixGenre = {
   value: string;
@@ -17,7 +17,4 @@ const defaultMixGenreState: MixGenreState = [
   },
 ];
 
-export const mixGenreState = atom<MixGenreState>({
-  key: "mixGenreState",
-  default: defaultMixGenreState,
-});
+export const mixGenreState = atom<MixGenreState>(defaultMixGenreState);

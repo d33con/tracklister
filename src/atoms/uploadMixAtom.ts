@@ -1,4 +1,4 @@
-import { atom } from "recoil";
+import { atom } from "jotai";
 import { Mix } from "./mixesAtom";
 import { Timestamp, serverTimestamp } from "firebase/firestore";
 
@@ -37,7 +37,4 @@ const defaultUploadMixState: UploadMixState = {
   },
 };
 
-export const uploadMixState = atom<UploadMixState>({
-  key: "uploadMixState",
-  default: defaultUploadMixState,
-});
+export const uploadMixState = atom<UploadMixState>(defaultUploadMixState);

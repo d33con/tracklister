@@ -1,5 +1,5 @@
 import { Timestamp } from "firebase/firestore";
-import { atom } from "recoil";
+import { atom } from "jotai";
 import { Tracklist } from "./tracklistAtom";
 
 export type Comments = {
@@ -64,7 +64,4 @@ const defaultMixState: MixState = {
   imageURL: "",
 };
 
-export const mixState = atom<MixState>({
-  key: "mixState",
-  default: defaultMixState,
-});
+export const mixState = atom<MixState>(defaultMixState);

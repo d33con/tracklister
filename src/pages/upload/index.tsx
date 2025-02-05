@@ -26,19 +26,19 @@ import {
   uploadBytesResumable,
   uploadString,
 } from "firebase/storage";
+import { useAtom, useAtomValue } from "jotai";
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { MultiValue } from "react-select/dist/declarations/src/types";
-import { useRecoilState, useRecoilValue } from "recoil";
 import { v4 as uuidv4 } from "uuid";
 
 const UploadIndex = () => {
   const [mixGenres, setMixGenres] = useState<
     MultiValue<{ value: string; label: string }>
   >([]);
-  const tracklist = useRecoilValue(tracklistState);
-  const [uploadMix, setUploadMix] = useRecoilState(uploadMixState);
+  const tracklist = useAtomValue(tracklistState);
+  const [uploadMix, setUploadMix] = useAtom(uploadMixState);
   const { currentUser, getLoggedInUser } = useUser();
   const [user] = useAuthState(auth);
 

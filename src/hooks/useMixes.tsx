@@ -12,14 +12,14 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
+import { useAtom, useSetAtom } from "jotai";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useRecoilState, useSetRecoilState } from "recoil";
 import useUser from "./useUser";
 
 const useMixes = () => {
-  const [mixStateValue, setMixStateValue] = useRecoilState(mixState);
+  const [mixStateValue, setMixStateValue] = useAtom(mixState);
   const { getLoggedInUser, currentUser } = useUser();
-  const setAuthModalState = useSetRecoilState(authModalState);
+  const setAuthModalState = useSetAtom(authModalState);
   const [user] = useAuthState(auth);
 
   const onFavouriteMix = async (mix: Mix) => {

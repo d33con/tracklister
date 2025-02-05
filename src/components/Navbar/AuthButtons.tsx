@@ -1,9 +1,9 @@
 import { authModalState } from "@/atoms/authModalAtom";
 import { Button, ButtonGroup } from "@chakra-ui/react";
-import { useSetRecoilState } from "recoil";
+import { useSetAtom } from "jotai";
 
 const AuthButtons = () => {
-  const setAuthModalState = useSetRecoilState(authModalState);
+  const setAuthModalState = useSetAtom(authModalState);
 
   return (
     <ButtonGroup spacing={6}>

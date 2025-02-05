@@ -7,12 +7,12 @@ import {
   query,
   where,
 } from "firebase/firestore";
+import { useAtom } from "jotai";
 import { useCallback } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useRecoilState } from "recoil";
 
 const useUser = () => {
-  const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
+  const [currentUser, setCurrentUser] = useAtom(currentUserState);
   const [user] = useAuthState(auth);
 
   const getLoggedInUser = useCallback(async () => {

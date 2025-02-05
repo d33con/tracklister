@@ -18,16 +18,16 @@ import {
   Tr,
   VStack,
 } from "@chakra-ui/react";
+import { useAtom, useSetAtom } from "jotai";
 import React from "react";
 import { BsDashCircle, BsPlusCircle } from "react-icons/bs";
 import { RiDeleteBin7Line } from "react-icons/ri";
 import { SiDiscogs } from "react-icons/si";
-import { useRecoilState, useSetRecoilState } from "recoil";
 import { v4 as uuidv4 } from "uuid";
 
 const TracklistTable = () => {
-  const setModalState = useSetRecoilState(discogsModalState);
-  const [tracklist, setTracklist] = useRecoilState(tracklistState);
+  const setModalState = useSetAtom(discogsModalState);
+  const [tracklist, setTracklist] = useAtom(tracklistState);
 
   const handleChange = (
     evt: React.ChangeEvent<HTMLInputElement>,

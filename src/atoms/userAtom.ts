@@ -1,4 +1,4 @@
-import { atom } from "recoil";
+import { atom } from "jotai";
 
 export type CurrentUser = {
   uid: string;
@@ -15,7 +15,4 @@ type CurrentUserState = CurrentUser | null;
 
 const defaultCurrentUserState: CurrentUserState = null;
 
-export const currentUserState = atom<CurrentUserState>({
-  key: "currentUserState",
-  default: defaultCurrentUserState,
-});
+export const currentUserState = atom<CurrentUserState>(defaultCurrentUserState);

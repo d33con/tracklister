@@ -14,8 +14,8 @@ import {
   Link,
   Text,
 } from "@chakra-ui/react";
+import { useAtom } from "jotai";
 import React, { useRef } from "react";
-import { useRecoilState } from "recoil";
 
 type NamedAudioFileProps = {
   onSelectAudioFileToUpload: (evt: React.ChangeEvent<HTMLInputElement>) => void;
@@ -29,7 +29,7 @@ const NameAudioFileCard: React.FC<NamedAudioFileProps> = ({
   handleCreateUploadedAudioFile,
 }) => {
   const uploadFileRef = useRef<HTMLInputElement>(null);
-  const [uploadMix, setUploadMix] = useRecoilState(uploadMixState);
+  const [uploadMix, setUploadMix] = useAtom(uploadMixState);
 
   return (
     <Card size="lg" variant="outline" p={6}>

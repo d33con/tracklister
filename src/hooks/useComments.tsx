@@ -8,15 +8,15 @@ import {
   getDoc,
   updateDoc,
 } from "firebase/firestore";
+import { useSetAtom } from "jotai";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useSetRecoilState } from "recoil";
 import { v4 as uuidv4 } from "uuid";
 import useUser from "./useUser";
 
 const useComments = () => {
-  const setMixStateValue = useSetRecoilState(mixState);
+  const setMixStateValue = useSetAtom(mixState);
   const [user] = useAuthState(auth);
-  const setAuthModalState = useSetRecoilState(authModalState);
+  const setAuthModalState = useSetAtom(authModalState);
   const { getLoggedInUser, currentUser } = useUser();
 
   const onAddMixComment = async (mixId: string, comment: string) => {

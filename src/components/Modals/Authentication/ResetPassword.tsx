@@ -12,14 +12,14 @@ import {
   Input,
   Text,
 } from "@chakra-ui/react";
+import { useSetAtom } from "jotai";
 import React, { useState } from "react";
 import { useSendPasswordResetEmail } from "react-firebase-hooks/auth";
-import { useSetRecoilState } from "recoil";
 
 const ResetPassword = () => {
   const [email, setEmail] = useState("");
   const [success, setSuccess] = useState(false);
-  const setAuthModalState = useSetRecoilState(authModalState);
+  const setAuthModalState = useSetAtom(authModalState);
 
   const [sendPasswordResetEmail, sending, error] =
     useSendPasswordResetEmail(auth);

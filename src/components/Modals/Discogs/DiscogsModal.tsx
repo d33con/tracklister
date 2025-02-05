@@ -29,12 +29,12 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 import axios from "axios";
+import { useAtom, useSetAtom } from "jotai";
 import { useCallback, useEffect } from "react";
-import { useRecoilState, useSetRecoilState } from "recoil";
 
 const DiscogsModal = () => {
-  const [modalState, setModalState] = useRecoilState(discogsModalState);
-  const setTracklist = useSetRecoilState(tracklistState);
+  const [modalState, setModalState] = useAtom(discogsModalState);
+  const setTracklist = useSetAtom(tracklistState);
 
   const handleModalClose = useCallback(() => {
     setModalState((prevState) => ({

@@ -38,13 +38,13 @@ import {
   where,
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
+import { useAtom } from "jotai";
 import { GetServerSidePropsContext } from "next";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import CreatableSelect from "react-select/creatable";
 import { MultiValue } from "react-select/dist/declarations/src/types";
-import { useRecoilState } from "recoil";
 
 type EditMixProps = {
   slug: string;
@@ -53,8 +53,8 @@ type EditMixProps = {
 const EditMix: React.FC<EditMixProps> = ({ slug }) => {
   const [user] = useAuthState(auth);
   const [isLoading, setIsLoading] = useState(false);
-  const [uploadMix, setUploadMix] = useRecoilState(uploadMixState);
-  const [tracklist, setTracklist] = useRecoilState(tracklistState);
+  const [uploadMix, setUploadMix] = useAtom(uploadMixState);
+  const [tracklist, setTracklist] = useAtom(tracklistState);
   const [mixGenreOptions, setMixGenreOptions] = useState<
     Array<{ value: string; label: string }>
   >([]);

@@ -14,12 +14,12 @@ import {
   Stack,
   useToast,
 } from "@chakra-ui/react";
+import { useSetAtom } from "jotai";
 import React, { useEffect, useState } from "react";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
-import { useSetRecoilState } from "recoil";
 
 const Login = () => {
-  const setAuthModalState = useSetRecoilState(authModalState);
+  const setAuthModalState = useSetAtom(authModalState);
   const { getLoggedInUser } = useUser();
 
   const [loginForm, setLoginForm] = useState({

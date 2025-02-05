@@ -8,8 +8,8 @@ import {
   Heading,
   Text,
 } from "@chakra-ui/react";
+import { useAtomValue } from "jotai";
 import React, { useRef } from "react";
-import { useRecoilValue } from "recoil";
 
 type SelectFileToUploadCardProps = {
   onSelectAudioFileToUpload: (evt: React.ChangeEvent<HTMLInputElement>) => void;
@@ -19,7 +19,7 @@ const SelectFileToUploadCard: React.FC<SelectFileToUploadCardProps> = ({
   onSelectAudioFileToUpload,
 }) => {
   const uploadFileRef = useRef<HTMLInputElement>(null);
-  const uploadMix = useRecoilValue(uploadMixState);
+  const uploadMix = useAtomValue(uploadMixState);
 
   return (
     <Card size="sm" variant="outline" p={6}>

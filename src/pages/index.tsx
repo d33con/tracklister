@@ -1,3 +1,4 @@
+import HeadMetatags from "@/components/Layout/HeadMetatags";
 import LoggedOutHomepage from "@/components/LoggedOut/LoggedOutHomepage";
 import LatestMixes from "@/components/Mixes/LatestMixes";
 import { auth } from "@/firebase/clientApp";
@@ -18,6 +19,7 @@ export default function Home() {
 
   return (
     <>
+      <HeadMetatags />
       <Flex direction="column" justifyContent="center" px={48}>
         {user ? (
           <>

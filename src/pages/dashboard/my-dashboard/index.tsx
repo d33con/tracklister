@@ -1,3 +1,4 @@
+import HeadMetatags from "@/components/Layout/HeadMetatags";
 import { Box, Button, Heading } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { BsPlusCircle } from "react-icons/bs";
@@ -6,6 +7,7 @@ import DashboardLayout from "../../../components/Layout/DashboardLayout";
 const MyDashboard = () => {
   return (
     <DashboardLayout>
+      <HeadMetatags title="Dashboard - Upload mixes and shows" />
       <Heading textAlign="left" mb={6}>
         Dashboard
       </Heading>

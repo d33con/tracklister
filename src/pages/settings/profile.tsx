@@ -1,5 +1,6 @@
 import { CurrentUser } from "@/atoms/userAtom";
 import PageNotFound from "@/components/Error/PageNotFound";
+import HeadMetatags from "@/components/Layout/HeadMetatags";
 import { firestore, storage } from "@/firebase/clientApp";
 import useUser from "@/hooks/useUser";
 import {
@@ -144,6 +145,7 @@ const Profile = () => {
       justifyContent="center"
       direction="column"
     >
+      <HeadMetatags title="Your profile settings" />
       <Heading mb={8}>Your profile settings</Heading>
       <Box bg="blackAlpha.300" p={3} mb={8}>
         <Link

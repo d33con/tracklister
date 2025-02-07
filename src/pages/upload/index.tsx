@@ -1,6 +1,7 @@
 import { Mix } from "@/atoms/mixesAtom";
 import { tracklistState } from "@/atoms/tracklistAtom";
 import { uploadMixState } from "@/atoms/uploadMixAtom";
+import HeadMetatags from "@/components/Layout/HeadMetatags";
 import UploadLayout from "@/components/Layout/UploadLayout";
 import LoggedOutUploadPage from "@/components/LoggedOut/LoggedOutUploadPage";
 import NameFileToUploadCard from "@/components/Upload/NameFileToUploadCard";
@@ -318,6 +319,7 @@ const UploadIndex = () => {
     <>
       {uploadMix.uploadStage === "selecting" && (
         <UploadLayout>
+          <HeadMetatags title="Upload a new mix or show - select an audio file" />
           <SelectFileToUploadCard
             onSelectAudioFileToUpload={onSelectAudioFileToUpload}
           />
@@ -325,6 +327,7 @@ const UploadIndex = () => {
       )}
       {uploadMix.uploadStage === "naming" && (
         <UploadLayout>
+          <HeadMetatags title="Upload a new mix or show - choose a title for your mix" />
           <audio ref={uploadedAudioRef} hidden />
           <NameFileToUploadCard
             onSelectAudioFileToUpload={onSelectAudioFileToUpload}
@@ -333,12 +336,15 @@ const UploadIndex = () => {
         </UploadLayout>
       )}
       {uploadMix.uploadStage === "uploading" && (
-        <UploadSecondPage
-          selectedFile={uploadMix.selectedAudioFile}
-          handleUploadCancel={handleUploadCancel}
-          publishMix={publishMix}
-          setMixGenres={setMixGenres}
-        />
+        <>
+          <HeadMetatags title="Upload a new mix or show - choose image, genres and tracklist" />
+          <UploadSecondPage
+            selectedFile={uploadMix.selectedAudioFile}
+            handleUploadCancel={handleUploadCancel}
+            publishMix={publishMix}
+            setMixGenres={setMixGenres}
+          />
+        </>
       )}
     </>
   ) : (

@@ -1,11 +1,12 @@
 import { Mix } from "@/atoms/mixesAtom";
 import DashboardLayout from "@/components/Layout/DashboardLayout";
+import HeadMetatags from "@/components/Layout/HeadMetatags";
 import MixItem from "@/components/Mixes/MixItem";
 import { auth, firestore } from "@/firebase/clientApp";
 import useMixes from "@/hooks/useMixes";
 import { Center, Heading, Spinner } from "@chakra-ui/react";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 const NewUploads = () => {
@@ -49,6 +50,7 @@ const NewUploads = () => {
         </Center>
       ) : (
         <>
+          <HeadMetatags title="Dashboard - New mixes and shows" />
           <Heading textAlign="left" mb={6}>
             New Uploads
           </Heading>

@@ -1,13 +1,14 @@
 import { Mix } from "@/atoms/mixesAtom";
+import NoUserMixes from "@/components/Dashboard/NoUserMixes";
+import HeadMetatags from "@/components/Layout/HeadMetatags";
 import MixItem from "@/components/Mixes/MixItem";
 import { auth, firestore } from "@/firebase/clientApp";
 import useMixes from "@/hooks/useMixes";
 import { Center, Heading, Spinner } from "@chakra-ui/react";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import DashboardLayout from "../../../components/Layout/DashboardLayout";
-import NoUserMixes from "@/components/Dashboard/NoUserMixes";
 
 const MyShows = () => {
   const [user] = useAuthState(auth);
@@ -56,6 +57,7 @@ const MyShows = () => {
         <NoUserMixes />
       ) : (
         <>
+          <HeadMetatags title="Dashboard - My shows and mixes" />
           <Heading textAlign="left" mb={6}>
             My Shows
           </Heading>

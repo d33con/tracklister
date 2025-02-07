@@ -2,6 +2,7 @@ import { Mix } from "@/atoms/mixesAtom";
 import { tracklistState } from "@/atoms/tracklistAtom";
 import { uploadMixState } from "@/atoms/uploadMixAtom";
 import PageNotFound from "@/components/Error/PageNotFound";
+import HeadMetatags from "@/components/Layout/HeadMetatags";
 import DiscogsModal from "@/components/Modals/Discogs/DiscogsModal";
 import TracklistTable from "@/components/Upload/TracklistTable";
 import UploadMixImage from "@/components/Upload/UploadMixImage";
@@ -260,6 +261,9 @@ const EditMix: React.FC<EditMixProps> = ({ slug }) => {
 
   return user?.uid === uploadMix.mix.creatorId ? (
     <Flex width="100%" flexDirection="column" py={24} px={48}>
+      <HeadMetatags
+        title={`Editing ${uploadMix.mix.title} by ${uploadMix.mix.creatorName}`}
+      />
       <form onSubmit={saveMix}>
         <HStack mb={6}>
           <Heading textAlign="left">Editing {uploadMix.mix.title}</Heading>

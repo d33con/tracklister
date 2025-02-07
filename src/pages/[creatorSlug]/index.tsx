@@ -1,5 +1,6 @@
 import { Creator, Mix } from "@/atoms/mixesAtom";
 import NoUserMixes from "@/components/Dashboard/NoUserMixes";
+import HeadMetatags from "@/components/Layout/HeadMetatags";
 import MixItem from "@/components/Mixes/MixItem";
 import { firestore } from "@/firebase/clientApp";
 import useMixes from "@/hooks/useMixes";
@@ -82,6 +83,7 @@ const CreatorProfile: React.FC<CreatorProfileProps> = ({ creator }) => {
         <NoUserMixes />
       ) : (
         <Flex direction={{ base: "column", xl: "row" }} justifyContent="start">
+          <HeadMetatags title={`Mixes and shows by ${creator.creatorName}`} />
           <Box m={{ base: "0 auto 24px", xl: "0" }}>
             <Card variant="elevated" width="sm" p={8}>
               <CardBody

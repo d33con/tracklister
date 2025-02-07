@@ -1,4 +1,5 @@
 import { MixGenre } from "@/atoms/mixGenresAtom";
+import HeadMetatags from "@/components/Layout/HeadMetatags";
 import { firestore } from "@/firebase/clientApp";
 import { colors } from "@/helpers/chakraColors";
 import { Button, Flex, Heading, Wrap, WrapItem } from "@chakra-ui/react";
@@ -28,6 +29,7 @@ const DiscoverIndex = () => {
 
   return (
     <Flex direction="column">
+      <HeadMetatags title="Discover music mixes and shows" />
       <Heading bg="blue.900" color="pink.200" textAlign="center" py={12}>
         Discover audio culture
       </Heading>

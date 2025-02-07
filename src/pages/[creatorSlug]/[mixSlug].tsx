@@ -1,5 +1,6 @@
 import { Mix } from "@/atoms/mixesAtom";
 import PageNotFound from "@/components/Error/PageNotFound";
+import HeadMetatags from "@/components/Layout/HeadMetatags";
 import AddCommentForm from "@/components/Mix/AddCommentForm";
 import MixComments from "@/components/Mix/MixComments";
 import MixTracklist from "@/components/Mix/MixTracklist";
@@ -139,6 +140,9 @@ const MixPage: React.FC<MixPageProps> = ({ slug, creatorSlug }) => {
         <PageNotFound />
       ) : (
         <Flex direction="column">
+          <HeadMetatags
+            title={`${mixStateValue.selectedMix?.title} by ${mixStateValue.selectedMix?.creatorName}`}
+          />
           <Flex direction="column" p={24} backgroundColor="blackAlpha.700">
             <Flex direction="row" alignItems="center" px={24}>
               <Flex direction="column">

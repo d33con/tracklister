@@ -1,6 +1,7 @@
 import { MixGenre } from "@/atoms/mixGenresAtom";
 import GenreMixes from "@/components/Discover/GenreMixes";
 import NotFound from "@/components/Discover/NotFound";
+import HeadMetatags from "@/components/Layout/HeadMetatags";
 import { firestore } from "@/firebase/clientApp";
 import { Box, Center, Flex, Heading } from "@chakra-ui/react";
 import { doc, getDoc } from "firebase/firestore";
@@ -14,6 +15,7 @@ type GenrePageProps = {
 const GenrePage: React.FC<GenrePageProps> = ({ mixGenre }) => {
   return (
     <Flex direction="column">
+      <HeadMetatags title={`Discover ${mixGenre.label} mixes and shows`} />
       <Heading
         py={12}
         textAlign="center"

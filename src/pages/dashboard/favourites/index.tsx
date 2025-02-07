@@ -1,5 +1,6 @@
 import { Mix } from "@/atoms/mixesAtom";
 import NoFavouritedMixes from "@/components/Dashboard/NoFavouritedMixes";
+import HeadMetatags from "@/components/Layout/HeadMetatags";
 import MixItem from "@/components/Mixes/MixItem";
 import { auth, firestore } from "@/firebase/clientApp";
 import useMixes from "@/hooks/useMixes";
@@ -55,6 +56,7 @@ const Favourites = () => {
         <NoFavouritedMixes />
       ) : (
         <>
+          <HeadMetatags title="Dashboard - Favourite mixes" />
           <Heading textAlign="left" mb={6}>
             Favourites
           </Heading>
